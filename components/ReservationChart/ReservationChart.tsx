@@ -1,14 +1,38 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import dayjs from 'dayjs';
 import VirtualScheduler from './VirtualScheduler/VirtualScheduler';
+import FilterContainer from './Filter/FilterContainer';
 
 const ReservationChart = ()=>{
   const [resources, setResources] = useState([])
   const [bookings, setBookings] = useState([])
+  const [searchTerm, setSearchTerm] = useState('')
 
   const [resourcesLoaded, setResourcesLoaded] = useState(false)
   const [bookingsLoaded, setBookingsLoaded] = useState(false)
+
+  /* =========================
+     Filter resources by search term
+  ========================= */
+  const filteredResources = useMemo(() => {
+    if (!searchTerm.trim()) return resources;
+    
+    return resources.map(parent => {
+      const parentMatches = parent.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchingChildren = (parent.children || []).filter(child => 
+        child.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      
+      if (parentMatches) {
+        return parent; // Show all children if parent matches
+      } else if (matchingChildren.length > 0) {
+        return { ...parent, children: matchingChildren }; // Show only matching children
+      }
+      
+      return null; // Hide this parent entirely
+    }).filter(Boolean);
+  }, [resources, searchTerm]);
 
   /* =========================
      Create booking (local)
@@ -81,9 +105,10 @@ const ReservationChart = ()=>{
                 <h2 className="text-lg font-semibold text-blue-800">SimpleVirtualScheduler (Custom Implementation)</h2>
                 <p className="text-sm text-blue-600">Manual virtualization without external dependencies</p>
             </div>
+            <FilterContainer onSearchChange={setSearchTerm} />
             <div className="h-[82vh]">
                 <VirtualScheduler
-                resources={resources}
+                resources={filteredResources}
                 bookings={bookings}
                 onBookingCreate={handleBookingCreate}
                 onResourcesChange={setResources}
