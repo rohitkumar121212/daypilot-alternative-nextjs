@@ -8,31 +8,61 @@ const ReservationChart = ()=>{
   const [resources, setResources] = useState([])
   const [bookings, setBookings] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
+  const [bookingIdFilter, setBookingIdFilter] = useState('')
+  const [startDate, setStartDate] = useState(dayjs().format('YYYY-MM-DD'))
+  const [daysToShow, setDaysToShow] = useState(30)
 
   const [resourcesLoaded, setResourcesLoaded] = useState(false)
   const [bookingsLoaded, setBookingsLoaded] = useState(false)
 
   /* =========================
-     Filter resources by search term
+     Filter resources by search term and booking ID
   ========================= */
   const filteredResources = useMemo(() => {
-    if (!searchTerm.trim()) return resources;
+    let resourcesResult = resources;
     
-    return resources.map(parent => {
-      const parentMatches = parent.name.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchingChildren = (parent.children || []).filter(child => 
-        child.name.toLowerCase().includes(searchTerm.toLowerCase())
+    // Filter by booking ID first - show only apartments that have the booking
+    if (bookingIdFilter.trim()) {
+      const matchingBookings = bookings.filter(booking => 
+        booking.booking_id?.toString().includes(bookingIdFilter) ||
+        booking.id?.toString().includes(bookingIdFilter)
       );
       
-      if (parentMatches) {
-        return parent; // Show all children if parent matches
-      } else if (matchingChildren.length > 0) {
-        return { ...parent, children: matchingChildren }; // Show only matching children
-      }
+      const matchingApartmentIds = new Set(matchingBookings.map(booking => booking.resourceId));
       
-      return null; // Hide this parent entirely
-    }).filter(Boolean);
-  }, [resources, searchTerm]);
+      resourcesResult = resources.map(parent => {
+        const matchingChildren = (parent.children || []).filter(child => 
+          matchingApartmentIds.has(child.id)
+        );
+        
+        if (matchingChildren.length > 0) {
+          return { ...parent, children: matchingChildren };
+        }
+        
+        return null;
+      }).filter(Boolean);
+    }
+    
+    // Then filter by search term
+    if (searchTerm.trim()) {
+      resourcesResult = resourcesResult.map(parent => {
+        const parentMatches = parent.name.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchingChildren = (parent.children || []).filter(child => 
+          child.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        
+        if (parentMatches) {
+          return parent; // Show all children if parent matches
+        } else if (matchingChildren.length > 0) {
+          return { ...parent, children: matchingChildren }; // Show only matching children
+        }
+        
+        return null; // Hide this parent entirely
+      }).filter(Boolean);
+    }
+    
+    return resourcesResult;
+  }, [resources, searchTerm, bookingIdFilter, bookings]);
 
   /* =========================
      Create booking (local)
@@ -53,12 +83,14 @@ const ReservationChart = ()=>{
 
     async function loadData() {
       try {
+        const endDate = dayjs(startDate).add(daysToShow, 'day').format('YYYY-MM-DD')
+        
         const resourcesRequest = fetch(
-          'https://aperfectstay.ai/api/aps-pms/apts/?user=6351746143092736&start=2026-01-20'
+          `https://aperfectstay.ai/api/aps-pms/apts/?user=6552614495846400&start=${startDate}`
         )
 
         const bookingsRequest = fetch(
-          'https://aperfectstay.ai/api/aps-pms/reservations/?user=6351746143092736&start=2026-01-20&end=2026-02-20'
+          `https://aperfectstay.ai/api/aps-pms/reservations/?user=6552614495846400&start=${startDate}&end=${endDate}`
         )
 
         // 🚀 parallel execution
@@ -97,7 +129,7 @@ const ReservationChart = ()=>{
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [startDate, daysToShow])
     return (
         <div className="flex-1 overflow-hidden flex flex-col">
             <div className="flex-1 border-b-2 border-gray-300">
@@ -105,14 +137,20 @@ const ReservationChart = ()=>{
                 <h2 className="text-lg font-semibold text-blue-800">SimpleVirtualScheduler (Custom Implementation)</h2>
                 <p className="text-sm text-blue-600">Manual virtualization without external dependencies</p>
             </div>
-            <FilterContainer onSearchChange={setSearchTerm} />
+            <FilterContainer 
+              onSearchChange={setSearchTerm}
+              onBookingIdChange={setBookingIdFilter}
+              onDateChange={setStartDate}
+              onDaysChange={setDaysToShow}
+            />
             <div className="h-[82vh]">
                 <VirtualScheduler
                 resources={filteredResources}
                 bookings={bookings}
                 onBookingCreate={handleBookingCreate}
                 onResourcesChange={setResources}
-                daysToShow={30}
+                startDate={startDate}
+                daysToShow={daysToShow}
                 cellWidth={100}
                 rowHeight={60}
                 />

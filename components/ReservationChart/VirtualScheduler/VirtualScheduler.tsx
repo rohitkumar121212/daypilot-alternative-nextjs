@@ -12,11 +12,12 @@ const VirtualScheduler = ({
   bookings = [],
   onBookingCreate,
   onResourcesChange,
+  startDate = null,
   daysToShow = 30,
   cellWidth = 100,
   rowHeight = 60
 }) => {
-  const dates = useMemo(() => generateDateRange(daysToShow), [daysToShow])
+  const dates = useMemo(() => generateDateRange(daysToShow, startDate), [daysToShow, startDate])
   
   // Selection state
   const [selection, setSelection] = useState(null)
