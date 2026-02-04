@@ -86,11 +86,11 @@ const ReservationChart = ()=>{
         const endDate = dayjs(startDate).add(daysToShow, 'day').format('YYYY-MM-DD')
         
         const resourcesRequest = fetch(
-          `https://aperfectstay.ai/api/aps-pms/apts/?user=6552614495846400&start=${startDate}`
+          `https://aperfectstay.ai/api/aps-pms/apts/?user=6351746143092736&start=${startDate}`
         )
 
         const bookingsRequest = fetch(
-          `https://aperfectstay.ai/api/aps-pms/reservations/?user=6552614495846400&start=${startDate}&end=${endDate}`
+          `https://aperfectstay.ai/api/aps-pms/reservations/?user=6351746143092736&start=${startDate}&end=${endDate}`
         )
 
         // 🚀 parallel execution
@@ -142,6 +142,7 @@ const ReservationChart = ()=>{
               onBookingIdChange={setBookingIdFilter}
               onDateChange={setStartDate}
               onDaysChange={setDaysToShow}
+              bookings={bookings}
             />
             <div className="h-[82vh]">
                 <VirtualScheduler
