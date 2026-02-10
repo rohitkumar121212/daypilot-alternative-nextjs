@@ -2,6 +2,7 @@ import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import DateHeader from './DateHeader'
 import ResourceRow from './ResourceRow'
 import BookingModal from './BookingModal'
+import BookingDetailsModal from './BookingDetailsModal'
 import { generateDateRange, getDateIndex } from '@/utils/dateUtils'
 
 /**
@@ -23,6 +24,10 @@ const VirtualScheduler = ({
   const [selection, setSelection] = useState(null)
   const [isSelecting, setIsSelecting] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
+  
+  // Booking details state
+  const [selectedBooking, setSelectedBooking] = useState(null)
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false)
   
   // Virtual scrolling state
   const [scrollTop, setScrollTop] = useState(0)
@@ -162,6 +167,18 @@ const VirtualScheduler = ({
     }
     handleModalClose()
   }, [onBookingCreate, handleModalClose])
+  
+  // Handle booking click
+  const handleBookingClick = useCallback((booking) => {
+    setSelectedBooking(booking)
+    setDetailsModalOpen(true)
+  }, [])
+  
+  // Handle details modal close
+  const handleDetailsModalClose = useCallback(() => {
+    setDetailsModalOpen(false)
+    setSelectedBooking(null)
+  }, [])
   
   // Handle parent expand/collapse toggle
   const handleToggleExpand = useCallback((parentId) => {
@@ -321,6 +338,7 @@ const VirtualScheduler = ({
                       selection={selection}
                       onCellMouseDown={handleCellMouseDown}
                       onCellMouseEnter={handleCellMouseEnter}
+                      onBookingClick={handleBookingClick}
                       cellWidth={cellWidth}
                     />
                   </div>
@@ -338,6 +356,13 @@ const VirtualScheduler = ({
         resource={selectedResource}
         onClose={handleModalClose}
         onConfirm={handleBookingConfirm}
+      />
+      
+      {/* Booking Details Modal */}
+      <BookingDetailsModal
+        isOpen={detailsModalOpen}
+        booking={selectedBooking}
+        onClose={handleDetailsModalClose}
       />
     </div>
   )
