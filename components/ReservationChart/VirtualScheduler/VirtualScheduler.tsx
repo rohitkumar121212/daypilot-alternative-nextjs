@@ -3,6 +3,7 @@ import DateHeader from './DateHeader'
 import ResourceRow from './ResourceRow'
 import BookingModal from './BookingModal'
 import BookingDetailsModal from './BookingDetailsModal'
+import BookingContextMenu from './BookingContextMenu'
 import { generateDateRange, getDateIndex } from '@/utils/dateUtils'
 
 /**
@@ -28,6 +29,9 @@ const VirtualScheduler = ({
   // Booking details state
   const [selectedBooking, setSelectedBooking] = useState(null)
   const [detailsModalOpen, setDetailsModalOpen] = useState(false)
+  
+  // Context menu state
+  const [contextMenu, setContextMenu] = useState({ isOpen: false, position: { x: 0, y: 0 }, booking: null })
   
   // Virtual scrolling state
   const [scrollTop, setScrollTop] = useState(0)
@@ -179,6 +183,24 @@ const VirtualScheduler = ({
     setDetailsModalOpen(false)
     setSelectedBooking(null)
   }, [])
+  
+  // Handle booking right-click
+  const handleBookingRightClick = useCallback((booking, position) => {
+    setContextMenu({ isOpen: true, position, booking })
+  }, [])
+  
+  // Handle context menu action
+  const handleContextMenuAction = useCallback((action) => {
+    const booking = contextMenu.booking
+    setContextMenu({ isOpen: false, position: { x: 0, y: 0 }, booking: null })
+    
+    if (action === 'view') {
+      setSelectedBooking(booking)
+      setDetailsModalOpen(true)
+    } else {
+      console.log(`Action: ${action} on booking:`, booking)
+    }
+  }, [contextMenu.booking])
   
   // Handle parent expand/collapse toggle
   const handleToggleExpand = useCallback((parentId) => {
@@ -339,6 +361,7 @@ const VirtualScheduler = ({
                       onCellMouseDown={handleCellMouseDown}
                       onCellMouseEnter={handleCellMouseEnter}
                       onBookingClick={handleBookingClick}
+                      onBookingRightClick={handleBookingRightClick}
                       cellWidth={cellWidth}
                     />
                   </div>
@@ -363,6 +386,14 @@ const VirtualScheduler = ({
         isOpen={detailsModalOpen}
         booking={selectedBooking}
         onClose={handleDetailsModalClose}
+      />
+      
+      {/* Context Menu */}
+      <BookingContextMenu
+        isOpen={contextMenu.isOpen}
+        position={contextMenu.position}
+        onClose={() => setContextMenu({ isOpen: false, position: { x: 0, y: 0 }, booking: null })}
+        onAction={handleContextMenuAction}
       />
     </div>
   )

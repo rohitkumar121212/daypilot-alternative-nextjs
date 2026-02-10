@@ -15,6 +15,7 @@ const ResourceRow = memo(({
   onCellMouseDown,
   onCellMouseEnter,
   onBookingClick,
+  onBookingRightClick,
   onBookingDragStart,
   cellWidth = 100
 }) => {
@@ -60,6 +61,7 @@ const ResourceRow = memo(({
             isDragging={isDragging}
             dragOffset={isDragging ? dragState.dragOffset : { x: 0, y: 0 }}
             onBookingClick={onBookingClick}
+            onBookingRightClick={onBookingRightClick}
             onBookingDragStart={onBookingDragStart}
           />
         )

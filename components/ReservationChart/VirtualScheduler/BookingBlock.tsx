@@ -17,6 +17,7 @@ const BookingBlock = ({
   dates, 
   cellWidth = 100, 
   onBookingClick, 
+  onBookingRightClick,
   onBookingDragStart,
   isDragging = false,
   dragOffset = { x: 0, y: 0 }
@@ -45,6 +46,7 @@ const BookingBlock = ({
   const width = span * cellWidth
   
   const handleMouseDown = (e) => {
+    if (e.button === 2) return // Ignore right-click for drag
     e.preventDefault()
     e.stopPropagation()
     
@@ -80,6 +82,12 @@ const BookingBlock = ({
     
     document.addEventListener('mousemove', handleMouseMove)
     document.addEventListener('mouseup', handleMouseUp)
+  }
+  
+  const handleContextMenu = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    onBookingRightClick?.(booking, { x: e.clientX, y: e.clientY })
   }
   
   // Get background color from booking data or use default
@@ -121,6 +129,7 @@ const BookingBlock = ({
       }}
       title={`${booking.text || `Booking ${booking.id}`}: ${booking.startDate} to ${booking.endDate} (checkout)`}
       onMouseDown={handleMouseDown}
+      onContextMenu={handleContextMenu}
     >
       {shouldShowIcon && showOnLeft && (
         <img src={bubbleData.Lead_Source} alt="Lead Source" className="w-4 h-4 mx-1" />
