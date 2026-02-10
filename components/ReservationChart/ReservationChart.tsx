@@ -15,6 +15,20 @@ const ReservationChart = ()=>{
   const [resourcesLoaded, setResourcesLoaded] = useState(false)
   const [bookingsLoaded, setBookingsLoaded] = useState(false)
 
+  // Force landscape on mobile
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      const style = document.createElement('style')
+      style.innerHTML = `
+        @media screen and (max-width: 767px) {
+          body { transform: rotate(90deg); transform-origin: left top; width: 100vh; height: 100vw; overflow-x: hidden; position: absolute; top: 100%; left: 0; }
+        }
+      `
+      document.head.appendChild(style)
+      return () => document.head.removeChild(style)
+    }
+  }, [])
+
   /* =========================
      Filter resources by search term and booking ID
   ========================= */
