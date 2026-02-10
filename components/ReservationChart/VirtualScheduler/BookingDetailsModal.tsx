@@ -15,7 +15,7 @@ const BookingDetailsModal = ({ isOpen, booking, onClose }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50" style={{ backgroundColor: 'rgba(0, 0, 0, 0.3)' }} onClick={onClose}>
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-white rounded-lg shadow-xl w-[92%] md:w-full max-w-4xl max-h-[90vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-center p-6 ">
           <h2 className="text-xl font-semibold">Booking Management</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
@@ -26,20 +26,22 @@ const BookingDetailsModal = ({ isOpen, booking, onClose }) => {
         </div>
         
         {/* Tabs */}
-        <div className="flex gap-2 px-6 bg-gray-100">
-          {tabs.map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors ${
-                activeTab === tab.id
-                  ? 'text-white bg-blue-600'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+        <div className="overflow-x-auto bg-gray-100 px-6 flex-shrink-0">
+          <div className="flex gap-2 min-w-max py-2">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors whitespace-nowrap ${
+                  activeTab === tab.id
+                    ? 'text-white bg-blue-600'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
         
         {/* Tab Content */}
