@@ -90,6 +90,15 @@ const ReservationChart = ()=>{
   }
 
   /* =========================
+     Update booking on drag and drop
+  ========================= */
+  const handleBookingUpdate = (updatedBooking) => {
+    setBookings(prev => prev.map(booking => 
+      booking.id === updatedBooking.id ? updatedBooking : booking
+    ))
+  }
+
+  /* =========================
      Parallel data fetching
   ========================= */
   useEffect(() => {
@@ -100,11 +109,11 @@ const ReservationChart = ()=>{
         const endDate = dayjs(startDate).add(daysToShow, 'day').format('YYYY-MM-DD')
         
         const resourcesRequest = fetch(
-          `https://aperfectstay.ai/api/aps-pms/apts/?user=6351746143092736&start=${startDate}`
+          `https://aperfectstay.ai/api/aps-pms/apts/?user=6552614495846400&start=${startDate}`
         )
 
         const bookingsRequest = fetch(
-          `https://aperfectstay.ai/api/aps-pms/reservations/?user=6351746143092736&start=${startDate}&end=${endDate}`
+          `https://aperfectstay.ai/api/aps-pms/reservations/?user=6552614495846400&start=${startDate}&end=${endDate}`
         )
 
         // 🚀 parallel execution
@@ -163,6 +172,7 @@ const ReservationChart = ()=>{
                 resources={filteredResources}
                 bookings={bookings}
                 onBookingCreate={handleBookingCreate}
+                onBookingUpdate={handleBookingUpdate}
                 onResourcesChange={setResources}
                 startDate={startDate}
                 daysToShow={daysToShow}

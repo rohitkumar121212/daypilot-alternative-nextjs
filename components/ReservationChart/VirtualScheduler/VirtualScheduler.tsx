@@ -1,9 +1,11 @@
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
+import dayjs from 'dayjs'
 import DateHeader from './DateHeader'
 import ResourceRow from './ResourceRow'
 import BookingModal from './BookingModal'
 import BookingDetailsModal from './BookingDetailsModal'
 import BookingContextMenu from './BookingContextMenu'
+import BookingChangeConfirmModal from './BookingChangeConfirmModal'
 import { generateDateRange, getDateIndex } from '@/utils/dateUtils'
 
 /**
@@ -13,6 +15,7 @@ const VirtualScheduler = ({
   resources = [],
   bookings = [],
   onBookingCreate,
+  onBookingUpdate,
   onResourcesChange,
   startDate = null,
   daysToShow = 30,
@@ -32,6 +35,12 @@ const VirtualScheduler = ({
   
   // Context menu state
   const [contextMenu, setContextMenu] = useState({ isOpen: false, position: { x: 0, y: 0 }, booking: null })
+  
+  // Drag state
+  const [dragState, setDragState] = useState(null)
+  
+  // Change confirmation state
+  const [changeConfirmation, setChangeConfirmation] = useState({ isOpen: false, data: null })
   
   // Virtual scrolling state
   const [scrollTop, setScrollTop] = useState(0)
@@ -202,6 +211,100 @@ const VirtualScheduler = ({
     }
   }, [contextMenu.booking])
   
+  // Handle booking drag start
+  const handleBookingDragStart = useCallback((booking, e) => {
+    setDragState({
+      draggedBooking: booking,
+      startX: e.clientX,
+      startY: e.clientY,
+      currentX: e.clientX,
+      currentY: e.clientY
+    })
+  }, [])
+  
+  // Handle drag move
+  useEffect(() => {
+    if (!dragState) return
+    
+    const handleMouseMove = (e) => {
+      setDragState(prev => ({
+        ...prev,
+        currentX: e.clientX,
+        currentY: e.clientY
+      }))
+    }
+    
+    const handleMouseUp = (e) => {
+      const target = document.elementFromPoint(e.clientX, e.clientY)
+      const dateCell = target?.closest('[data-date]')
+      
+      if (dateCell && dragState.draggedBooking) {
+        const newStartDate = dateCell.getAttribute('data-date')
+        const newResourceId = dateCell.getAttribute('data-resource-id')
+        
+        if (newStartDate && newResourceId) {
+          const startIndex = getDateIndex(dragState.draggedBooking.startDate, dates)
+          const endIndex = getDateIndex(dragState.draggedBooking.endDate, dates)
+          const duration = endIndex - startIndex
+          
+          const newEndDate = dayjs(newStartDate).add(duration, 'day').format('YYYY-MM-DD')
+          
+          // Find resource name
+          let newResourceName = newResourceId
+          for (const parent of resources) {
+            const child = (parent.children || []).find(c => c.id === newResourceId)
+            if (child) {
+              newResourceName = child.name
+              break
+            }
+          }
+          
+          const updatedBooking = {
+            ...dragState.draggedBooking,
+            startDate: newStartDate,
+            endDate: newEndDate,
+            resourceId: newResourceId
+          }
+          
+          // Show confirmation modal
+          setChangeConfirmation({
+            isOpen: true,
+            data: {
+              booking: updatedBooking,
+              newResourceId,
+              newResourceName,
+              newStartDate,
+              newEndDate,
+              user: 'Aperfect Stay'
+            }
+          })
+        }
+      }
+      
+      setDragState(null)
+    }
+    
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
+    
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+    }
+  }, [dragState, dates, resources])
+  
+  // Handle change confirmation
+  const handleConfirmChange = useCallback(() => {
+    if (changeConfirmation.data?.booking) {
+      onBookingUpdate?.(changeConfirmation.data.booking)
+    }
+    setChangeConfirmation({ isOpen: false, data: null })
+  }, [changeConfirmation.data, onBookingUpdate])
+  
+  const handleCancelChange = useCallback(() => {
+    setChangeConfirmation({ isOpen: false, data: null })
+  }, [])
+  
   // Handle parent expand/collapse toggle
   const handleToggleExpand = useCallback((parentId) => {
     const updatedResources = resources.map(parent => {
@@ -358,10 +461,12 @@ const VirtualScheduler = ({
                       dates={dates}
                       bookings={bookings}
                       selection={selection}
+                      dragState={dragState}
                       onCellMouseDown={handleCellMouseDown}
                       onCellMouseEnter={handleCellMouseEnter}
                       onBookingClick={handleBookingClick}
                       onBookingRightClick={handleBookingRightClick}
+                      onBookingDragStart={handleBookingDragStart}
                       cellWidth={cellWidth}
                     />
                   </div>
@@ -394,6 +499,14 @@ const VirtualScheduler = ({
         position={contextMenu.position}
         onClose={() => setContextMenu({ isOpen: false, position: { x: 0, y: 0 }, booking: null })}
         onAction={handleContextMenuAction}
+      />
+      
+      {/* Change Confirmation Modal */}
+      <BookingChangeConfirmModal
+        isOpen={changeConfirmation.isOpen}
+        changeData={changeConfirmation.data}
+        onConfirm={handleConfirmChange}
+        onCancel={handleCancelChange}
       />
     </div>
   )
