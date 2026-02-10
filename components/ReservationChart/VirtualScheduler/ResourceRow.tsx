@@ -25,9 +25,9 @@ const ResourceRow = memo(({
   const hasSelection = selection && selection.resourceId === resource.id
   
   return (
-    <div className="relative" style={{ height: 60 }}>
+    <div className="relative overflow-hidden" style={{ height: 60 }}>
       {/* Date cells */}
-      <div className="flex relative">
+      <div className="flex relative overflow-hidden">
         {dates.map((date) => {
           const isDropTarget = dragState?.dropTarget?.date === date && 
                               dragState?.dropTarget?.resourceId === resource.id
