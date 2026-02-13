@@ -107,14 +107,15 @@ const ReservationChart = ()=>{
     async function loadData() {
       try {
         const endDate = dayjs(startDate).add(daysToShow, 'day').format('YYYY-MM-DD')
-        
-        const resourcesRequest = fetch(
-          `https://aperfectstay.ai/api/aps-pms/apts/?user=6552614495846400&start=${startDate}`
-        )
+        const resourcesUrl = `https://aperfectstay.ai/api/aps-pms/apts/?user=6552614495846400&start=${startDate}`
+        const bookingsUrl = `https://aperfectstay.ai/api/aps-pms/reservations/?user=6552614495846400&start=${startDate}&end=${endDate}`
+        const resourcesRequest = fetch(resourcesUrl,{
+          next: { revalidate: 600 } // revalidate every 60 seconds
+        })
 
-        const bookingsRequest = fetch(
-          `https://aperfectstay.ai/api/aps-pms/reservations/?user=6552614495846400&start=${startDate}&end=${endDate}`
-        )
+        const bookingsRequest = fetch(bookingsUrl,{
+          next: { revalidate: 600 } // revalidate every 60 seconds
+        })
 
         // 🚀 parallel execution
         const [resourcesRes, bookingsRes] = await Promise.all([

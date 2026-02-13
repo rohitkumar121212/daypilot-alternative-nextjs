@@ -3,6 +3,7 @@ const BookingContextMenu = ({ isOpen, position, onClose, onAction }) => {
 
   const menuItems = [
     { id: 'view', label: 'View Details', icon: '👁️' },
+    { id: 'split', label: 'Split Booking', icon: '✂️' },
     { id: 'cancel', label: 'Cancel', icon: '❌' },
     { id: 'checkin', label: 'Check-in', icon: '✅' },
     { id: 'checkout', label: 'Check-out', icon: '🚪' },

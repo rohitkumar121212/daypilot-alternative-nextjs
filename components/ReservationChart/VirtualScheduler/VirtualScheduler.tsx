@@ -2,10 +2,11 @@ import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import dayjs from 'dayjs'
 import DateHeader from './DateHeader'
 import ResourceRow from './ResourceRow'
-import BookingModal from './BookingModal'
+import CreateBookingModal from '../Modals/CreateBookingModal/CreateBookingModal'
 import BookingDetailsModal from './BookingDetailsModal'
 import BookingContextMenu from './BookingContextMenu'
 import BookingChangeConfirmModal from './BookingChangeConfirmModal'
+import SplitBookingModal from './SplitBookingModal'
 import { generateDateRange, getDateIndex } from '@/utils/dateUtils'
 
 /**
@@ -41,6 +42,10 @@ const VirtualScheduler = ({
   
   // Change confirmation state
   const [changeConfirmation, setChangeConfirmation] = useState({ isOpen: false, data: null })
+  
+  // Split booking state
+  const [splitModalOpen, setSplitModalOpen] = useState(false)
+  const [bookingToSplit, setBookingToSplit] = useState(null)
   
   // Virtual scrolling state
   const [scrollTop, setScrollTop] = useState(0)
@@ -206,6 +211,9 @@ const VirtualScheduler = ({
     if (action === 'view') {
       setSelectedBooking(booking)
       setDetailsModalOpen(true)
+    } else if (action === 'split') {
+      setBookingToSplit(booking)
+      setSplitModalOpen(true)
     } else {
       console.log(`Action: ${action} on booking:`, booking)
     }
@@ -304,6 +312,37 @@ const VirtualScheduler = ({
   const handleCancelChange = useCallback(() => {
     setChangeConfirmation({ isOpen: false, data: null })
   }, [])
+  
+  // Handle split booking
+  const handleSplitBooking = useCallback((splitData) => {
+    const { originalBooking, splitDate, newApartmentId } = splitData
+    
+    // booking1: moves to new apartment (from original start to splitDate)
+    const booking1 = {
+      ...originalBooking,
+      id: Date.now(), // Generate new ID for the moved part
+      startDate: originalBooking.startDate,
+      endDate: splitDate,
+      resourceId: newApartmentId,
+      backColor: '#5BCAC8'
+    }
+    
+    // booking2: stays in original apartment (from splitDate+1 to original end)
+    const booking2 = {
+      ...originalBooking,
+      id: originalBooking.id,
+      startDate: dayjs(splitDate).add(1, 'day').format('YYYY-MM-DD'),
+      endDate: originalBooking.endDate,
+      backColor: '#5BCAC8'
+    }
+    
+    // Update bookings
+    onBookingUpdate?.(booking2)
+    onBookingCreate?.(booking1)
+    
+    setSplitModalOpen(false)
+    setBookingToSplit(null)
+  }, [bookings, onBookingUpdate, onBookingCreate])
   
   // Handle parent expand/collapse toggle
   const handleToggleExpand = useCallback((parentId) => {
@@ -478,7 +517,7 @@ const VirtualScheduler = ({
       </div>
       
       {/* Booking Modal */}
-      <BookingModal
+      <CreateBookingModal
         isOpen={modalOpen}
         selection={selection}
         resource={selectedResource}
@@ -507,6 +546,18 @@ const VirtualScheduler = ({
         changeData={changeConfirmation.data}
         onConfirm={handleConfirmChange}
         onCancel={handleCancelChange}
+      />
+      
+      {/* Split Booking Modal */}
+      <SplitBookingModal
+        isOpen={splitModalOpen}
+        booking={bookingToSplit}
+        resources={resources}
+        onSplit={handleSplitBooking}
+        onClose={() => {
+          setSplitModalOpen(false)
+          setBookingToSplit(null)
+        }}
       />
     </div>
   )
