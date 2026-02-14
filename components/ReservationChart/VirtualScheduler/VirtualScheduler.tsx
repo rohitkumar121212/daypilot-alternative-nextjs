@@ -15,6 +15,7 @@ import { generateDateRange, getDateIndex } from '@/utils/dateUtils'
 const VirtualScheduler = ({
   resources = [],
   bookings = [],
+  availability = null,
   onBookingCreate,
   onBookingUpdate,
   onResourcesChange,
@@ -24,6 +25,32 @@ const VirtualScheduler = ({
   rowHeight = 60
 }) => {
   const dates = useMemo(() => generateDateRange(daysToShow, startDate), [daysToShow, startDate])
+  
+  // Process availability data
+  const { availabilityByResource, totalAvailabilityByDate, availabilityByParent } = useMemo(() => {
+    const byResource = {}
+    const byDate = {}
+    const byParent = {}
+    
+    if (!availability) return { availabilityByResource: byResource, totalAvailabilityByDate: byDate, availabilityByParent: byParent }
+    
+    // Process total availability
+    availability.total_availability?.forEach(item => {
+      const [available, total] = item.availibility.split('/').map(Number)
+      byDate[item.date] = { available, total }
+    })
+    
+    // Process building-wise availability
+    availability.building_wise_availability?.forEach(building => {
+      building.date_range?.forEach(dateItem => {
+        const [available, total] = dateItem.availibility.split('/').map(Number)
+        const key = `${building.building_id}-${dateItem.date}`
+        byParent[key] = { available, total }
+      })
+    })
+    
+    return { availabilityByResource: byResource, totalAvailabilityByDate: byDate, availabilityByParent: byParent }
+  }, [availability])
   
   // Selection state
   const [selection, setSelection] = useState(null)
@@ -416,6 +443,7 @@ const VirtualScheduler = ({
                 key={date}
                 date={date}
                 cellWidth={cellWidth}
+                totalAvailability={totalAvailabilityByDate[date] || null}
               />
             ))}
           </div>
@@ -432,43 +460,45 @@ const VirtualScheduler = ({
             onScroll={handleScroll}
           >
             <div style={{ height: totalHeight, position: 'relative' }}>
-              {visibleItems.map((row, index) => (
-                <div
-                  key={row.id}
-                  className={`absolute w-full border-b border-gray-200 bg-white flex items-center hover:bg-gray-50 ${
-                    row.type === 'parent' 
-                      ? 'font-semibold bg-gray-50' 
-                      : 'pl-8 text-gray-700'
-                  }`}
-                  style={{ 
-                    height: rowHeight,
-                    top: (startIndex + index) * rowHeight
-                  }}
-                >
-                  {row.type === 'parent' && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleToggleExpand(row.id)
-                      }}
-                      className="mr-2 p-1 hover:bg-gray-200 rounded flex-shrink-0"
-                    >
-                      <svg
-                        className={`w-4 h-4 text-gray-600 transform ${
-                          row.expanded ? 'rotate-90' : ''
-                        }`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+              {visibleItems.map((row, index) => {
+                return (
+                  <div
+                    key={row.id}
+                    className={`absolute w-full border-b border-gray-200 bg-white flex items-center hover:bg-gray-50 ${
+                      row.type === 'parent' 
+                        ? 'font-semibold bg-gray-50' 
+                        : 'pl-8 text-gray-700'
+                    }`}
+                    style={{ 
+                      height: rowHeight,
+                      top: (startIndex + index) * rowHeight
+                    }}
+                  >
+                    {row.type === 'parent' && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleToggleExpand(row.id)
+                        }}
+                        className="mr-2 p-1 hover:bg-gray-200 rounded flex-shrink-0"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </button>
-                  )}
-                  {row.type === 'child' && <span className="w-6 flex-shrink-0" />}
-                  <span className="flex-1 truncate text-sm">{row.name}</span>
-                </div>
-              ))}
+                        <svg
+                          className={`w-4 h-4 text-gray-600 transform ${
+                            row.expanded ? 'rotate-90' : ''
+                          }`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    )}
+                    {row.type === 'child' && <span className="w-6 flex-shrink-0" />}
+                    <span className="flex-1 truncate text-sm">{row.name}</span>
+                  </div>
+                )
+              })}
             </div>
           </div>
         </div>
@@ -501,6 +531,8 @@ const VirtualScheduler = ({
                       bookings={bookings}
                       selection={selection}
                       dragState={dragState}
+                      availabilityData={availabilityByResource}
+                      availabilityByParent={availabilityByParent}
                       onCellMouseDown={handleCellMouseDown}
                       onCellMouseEnter={handleCellMouseEnter}
                       onBookingClick={handleBookingClick}

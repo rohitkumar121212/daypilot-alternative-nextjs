@@ -10,6 +10,7 @@ const DateCell = memo(({
   cellWidth = 100,
   isSelected = false,
   isDropTarget = false,
+  availability = null,
   onMouseDown,
   onMouseEnter
 }) => {
@@ -24,7 +25,7 @@ const DateCell = memo(({
   
   return (
     <div
-      className={`border-r border-b border-gray-200 bg-white cursor-crosshair select-none ${
+      className={`border-r border-b border-gray-200 bg-white cursor-crosshair select-none relative flex items-center justify-center ${
         isSelected ? 'bg-blue-100 ring-1 ring-blue-300' : 
         isDropTarget ? 'bg-green-100 ring-2 ring-green-400' :
         'hover:bg-gray-50'
@@ -34,9 +35,14 @@ const DateCell = memo(({
       data-resource-id={resourceId}
       onMouseDown={handleMouseDown}
       onMouseEnter={handleMouseEnter}
-    />
+    >
+      {availability !== null && availability !== undefined && (
+        <div className={`text-xs font-semibold ${availability.available > 0 ? 'text-green-700' : 'text-red-700'}`}>
+          {availability.available}/{availability.total}
+        </div>
+      )}
+    </div>
   )
 })
 
 export default DateCell
-

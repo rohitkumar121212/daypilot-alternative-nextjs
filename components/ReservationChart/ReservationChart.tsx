@@ -7,6 +7,7 @@ import FilterContainer from './Filter/FilterContainer';
 const ReservationChart = ()=>{
   const [resources, setResources] = useState([])
   const [bookings, setBookings] = useState([])
+  const [availability, setAvailability] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [bookingIdFilter, setBookingIdFilter] = useState('')
   const [startDate, setStartDate] = useState(dayjs().format('YYYY-MM-DD'))
@@ -109,6 +110,7 @@ const ReservationChart = ()=>{
         const endDate = dayjs(startDate).add(daysToShow, 'day').format('YYYY-MM-DD')
         const resourcesUrl = `https://aperfectstay.ai/api/aps-pms/apts/?user=6552614495846400&start=${startDate}`
         const bookingsUrl = `https://aperfectstay.ai/api/aps-pms/reservations/?user=6552614495846400&start=${startDate}&end=${endDate}`
+        const availabilityUrl = `https://aperfectstay.ai/api/aps-pms/buildings/avail?user=6552614495846400&start=${startDate}&end=${endDate}`
         const resourcesRequest = fetch(resourcesUrl,{
           next: { revalidate: 600 } // revalidate every 60 seconds
         })
@@ -117,14 +119,20 @@ const ReservationChart = ()=>{
           next: { revalidate: 600 } // revalidate every 60 seconds
         })
 
+        const availabilityRequest = fetch(availabilityUrl,{
+          next: { revalidate: 600 } // revalidate every 60 seconds
+        })
+
         // 🚀 parallel execution
-        const [resourcesRes, bookingsRes] = await Promise.all([
+        const [resourcesRes, bookingsRes, availabilityRes] = await Promise.all([
           resourcesRequest,
-          bookingsRequest
+          bookingsRequest, 
+          availabilityRequest
         ])
 
         const resourcesJson = await resourcesRes.json()
         const bookingsJson = await bookingsRes.json()
+        const availabilityJson = await availabilityRes.json()
 
         if (cancelled) return
 
@@ -143,6 +151,8 @@ const ReservationChart = ()=>{
 
         setBookings(normalizedBookingData)
         setBookingsLoaded(true)
+        
+        setAvailability(availabilityJson?.data || null)
       } catch (err) {
         console.error('Failed to load scheduler data', err)
       }
@@ -172,6 +182,7 @@ const ReservationChart = ()=>{
                 <VirtualScheduler
                 resources={filteredResources}
                 bookings={bookings}
+                availability={availability}
                 onBookingCreate={handleBookingCreate}
                 onBookingUpdate={handleBookingUpdate}
                 onResourcesChange={setResources}

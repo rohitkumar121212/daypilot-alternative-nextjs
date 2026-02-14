@@ -1,0 +1,67 @@
+{
+  "availability": [
+    { "date": "2026-02-14", "resourceId": "4729710451884032", "available": 1 },
+    { "date": "2026-02-15", "resourceId": "4729710451884032", "available": 0 },
+    { "date": "2026-02-16", "resourceId": "4729710451884032", "available": 1 },
+    { "date": "2026-02-17", "resourceId": "4729710451884032", "available": 1 },
+    { "date": "2026-02-18", "resourceId": "4729710451884032", "available": 0 },
+    { "date": "2026-02-19", "resourceId": "4729710451884032", "available": 1 },
+    { "date": "2026-02-20", "resourceId": "4729710451884032", "available": 1 },
+    
+    { "date": "2026-02-14", "resourceId": "5011653521309696", "available": 1 },
+    { "date": "2026-02-15", "resourceId": "5011653521309696", "available": 1 },
+    { "date": "2026-02-16", "resourceId": "5011653521309696", "available": 0 },
+    { "date": "2026-02-17", "resourceId": "5011653521309696", "available": 1 },
+    { "date": "2026-02-18", "resourceId": "5011653521309696", "available": 1 },
+    { "date": "2026-02-19", "resourceId": "5011653521309696", "available": 0 },
+    { "date": "2026-02-20", "resourceId": "5011653521309696", "available": 1 },
+    
+    { "date": "2026-02-14", "resourceId": "6099014745325568", "available": 0 },
+    { "date": "2026-02-15", "resourceId": "6099014745325568", "available": 1 },
+    { "date": "2026-02-16", "resourceId": "6099014745325568", "available": 1 },
+    { "date": "2026-02-17", "resourceId": "6099014745325568", "available": 0 },
+    { "date": "2026-02-18", "resourceId": "6099014745325568", "available": 1 },
+    { "date": "2026-02-19", "resourceId": "6099014745325568", "available": 1 },
+    { "date": "2026-02-20", "resourceId": "6099014745325568", "available": 0 },
+    
+    { "date": "2026-02-14", "resourceId": "6155469875838976", "available": 1 },
+    { "date": "2026-02-15", "resourceId": "6155469875838976", "available": 0 },
+    { "date": "2026-02-16", "resourceId": "6155469875838976", "available": 0 },
+    { "date": "2026-02-17", "resourceId": "6155469875838976", "available": 1 },
+    { "date": "2026-02-18", "resourceId": "6155469875838976", "available": 0 },
+    { "date": "2026-02-19", "resourceId": "6155469875838976", "available": 1 },
+    { "date": "2026-02-20", "resourceId": "6155469875838976", "available": 0 },
+    
+    { "date": "2026-02-14", "resourceId": "6585957140660224", "available": 1 },
+    { "date": "2026-02-15", "resourceId": "6585957140660224", "available": 1 },
+    { "date": "2026-02-16", "resourceId": "6585957140660224", "available": 1 },
+    { "date": "2026-02-17", "resourceId": "6585957140660224", "available": 0 },
+    { "date": "2026-02-18", "resourceId": "6585957140660224", "available": 1 },
+    { "date": "2026-02-19", "resourceId": "6585957140660224", "available": 0 },
+    { "date": "2026-02-20", "resourceId": "6585957140660224", "available": 1 },
+    
+    { "date": "2026-02-14", "resourceId": "6735997385572352", "available": 0 },
+    { "date": "2026-02-15", "resourceId": "6735997385572352", "available": 1 },
+    { "date": "2026-02-16", "resourceId": "6735997385572352", "available": 1 },
+    { "date": "2026-02-17", "resourceId": "6735997385572352", "available": 1 },
+    { "date": "2026-02-18", "resourceId": "6735997385572352", "available": 0 },
+    { "date": "2026-02-19", "resourceId": "6735997385572352", "available": 0 },
+    { "date": "2026-02-20", "resourceId": "6735997385572352", "available": 1 },
+    
+    { "date": "2026-02-14", "resourceId": "5589137174298624", "available": 1 },
+    { "date": "2026-02-15", "resourceId": "5589137174298624", "available": 1 },
+    { "date": "2026-02-16", "resourceId": "5589137174298624", "available": 0 },
+    { "date": "2026-02-17", "resourceId": "5589137174298624", "available": 1 },
+    { "date": "2026-02-18", "resourceId": "5589137174298624", "available": 0 },
+    { "date": "2026-02-19", "resourceId": "5589137174298624", "available": 1 },
+    { "date": "2026-02-20", "resourceId": "5589137174298624", "available": 0 },
+    
+    { "date": "2026-02-14", "resourceId": "5816292290330624", "available": 0 },
+    { "date": "2026-02-15", "resourceId": "5816292290330624", "available": 1 },
+    { "date": "2026-02-16", "resourceId": "5816292290330624", "available": 1 },
+    { "date": "2026-02-17", "resourceId": "5816292290330624", "available": 0 },
+    { "date": "2026-02-18", "resourceId": "5816292290330624", "available": 1 },
+    { "date": "2026-02-19", "resourceId": "5816292290330624", "available": 0 },
+    { "date": "2026-02-20", "resourceId": "5816292290330624", "available": 1 }
+  ]
+}

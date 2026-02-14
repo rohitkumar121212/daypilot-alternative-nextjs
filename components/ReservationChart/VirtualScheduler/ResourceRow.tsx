@@ -12,6 +12,8 @@ const ResourceRow = memo(({
   bookings = [],
   selection,
   dragState,
+  availabilityData = {},
+  availabilityByParent = {},
   onCellMouseDown,
   onCellMouseEnter,
   onBookingClick,
@@ -33,6 +35,11 @@ const ResourceRow = memo(({
           const isDropTarget = dragState?.dropTarget?.date === date && 
                               dragState?.dropTarget?.resourceId === resource.id
           
+          // Only show availability for parent rows (buildings), not child rows (apartments)
+          const availability = resource.type === 'parent' 
+            ? availabilityByParent[`${resource.id}-${date}`]
+            : undefined
+          
           return (
             <DateCell
               key={`${resource.id}-${date}`}
@@ -41,6 +48,7 @@ const ResourceRow = memo(({
               cellWidth={cellWidth}
               isSelected={hasSelection && isDateInSelection(date, selection)}
               isDropTarget={isDropTarget}
+              availability={availability}
               onMouseDown={onCellMouseDown}
               onMouseEnter={onCellMouseEnter}
             />

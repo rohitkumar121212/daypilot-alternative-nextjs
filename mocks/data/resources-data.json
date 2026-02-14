@@ -1,0 +1,63 @@
+{
+    "data": {
+        "apt_build_details": [
+            {
+                "children": [
+                    {
+                        "cleaning": 2,
+                        "id": "4729710451884032",
+                        "name": "Room - 2 1-B 1-N|| BALC"
+                    },
+                    {
+                        "cleaning": 2,
+                        "id": "5011653521309696",
+                        "name": "445CP 1-B 2-N|| BALC"
+                    },
+                    {
+                        "cleaning": 2,
+                        "id": "6099014745325568",
+                        "name": "Room - 1 1-B 1-N"
+                    },
+                    {
+                        "cleaning": 2,
+                        "id": "6155469875838976",
+                        "name": "450DH 1-B 1-N|| BALC"
+                    },
+                    {
+                        "cleaning": 2,
+                        "id": "6585957140660224",
+                        "name": "447DDW 1-B 1-N|| BALC"
+                    },
+                    {
+                        "cleaning": 2,
+                        "id": "6735997385572352",
+                        "name": "449DH 1-B 1-N|| BALC"
+                    }
+                ],
+                "expanded": true,
+                "id": "5854969938837504",
+                "name": "Deluxe"
+            },
+            {
+                "children": [
+                    {
+                        "cleaning": 2,
+                        "id": "5589137174298624",
+                        "name": "670 DH 2-B 1-N|| BALC"
+                    },
+                    {
+                        "cleaning": 2,
+                        "id": "5816292290330624",
+                        "name": "671 DH 1-B 1-N|| BALC"
+                    }
+                ],
+                "expanded": true,
+                "id": "6748949474967552",
+                "name": "Butterfly"
+            }
+        ]
+    },
+    "error": "",
+    "message": "",
+    "success": true
+}

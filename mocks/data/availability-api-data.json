@@ -1,0 +1,195 @@
+{
+  "data": {
+    "building_wise_availability": [
+      {
+        "building_id": "5854969938837504",
+        "date_range": [
+          {
+            "availibility": "3/6",
+            "date": "2026-01-25"
+          },
+          {
+            "availibility": "1/6",
+            "date": "2026-01-26"
+          },
+          {
+            "availibility": "1/6",
+            "date": "2026-01-27"
+          },
+          {
+            "availibility": "4/6",
+            "date": "2026-01-28"
+          }
+        ]
+      },
+      {
+        "building_id": "5854969938837504",
+        "date_range": [
+          {
+            "availibility": "3/6",
+            "date": "2026-01-25"
+          },
+          {
+            "availibility": "1/6",
+            "date": "2026-01-26"
+          },
+          {
+            "availibility": "1/6",
+            "date": "2026-01-27"
+          },
+          {
+            "availibility": "4/6",
+            "date": "2026-01-28"
+          }
+        ]
+      },
+      {
+        "building_id": "5854969938837504",
+        "date_range": [
+          {
+            "availibility": "3/6",
+            "date": "2026-01-25"
+          },
+          {
+            "availibility": "1/6",
+            "date": "2026-01-26"
+          },
+          {
+            "availibility": "1/6",
+            "date": "2026-01-27"
+          },
+          {
+            "availibility": "4/6",
+            "date": "2026-01-28"
+          }
+        ]
+      },
+      {
+        "building_id": "5854969938837504",
+        "date_range": [
+          {
+            "availibility": "3/6",
+            "date": "2026-01-25"
+          },
+          {
+            "availibility": "1/6",
+            "date": "2026-01-26"
+          },
+          {
+            "availibility": "1/6",
+            "date": "2026-01-27"
+          },
+          {
+            "availibility": "4/6",
+            "date": "2026-01-28"
+          }
+        ]
+      },
+      {
+        "building_id": "6748949474967552",
+        "date_range": [
+          {
+            "availibility": "1/2",
+            "date": "2026-01-25"
+          },
+          {
+            "availibility": "1/2",
+            "date": "2026-01-26"
+          },
+          {
+            "availibility": "1/2",
+            "date": "2026-01-27"
+          },
+          {
+            "availibility": "1/2",
+            "date": "2026-01-28"
+          }
+        ]
+      },
+      {
+        "building_id": "6748949474967552",
+        "date_range": [
+          {
+            "availibility": "1/2",
+            "date": "2026-01-25"
+          },
+          {
+            "availibility": "1/2",
+            "date": "2026-01-26"
+          },
+          {
+            "availibility": "1/2",
+            "date": "2026-01-27"
+          },
+          {
+            "availibility": "1/2",
+            "date": "2026-01-28"
+          }
+        ]
+      },
+      {
+        "building_id": "6748949474967552",
+        "date_range": [
+          {
+            "availibility": "1/2",
+            "date": "2026-01-25"
+          },
+          {
+            "availibility": "1/2",
+            "date": "2026-01-26"
+          },
+          {
+            "availibility": "1/2",
+            "date": "2026-01-27"
+          },
+          {
+            "availibility": "1/2",
+            "date": "2026-01-28"
+          }
+        ]
+      },
+      {
+        "building_id": "6748949474967552",
+        "date_range": [
+          {
+            "availibility": "1/2",
+            "date": "2026-01-25"
+          },
+          {
+            "availibility": "1/2",
+            "date": "2026-01-26"
+          },
+          {
+            "availibility": "1/2",
+            "date": "2026-01-27"
+          },
+          {
+            "availibility": "1/2",
+            "date": "2026-01-28"
+          }
+        ]
+      }
+    ],
+    "total_availability": [
+      {
+        "availibility": "4/8",
+        "date": "2026-01-25"
+      },
+      {
+        "availibility": "2/8",
+        "date": "2026-01-26"
+      },
+      {
+        "availibility": "2/8",
+        "date": "2026-01-27"
+      },
+      {
+        "availibility": "5/8",
+        "date": "2026-01-28"
+      }
+    ]
+  },
+  "error": "",
+  "message": "Availability of All Buildings!!",
+  "success": true
+}
