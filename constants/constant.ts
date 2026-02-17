@@ -68,6 +68,17 @@ export const TAXSET_LIST = [
   },
 ] as const;
 
+export const PAYMENT_METHODS_LIST=[
+  { value: "cash", label: "Cash" },
+  { value: "upi", label: "UPI" },
+  { value: "google-pay", label: "Google Pay" },
+  { value: "credit-card", label: "Credit Card" },
+  { value: "debit-card", label: "Debit Card" },
+  { value: "paypal", label: "PayPal" },
+  { value: "booking-channel", label: "Booking Channel" },
+  { value: "bank-transfer", label: "Bank Transfer" },
+  { value: "other", label: "Other" },
+]
 export const DNR_TYPE_LIST = [
   { value: "DNR APARTMENT EXIT", label: "DNR APARTMENT EXIT" },
   { value: "DNR DIRTY APARTMENT", label: "DNR DIRTY APARTMENT" },
