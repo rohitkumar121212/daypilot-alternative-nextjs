@@ -1,22 +1,18 @@
+import FloatingLabelInput from '@/components/common/FloatingLabelInput'
+import FloatingLabelSelect from '@/components/common/FloatingLabelSelect'
+import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
+
 const CreateCaseTab = () => {
   return (
     <div className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Case Title</label>
-        <input type="text" className="w-full border border-gray-300 rounded px-3 py-2" placeholder="Enter case title" />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-        <select className="w-full border border-gray-300 rounded px-3 py-2">
-          <option>Low</option>
-          <option>Medium</option>
-          <option>High</option>
-        </select>
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-        <textarea className="w-full border border-gray-300 rounded px-3 py-2" rows={4} placeholder="Enter description" />
-      </div>
+      <FloatingLabelInput label="Case Title" type="text" placeholder=" " />
+      <FloatingLabelSelect label="Priority">
+        <option value=""></option>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </FloatingLabelSelect>
+      <FloatingLabelTextarea label="Description" rows={4} />
       <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Create Case</button>
     </div>
   )
