@@ -53,7 +53,7 @@ const BlockForm = ({ formData, handleChange, dayCount }: BlockFormProps) => {
         </select>
       </div>
 
-      <div className="md:col-span-2 lg:col-span-3">
+      <div className="md:col-span-2 lg:col-span-4">
         <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
         <textarea
           value={formData.notes}

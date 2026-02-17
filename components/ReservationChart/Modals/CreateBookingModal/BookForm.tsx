@@ -35,7 +35,7 @@ const BookForm = ({ formData, handleChange, dayCount }: BookFormProps) => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Check-in</label>
         <input
@@ -207,7 +207,7 @@ const BookForm = ({ formData, handleChange, dayCount }: BookFormProps) => {
         />
       </div>
 
-      <div className="md:col-span-2 lg:col-span-3">
+      <div className="md:col-span-2 lg:col-span-4">
         <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
         <textarea
           value={formData.notes}
