@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 
@@ -30,16 +32,11 @@ const FloatingLabelDropdown = ({
   disabled = false
 }: FloatingLabelDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [selectedValue, setSelectedValue] = useState(value)
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 })
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const selectedOption = options.find(opt => opt.value === selectedValue)
-  const hasValue = selectedValue !== ''
-
-  useEffect(() => {
-    setSelectedValue(value)
-  }, [value])
+  const selectedOption = options.find(opt => opt.value === value)
+  const hasValue = value !== ''
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -64,7 +61,6 @@ const FloatingLabelDropdown = ({
   }, [isOpen])
 
   const handleSelect = (optionValue: string) => {
-    setSelectedValue(optionValue)
     onChange?.(optionValue)
     setIsOpen(false)
   }
@@ -93,7 +89,7 @@ const FloatingLabelDropdown = ({
           key={option.value}
           onClick={() => handleSelect(option.value)}
           className={`px-3 py-2 hover:bg-blue-50 cursor-pointer transition-colors ${
-            selectedValue === option.value ? 'bg-blue-100 text-blue-600 font-medium' : 'text-gray-900'
+            value === option.value ? 'bg-blue-100 text-blue-600 font-medium' : 'text-gray-900'
           }`}
         >
           {option.label}
