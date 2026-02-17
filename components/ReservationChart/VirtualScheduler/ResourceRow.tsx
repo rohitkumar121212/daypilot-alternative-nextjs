@@ -49,6 +49,7 @@ const ResourceRow = memo(({
               isSelected={hasSelection && isDateInSelection(date, selection)}
               isDropTarget={isDropTarget}
               availability={availability}
+              isParentRow={resource.type === 'parent'}
               onMouseDown={onCellMouseDown}
               onMouseEnter={onCellMouseEnter}
             />

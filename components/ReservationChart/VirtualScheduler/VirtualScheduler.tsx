@@ -114,7 +114,7 @@ const VirtualScheduler = ({
   }, [resources])
   
   // Virtual scrolling calculations
-  const containerHeight = 600 // Fixed height for virtual container
+  const containerHeight = 600
   const totalHeight = visibleRows.length * rowHeight
   const startIndex = Math.floor(scrollTop / rowHeight)
   const endIndex = Math.min(startIndex + Math.ceil(containerHeight / rowHeight) + 1, visibleRows.length)
@@ -142,6 +142,13 @@ const VirtualScheduler = ({
   // Handle mousedown on a date cell
   const handleCellMouseDown = useCallback((date, resourceId, e) => {
     e.preventDefault()
+    
+    // Find the resource to check if it's a parent
+    const resource = visibleRows.find(r => r.id === resourceId)
+    if (resource?.type === 'parent') {
+      return // Don't allow selection on parent rows
+    }
+    
     mouseDownRef.current = true
     startDateRef.current = date
     startResourceIdRef.current = resourceId
@@ -152,7 +159,7 @@ const VirtualScheduler = ({
       startDate: date,
       endDate: date
     })
-  }, [])
+  }, [visibleRows])
   
   // Handle mouseenter on a date cell
   const handleCellMouseEnter = useCallback((date, resourceId, e) => {

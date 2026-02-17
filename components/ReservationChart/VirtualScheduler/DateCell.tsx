@@ -11,24 +11,29 @@ const DateCell = memo(({
   isSelected = false,
   isDropTarget = false,
   availability = null,
+  isParentRow = false,
   onMouseDown,
   onMouseEnter
 }) => {
   const handleMouseDown = (e) => {
+    if (isParentRow) return // Don't allow interaction on parent rows
     e.preventDefault()
     onMouseDown?.(date, resourceId, e)
   }
   
   const handleMouseEnter = (e) => {
+    if (isParentRow) return // Don't allow interaction on parent rows
     onMouseEnter?.(date, resourceId, e)
   }
   
   return (
     <div
-      className={`border-r border-b border-gray-200 bg-white cursor-crosshair select-none relative flex items-center justify-center ${
+      className={`border-r border-b border-gray-200 bg-white select-none relative flex items-center justify-center ${
+        isParentRow ? 'cursor-default' : 'cursor-crosshair'
+      } ${
         isSelected ? 'bg-blue-100 ring-1 ring-blue-300' : 
         isDropTarget ? 'bg-green-100 ring-2 ring-green-400' :
-        'hover:bg-gray-50'
+        isParentRow ? '' : 'hover:bg-gray-50'
       }`}
       style={{ width: cellWidth, minWidth: cellWidth, height: 60 }}
       data-date={date}

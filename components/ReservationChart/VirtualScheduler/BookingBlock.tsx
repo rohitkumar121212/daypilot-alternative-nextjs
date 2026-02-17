@@ -1,5 +1,7 @@
 import dayjs from 'dayjs'
+import { useState } from 'react'
 import { getDateIndex, daysBetween } from '@/utils/dateUtils'
+import BookingTooltip from './BookingTooltip'
 
 /**
  * BookingBlock - Renders an existing booking as an absolute-positioned block
@@ -22,6 +24,8 @@ const BookingBlock = ({
   isDragging = false,
   dragOffset = { x: 0, y: 0 }
 }) => {
+  const [showTooltip, setShowTooltip] = useState(false)
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 })
   // Subtract 1 day from endDate since checkout date should not be included
   const displayEndDate = dayjs(booking.endDate).subtract(1, 'day').format('YYYY-MM-DD')
   
@@ -87,7 +91,17 @@ const BookingBlock = ({
   const handleContextMenu = (e) => {
     e.preventDefault()
     e.stopPropagation()
+    setShowTooltip(false)
     onBookingRightClick?.(booking, { x: e.clientX, y: e.clientY })
+  }
+  
+  const handleMouseEnter = (e) => {
+    setShowTooltip(true)
+    setTooltipPosition({ x: e.clientX, y: e.clientY })
+  }
+  
+  const handleMouseLeave = () => {
+    setShowTooltip(false)
   }
   
   // Get background color from booking data or use default
@@ -111,34 +125,41 @@ const BookingBlock = ({
   const showOnLeft = bubbleData.is_left === "true" || bubbleData.is_left === true
   
   return (
-    <div
-      className={`absolute top-1 bottom-1 border rounded text-white text-xs flex items-center justify-start font-medium shadow-md z-20 cursor-pointer transition-all ${
-        isDragging 
-          ? 'opacity-75 shadow-lg transform scale-105' 
-          : 'hover:shadow-lg'
-      }`}
-      style={{
-        left: `${left + dragOffset.x}px`,
-        top: `${1 + dragOffset.y}px`,
-        width: `${width}px`,
-        height: '50px',
-        backgroundColor: isDragging ? `${backgroundColor}99` : backgroundColor,
-        borderColor: borderColor,
-        transform: isDragging ? 'rotate(2deg)' : 'none',
-        pointerEvents: isDragging ? 'none' : 'auto'
-      }}
-      title={`${booking.text || `Booking ${booking.id}`}: ${booking.startDate} to ${booking.endDate} (checkout)`}
-      onMouseDown={handleMouseDown}
-      onContextMenu={handleContextMenu}
-    >
-      {shouldShowIcon && showOnLeft && (
-        <img src={bubbleData.Lead_Source} alt="Lead Source" className="w-4 h-4 mx-1" />
+    <>
+      <div
+        className={`absolute top-1 bottom-1 border rounded text-white text-xs flex items-center justify-start font-medium shadow-md z-20 cursor-pointer transition-all ${
+          isDragging 
+            ? 'opacity-75 shadow-lg transform scale-105' 
+            : 'hover:shadow-lg'
+        }`}
+        style={{
+          left: `${left + dragOffset.x}px`,
+          top: `${1 + dragOffset.y}px`,
+          width: `${width}px`,
+          height: '50px',
+          backgroundColor: isDragging ? `${backgroundColor}99` : backgroundColor,
+          borderColor: borderColor,
+          transform: isDragging ? 'rotate(2deg)' : 'none',
+          pointerEvents: isDragging ? 'none' : 'auto'
+        }}
+        onMouseDown={handleMouseDown}
+        onContextMenu={handleContextMenu}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {shouldShowIcon && showOnLeft && (
+          <img src={bubbleData.Lead_Source} alt="Lead Source" className="w-4 h-4 mx-1" />
+        )}
+        <span className="truncate px-2">{booking?.text || `Booking ${booking.id}`}</span>
+        {shouldShowIcon && !showOnLeft && (
+          <img src={bubbleData.Lead_Source} alt="Lead Source" className="w-4 h-4 mx-1" />
+        )}
+      </div>
+      
+      {showTooltip && !isDragging && (
+        <BookingTooltip booking={booking} position={tooltipPosition} />
       )}
-      <span className="truncate px-2">{booking?.text || `Booking ${booking.id}`}</span>
-      {shouldShowIcon && !showOnLeft && (
-        <img src={bubbleData.Lead_Source} alt="Lead Source" className="w-4 h-4 mx-1" />
-      )}
-    </div>
+    </>
   )
 }
 
