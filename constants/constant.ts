@@ -68,6 +68,18 @@ export const TAXSET_LIST = [
   },
 ] as const;
 
+export const SOURCE_LIST_FOR_CREATE_TASK=[
+  { value: "external", label: "External" },
+  { value: "internal", label: "Internal Team" },
+]
+
+export const PRIORITY_LIST_FOR_CREATE_TASK=[
+  { value: "emergency", label: "Emergency/Essential" },
+  { value: "low", label: "Low" },
+  { value: "medium", label: "Medium" },
+  { value: "high", label: "High" },
+]
+
 export const PAYMENT_METHODS_LIST=[
   { value: "cash", label: "Cash" },
   { value: "upi", label: "UPI" },
