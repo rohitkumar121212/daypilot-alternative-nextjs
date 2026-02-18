@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import FloatingInput from '@/components/common/FloatingInput'
+import FloatingDropdown from '@/components/common/FloatingDropdown'
 import FloatingLabelInput from '@/components/common/FloatingLabelInput'
-import FloatingLabelDropdown from '@/components/common/FloatingLabelDropdown'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
 import { SOURCE_LIST_FOR_CREATE_TASK, PRIORITY_LIST_FOR_CREATE_TASK } from '@/constants/constant'
 
@@ -26,6 +26,8 @@ const CreateTaskTab = ({ apartmentName = 'Apartment 101' }: CreateTaskTabProps) 
   })
 
   const handleCreateTask = () => {
+    console.log('=== CREATE TASK CLICKED ===')
+    console.log('formData:', formData)
     const payload = {
       ...formData,
       apartmentName
@@ -56,21 +58,19 @@ const CreateTaskTab = ({ apartmentName = 'Apartment 101' }: CreateTaskTabProps) 
           placeholder="Title - Ex - Leak under the sink"
           required
         />
-        <FloatingLabelDropdown 
+        <FloatingDropdown 
           label="Source" 
           options={SOURCE_LIST_FOR_CREATE_TASK}
-          showEmptyOption={true}
-          emptyOptionLabel="Select source"
           value={formData.source}
           onChange={(value) => setFormData({ ...formData, source: value })}
+          required
         />
-        <FloatingLabelDropdown 
+        <FloatingDropdown 
           label="Priority" 
           options={PRIORITY_LIST_FOR_CREATE_TASK}
-          showEmptyOption={true}
-          emptyOptionLabel="Select priority"
           value={formData.priority}
           onChange={(value) => setFormData({ ...formData, priority: value })}
+          required
         />
         <FloatingLabelInput 
           label="Due Date" 

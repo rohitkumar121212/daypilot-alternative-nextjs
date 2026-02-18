@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import FloatingInput from '@/components/common/FloatingInput'
+import FloatingDropdown from '@/components/common/FloatingDropdown'
 import FloatingLabelInput from '@/components/common/FloatingLabelInput'
-import FloatingLabelDropdown from '@/components/common/FloatingLabelDropdown'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
 import { PAYMENT_METHODS_LIST } from '@/constants/constant'
 
@@ -45,16 +45,12 @@ const AddPaymentTab = ({ acceptedBy = 'John Doe' }: AddPaymentTabProps) => {
           onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
           required
         />
-        <FloatingLabelDropdown 
+        <FloatingDropdown 
           label="Payment Method" 
           options={PAYMENT_METHODS_LIST}
-          showEmptyOption={true}
-          emptyOptionLabel="Select payment method"
           value={formData.paymentMethod}
-          onChange={(value) => {
-            console.log('Payment method changed:', value)
-            setFormData({ ...formData, paymentMethod: value })
-          }}
+          onChange={(value) => setFormData({ ...formData, paymentMethod: value })}
+          required
         />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -73,7 +69,7 @@ const AddPaymentTab = ({ acceptedBy = 'John Doe' }: AddPaymentTabProps) => {
       <FloatingLabelInput 
         label="Receipt" 
         type="file" 
-        placeholder=" " 
+        placeholder="" 
         onChange={handleFileChange}
       />
       <FloatingLabelTextarea 

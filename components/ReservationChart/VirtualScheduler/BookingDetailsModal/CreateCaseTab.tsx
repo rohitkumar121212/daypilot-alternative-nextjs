@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import FloatingInput from '@/components/common/FloatingInput'
+import FloatingDropdown from '@/components/common/FloatingDropdown'
 import FloatingLabelInput from '@/components/common/FloatingLabelInput'
-import FloatingLabelDropdown from '@/components/common/FloatingLabelDropdown'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
 import { REASON_LIST_FOR_CASE_TAB, SUB_REASON_LIST_FOR_CASE_TAB, ORIGIN_LIST_FOR_CASE_TAB, PRIORITY_LIST_FOR_CREATE_TASK, ASSIGN_CASE_TO_LIST } from '@/constants/constant'
 
@@ -57,50 +57,45 @@ const CreateCaseTab = ({ apartmentName = 'Apartment 101' }: CreateCaseTabProps) 
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FloatingLabelDropdown 
+        <FloatingDropdown 
           label="Reason" 
           options={REASON_LIST_FOR_CASE_TAB}
-          showEmptyOption={true}
-          emptyOptionLabel="Select reason"
           value={formData.reason}
           onChange={(value) => setFormData({ ...formData, reason: value })}
+          required
         />
-        <FloatingLabelDropdown 
+        <FloatingDropdown 
           label="Sub Reason" 
           options={SUB_REASON_LIST_FOR_CASE_TAB}
-          showEmptyOption={true}
-          emptyOptionLabel="Select sub reason"
           value={formData.subReason}
           onChange={(value) => setFormData({ ...formData, subReason: value })}
+          required
         />
-        <FloatingLabelDropdown 
+        <FloatingDropdown 
           label="Origin" 
           options={ORIGIN_LIST_FOR_CASE_TAB}
-          showEmptyOption={true}
-          emptyOptionLabel="Select origin"
           value={formData.origin}
           onChange={(value) => setFormData({ ...formData, origin: value })}
+          required
         />
-        <FloatingLabelDropdown 
+        <FloatingDropdown 
           label="Priority" 
           options={PRIORITY_LIST_FOR_CREATE_TASK}
-          showEmptyOption={true}
-          emptyOptionLabel="Select priority"
           value={formData.priority}
           onChange={(value) => setFormData({ ...formData, priority: value })}
+          required
         />
-        <FloatingLabelDropdown 
+        <FloatingDropdown 
           label="Assign Case To" 
           options={ASSIGN_CASE_TO_LIST}
-          showEmptyOption={true}
-          emptyOptionLabel="Select assignee"
           value={formData.assignTo}
           onChange={(value) => setFormData({ ...formData, assignTo: value })}
+          required
         />
         <FloatingLabelInput 
           label="Attach Image" 
           type="file" 
-          placeholder=" " 
+          placeholder="" 
           onChange={handleImageChange}
         />
       </div>
