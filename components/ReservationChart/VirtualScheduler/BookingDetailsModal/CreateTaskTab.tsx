@@ -54,7 +54,7 @@ const CreateTaskTab = ({ apartmentName = 'Apartment 101' }: CreateTaskTabProps) 
           label="Task Title" 
           value={formData.taskTitle}
           onChange={(e) => setFormData({ ...formData, taskTitle: e.target.value })}
-          placeholder="Title - Ex - Leak under the sink"
+          // placeholder="Title - Ex - Leak under the sink"
           required
         />
         <FloatingDropdown 

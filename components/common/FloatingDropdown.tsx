@@ -35,7 +35,7 @@ const FloatingDropdown = ({
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
         disabled={disabled}
-        className={`peer w-full p-2 px-4 border rounded-md outline-none transition-all appearance-none
+        className={`peer w-full px-4 p-2 border rounded-md outline-none transition-all appearance-none
         ${disabled ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'}
         ${
           error
