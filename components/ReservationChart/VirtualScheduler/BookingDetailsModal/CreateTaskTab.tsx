@@ -24,9 +24,21 @@ const CreateTaskTab = ({ apartmentName = 'Apartment 101' }: CreateTaskTabProps) 
     description: ''
   })
 
+  const [errors, setErrors] = useState<Record<string, string>>({})
+
   const handleCreateTask = () => {
-    console.log('=== CREATE TASK CLICKED ===')
-    console.log('formData:', formData)
+    const newErrors: Record<string, string> = {}
+
+    if (!formData.taskTitle.trim()) newErrors.taskTitle = 'Task title is required'
+    if (!formData.source) newErrors.source = 'Source is required'
+    if (!formData.priority) newErrors.priority = 'Priority is required'
+    if (!formData.dueDate) newErrors.dueDate = 'Due date is required'
+    if (!formData.description.trim()) newErrors.description = 'Description is required'
+
+    setErrors(newErrors)
+
+    if (Object.keys(newErrors).length > 0) return
+
     const payload = {
       ...formData,
       apartmentName
@@ -43,7 +55,7 @@ const CreateTaskTab = ({ apartmentName = 'Apartment 101' }: CreateTaskTabProps) 
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <FloatingInput 
           label="Apartment Name" 
           value={apartmentName} 
@@ -53,35 +65,51 @@ const CreateTaskTab = ({ apartmentName = 'Apartment 101' }: CreateTaskTabProps) 
         <FloatingInput 
           label="Task Title" 
           value={formData.taskTitle}
-          onChange={(e) => setFormData({ ...formData, taskTitle: e.target.value })}
-          // placeholder="Title - Ex - Leak under the sink"
+          onChange={(e) => {
+            setFormData({ ...formData, taskTitle: e.target.value })
+            if (errors.taskTitle) setErrors({ ...errors, taskTitle: '' })
+          }}
+          error={errors.taskTitle}
           required
         />
         <FloatingDropdown 
           label="Source" 
           options={SOURCE_LIST_FOR_CREATE_TASK}
           value={formData.source}
-          onChange={(value) => setFormData({ ...formData, source: value })}
+          onChange={(value) => {
+            setFormData({ ...formData, source: value })
+            if (errors.source) setErrors({ ...errors, source: '' })
+          }}
+          error={errors.source}
           required
         />
         <FloatingDropdown 
           label="Priority" 
           options={PRIORITY_LIST_FOR_CREATE_TASK}
           value={formData.priority}
-          onChange={(value) => setFormData({ ...formData, priority: value })}
+          onChange={(value) => {
+            setFormData({ ...formData, priority: value })
+            if (errors.priority) setErrors({ ...errors, priority: '' })
+          }}
+          error={errors.priority}
           required
         />
         <FloatingInput 
           label="Due Date" 
           type="date" 
           value={formData.dueDate}
-          onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
+          onChange={(e) => {
+            setFormData({ ...formData, dueDate: e.target.value })
+            if (errors.dueDate) setErrors({ ...errors, dueDate: '' })
+          }}
+          error={errors.dueDate}
+          required
         />
-        <FloatingInput 
+        {/* <FloatingInput 
           label="Assigned To" 
           value={formData.assignedTo}
           onChange={(e) => setFormData({ ...formData, assignedTo: e.target.value })}
-        />
+        /> */}
         <FloatingInput 
           label="Source Name" 
           value={formData.sourceName}
@@ -110,7 +138,11 @@ const CreateTaskTab = ({ apartmentName = 'Apartment 101' }: CreateTaskTabProps) 
         rows={3} 
         value={formData.description}
         required={true}
-        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+        onChange={(e) => {
+          setFormData({ ...formData, description: e.target.value })
+          if (errors.description) setErrors({ ...errors, description: '' })
+        }}
+        error={errors.description}
       />
       <div className="flex gap-2">
         <button 

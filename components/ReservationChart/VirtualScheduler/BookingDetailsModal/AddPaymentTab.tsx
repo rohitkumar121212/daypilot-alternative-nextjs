@@ -51,8 +51,6 @@ const AddPaymentTab = ({ acceptedBy = 'John Doe' }: AddPaymentTabProps) => {
           onChange={(value) => setFormData({ ...formData, paymentMethod: value })}
           required
         />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FloatingInput 
           label="Reference No." 
           value={formData.referenceNo}
@@ -64,19 +62,23 @@ const AddPaymentTab = ({ acceptedBy = 'John Doe' }: AddPaymentTabProps) => {
           onChange={() => {}}
           readOnly 
         />
-      </div>
-      <FloatingInput 
+        <FloatingInput 
         label="Receipt" 
         type="file" 
         onChange={handleFileChange}
       />
-      <FloatingLabelTextarea 
+      
+      </div>
+      <div className="grid grid-cols-1 gap-4">
+        <FloatingLabelTextarea 
         label="Notes" 
         rows={3} 
         required={true}
         value={formData.notes}
         onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
       />
+      </div>
+      
       <div className="flex gap-2">
         <button 
           onClick={handleSubmit}
