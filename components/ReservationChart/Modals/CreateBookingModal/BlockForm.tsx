@@ -6,6 +6,7 @@ interface BlockFormProps {
   formData: any
   handleChange: (field: string, value: string) => void
   dayCount: number
+  setFormData: (data: any) => void
 }
 
 const BlockForm = ({ formData, handleChange, dayCount, setFormData }: BlockFormProps) => {

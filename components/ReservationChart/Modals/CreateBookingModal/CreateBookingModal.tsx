@@ -144,7 +144,7 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
             <BookForm formData={formData} handleChange={handleChange} dayCount={dayCount} />
           )}
           {formData.bookingType === 'hold' && (
-            <HoldForm formData={formData} handleChange={handleChange} dayCount={dayCount} />
+            <HoldForm formData={formData} handleChange={handleChange} dayCount={dayCount} setFormData={setFormData}/>
           )}
           {formData.bookingType === 'block' && (
             <BlockForm formData={formData} handleChange={handleChange} dayCount={dayCount} setFormData={setFormData}/>
