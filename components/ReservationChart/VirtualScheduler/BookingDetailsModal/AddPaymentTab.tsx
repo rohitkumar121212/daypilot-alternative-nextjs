@@ -19,7 +19,20 @@ const AddPaymentTab = ({ acceptedBy = 'John Doe' }: AddPaymentTabProps) => {
     notes: ''
   })
 
+  const [errors, setErrors] = useState<Record<string, string>>({})
+
   const handleSubmit = async () => {
+    const newErrors: Record<string, string> = {}
+
+    if (!formData.amount.trim()) newErrors.amount = 'Amount is required'
+    else if (parseFloat(formData.amount) < 0) newErrors.amount = 'Amount cannot be negative'
+    if (!formData.paymentMethod) newErrors.paymentMethod = 'Payment method is required'
+    if (!acceptedBy.trim()) newErrors.acceptedBy = 'Accepted by is required'
+
+    setErrors(newErrors)
+
+    if (Object.keys(newErrors).length > 0) return
+
     const payload = {
       ...formData,
       acceptedBy
@@ -41,14 +54,22 @@ const AddPaymentTab = ({ acceptedBy = 'John Doe' }: AddPaymentTabProps) => {
           label="Amount" 
           type="number"
           value={formData.amount}
-          onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+          onChange={(e) => {
+            setFormData({ ...formData, amount: e.target.value })
+            if (errors.amount) setErrors({ ...errors, amount: '' })
+          }}
+          error={errors.amount}
           required
         />
         <FloatingDropdown 
           label="Payment Method" 
           options={PAYMENT_METHODS_LIST}
           value={formData.paymentMethod}
-          onChange={(value) => setFormData({ ...formData, paymentMethod: value })}
+          onChange={(value) => {
+            setFormData({ ...formData, paymentMethod: value })
+            if (errors.paymentMethod) setErrors({ ...errors, paymentMethod: '' })
+          }}
+          error={errors.paymentMethod}
           required
         />
         <FloatingInput 
@@ -60,7 +81,9 @@ const AddPaymentTab = ({ acceptedBy = 'John Doe' }: AddPaymentTabProps) => {
           label="Accepted By" 
           value={acceptedBy} 
           onChange={() => {}}
+          error={errors.acceptedBy}
           readOnly 
+          required
         />
         <FloatingInput 
         label="Receipt" 
@@ -73,7 +96,6 @@ const AddPaymentTab = ({ acceptedBy = 'John Doe' }: AddPaymentTabProps) => {
         <FloatingLabelTextarea 
         label="Notes" 
         rows={3} 
-        required={true}
         value={formData.notes}
         onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
       />
