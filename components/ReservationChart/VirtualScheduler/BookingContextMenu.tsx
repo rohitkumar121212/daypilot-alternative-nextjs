@@ -2,13 +2,14 @@ const BookingContextMenu = ({ isOpen, position, onClose, onAction }) => {
   if (!isOpen) return null
 
   const menuItems = [
+    { id: 'logs', label: 'View Logs', icon: '📜' },
     { id: 'view', label: 'View Details', icon: '👁️' },
     { id: 'split', label: 'Split Booking', icon: '✂️' },
-    { id: 'cancel', label: 'Cancel', icon: '❌' },
-    { id: 'checkin', label: 'Check-in', icon: '✅' },
-    { id: 'checkout', label: 'Check-out', icon: '🚪' },
-    { id: 'edit', label: 'Edit', icon: '✏️' },
-    { id: 'delete', label: 'Delete', icon: '🗑️' }
+    // { id: 'cancel', label: 'Cancel', icon: '❌' },
+    { id: 'skip', label: 'Skip Check-in', icon: '⏭️' },
+    { id: 'new-case', label: 'Create New Case', icon: '🆘' },
+    { id: 'new-task', label: 'Create New Maintenance Task', icon: '📌' },
+    { id: 'cancel-check-in', label: 'Cancel Check-in', icon: '🚫' }
   ]
 
   return (

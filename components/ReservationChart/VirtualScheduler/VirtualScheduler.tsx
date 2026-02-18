@@ -60,6 +60,7 @@ const VirtualScheduler = ({
   // Booking details state
   const [selectedBooking, setSelectedBooking] = useState(null)
   const [detailsModalOpen, setDetailsModalOpen] = useState(false)
+  const [detailsModalInitialTab, setDetailsModalInitialTab] = useState('details')
   
   // Context menu state
   const [contextMenu, setContextMenu] = useState({ isOpen: false, position: { x: 0, y: 0 }, booking: null })
@@ -230,6 +231,7 @@ const VirtualScheduler = ({
   const handleDetailsModalClose = useCallback(() => {
     setDetailsModalOpen(false)
     setSelectedBooking(null)
+    setDetailsModalInitialTab('details')
   }, [])
   
   // Handle booking right-click
@@ -248,6 +250,14 @@ const VirtualScheduler = ({
     } else if (action === 'split') {
       setBookingToSplit(booking)
       setSplitModalOpen(true)
+    } else if (action === 'new-task') {
+      setSelectedBooking(booking)
+      setDetailsModalOpen(true)
+      setDetailsModalInitialTab('task')
+    } else if (action === 'new-case') {
+      setSelectedBooking(booking)
+      setDetailsModalOpen(true)
+      setDetailsModalInitialTab('case')
     } else {
       console.log(`Action: ${action} on booking:`, booking)
     }
@@ -569,6 +579,7 @@ const VirtualScheduler = ({
         isOpen={detailsModalOpen}
         booking={selectedBooking}
         onClose={handleDetailsModalClose}
+        initialTab={detailsModalInitialTab}
       />
       
       {/* Context Menu */}

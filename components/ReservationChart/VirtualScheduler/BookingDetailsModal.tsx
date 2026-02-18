@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Tabs from '@/components/common/Tabs'
 import BookingDetailsTab from './BookingDetailsModal/BookingDetailsTab'
 import CreateCaseTab from './BookingDetailsModal/CreateCaseTab'
@@ -6,8 +6,14 @@ import CreateTaskTab from './BookingDetailsModal/CreateTaskTab'
 import AddPaymentTab from './BookingDetailsModal/AddPaymentTab'
 import SharePaymentLinkTab from './BookingDetailsModal/SharePaymentLinkTab'
 
-const BookingDetailsModal = ({ isOpen, booking, onClose }) => {
-  const [activeTab, setActiveTab] = useState('details')
+const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details' }) => {
+  const [activeTab, setActiveTab] = useState(initialTab)
+  
+  useEffect(() => {
+    if (isOpen) {
+      setActiveTab(initialTab)
+    }
+  }, [isOpen, initialTab])
   
   if (!isOpen || !booking) return null
 
