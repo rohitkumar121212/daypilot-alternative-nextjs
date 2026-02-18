@@ -72,6 +72,7 @@ const SharePaymentLinkTab = ({
       <FloatingLabelTextarea 
         label="Notes" 
         rows={3} 
+        required={true}
         value={formData.notes}
         onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
       />

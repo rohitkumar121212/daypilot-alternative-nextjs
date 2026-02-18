@@ -109,6 +109,7 @@ const CreateTaskTab = ({ apartmentName = 'Apartment 101' }: CreateTaskTabProps) 
         label="Description" 
         rows={3} 
         value={formData.description}
+        required={true}
         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
       />
       <div className="flex gap-2">

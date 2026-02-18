@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
-import FloatingLabelInput from '@/components/common/FloatingLabelInput'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
 import { REASON_LIST_FOR_CASE_TAB, SUB_REASON_LIST_FOR_CASE_TAB, ORIGIN_LIST_FOR_CASE_TAB, PRIORITY_LIST_FOR_CREATE_TASK, ASSIGN_CASE_TO_LIST } from '@/constants/constant'
 
@@ -24,7 +23,23 @@ const CreateCaseTab = ({ apartmentName = 'Apartment 101' }: CreateCaseTabProps) 
     description: ''
   })
 
+  const [errors, setErrors] = useState<Record<string, string>>({})
+
   const handleCreateCase = () => {
+    const newErrors: Record<string, string> = {}
+
+    if (!formData.caseTitle.trim()) newErrors.caseTitle = 'Case title is required'
+    if (!formData.reason) newErrors.reason = 'Reason is required'
+    if (!formData.subReason) newErrors.subReason = 'Sub reason is required'
+    if (!formData.origin) newErrors.origin = 'Origin is required'
+    if (!formData.priority) newErrors.priority = 'Priority is required'
+    if (!formData.assignTo) newErrors.assignTo = 'Assign case to is required'
+    if (!formData.description.trim()) newErrors.description = 'Description is required'
+
+    setErrors(newErrors)
+
+    if (Object.keys(newErrors).length > 0) return
+
     const payload = {
       ...formData,
       apartmentName
@@ -51,7 +66,11 @@ const CreateCaseTab = ({ apartmentName = 'Apartment 101' }: CreateCaseTabProps) 
         <FloatingInput
           label="Case Title"
           value={formData.caseTitle}
-          onChange={(e) => setFormData({ ...formData, caseTitle: e.target.value })}
+          onChange={(e) => {
+            setFormData({ ...formData, caseTitle: e.target.value })
+            if (errors.caseTitle) setErrors({ ...errors, caseTitle: '' })
+          }}
+          error={errors.caseTitle}
           required
         />
       </div>
@@ -61,35 +80,55 @@ const CreateCaseTab = ({ apartmentName = 'Apartment 101' }: CreateCaseTabProps) 
           label="Reason" 
           options={REASON_LIST_FOR_CASE_TAB}
           value={formData.reason}
-          onChange={(value) => setFormData({ ...formData, reason: value })}
+          onChange={(value) => {
+            setFormData({ ...formData, reason: value })
+            if (errors.reason) setErrors({ ...errors, reason: '' })
+          }}
+          error={errors.reason}
           required
         />
         <FloatingDropdown 
           label="Sub Reason" 
           options={SUB_REASON_LIST_FOR_CASE_TAB}
           value={formData.subReason}
-          onChange={(value) => setFormData({ ...formData, subReason: value })}
+          onChange={(value) => {
+            setFormData({ ...formData, subReason: value })
+            if (errors.subReason) setErrors({ ...errors, subReason: '' })
+          }}
+          error={errors.subReason}
           required
         />
         <FloatingDropdown 
           label="Origin" 
           options={ORIGIN_LIST_FOR_CASE_TAB}
           value={formData.origin}
-          onChange={(value) => setFormData({ ...formData, origin: value })}
+          onChange={(value) => {
+            setFormData({ ...formData, origin: value })
+            if (errors.origin) setErrors({ ...errors, origin: '' })
+          }}
+          error={errors.origin}
           required
         />
         <FloatingDropdown 
           label="Priority" 
           options={PRIORITY_LIST_FOR_CREATE_TASK}
           value={formData.priority}
-          onChange={(value) => setFormData({ ...formData, priority: value })}
+          onChange={(value) => {
+            setFormData({ ...formData, priority: value })
+            if (errors.priority) setErrors({ ...errors, priority: '' })
+          }}
+          error={errors.priority}
           required
         />
         <FloatingDropdown 
           label="Assign Case To" 
           options={ASSIGN_CASE_TO_LIST}
           value={formData.assignTo}
-          onChange={(value) => setFormData({ ...formData, assignTo: value })}
+          onChange={(value) => {
+            setFormData({ ...formData, assignTo: value })
+            if (errors.assignTo) setErrors({ ...errors, assignTo: '' })
+          }}
+          error={errors.assignTo}
           required
         />
         <FloatingInput 
@@ -99,7 +138,7 @@ const CreateCaseTab = ({ apartmentName = 'Apartment 101' }: CreateCaseTabProps) 
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Issue Type *</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Issue Type <span className="text-red-500">*</span></label>
         <div className="space-y-2">
           <label className="flex items-center">
             <input
@@ -129,7 +168,12 @@ const CreateCaseTab = ({ apartmentName = 'Apartment 101' }: CreateCaseTabProps) 
         label="Description" 
         rows={3} 
         value={formData.description}
-        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+        required={true}
+        onChange={(e) => {
+          setFormData({ ...formData, description: e.target.value })
+          if (errors.description) setErrors({ ...errors, description: '' })
+        }}
+        error={errors.description}
       />
       <div className="flex gap-2">
         <button 

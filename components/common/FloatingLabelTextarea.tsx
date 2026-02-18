@@ -11,7 +11,7 @@ interface FloatingLabelTextareaProps
 const FloatingLabelTextarea = forwardRef<
   HTMLTextAreaElement,
   FloatingLabelTextareaProps
->(({ label, error, className = '', value, onFocus, onBlur, ...props }, ref) => {
+>(({ label, error, required = false, className = '', value, onFocus, onBlur, ...props }, ref) => {
   const [isFocused, setIsFocused] = useState(false)
 
   const hasValue = value !== undefined && value !== ''
@@ -58,7 +58,7 @@ const FloatingLabelTextarea = forwardRef<
               : 'text-gray-600'
         }`}
       >
-        {label}
+        {label} {required && <span className="text-red-500">*</span>}
       </label>
 
       {/* Error */}

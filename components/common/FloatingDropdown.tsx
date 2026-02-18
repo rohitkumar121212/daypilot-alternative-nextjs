@@ -71,7 +71,7 @@ const FloatingDropdown = ({
       </label>
 
       {/* Arrow */}
-      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+      <div className="absolute right-3 top-3 pointer-events-none">
         <svg
           className="w-4 h-4 text-gray-400"
           fill="none"
