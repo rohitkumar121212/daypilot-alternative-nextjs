@@ -1,49 +1,77 @@
-import { InputHTMLAttributes, forwardRef } from 'react'
+'use client'
 
-interface FloatingLabelInputWithPrefixProps extends InputHTMLAttributes<HTMLInputElement> {
+import { useState } from 'react'
+
+interface FloatingInputWithPrefixProps {
   label: string
-  prefix?: string
+  prefix: string
+  value?: string
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   error?: string
+  required?: boolean
+  type?: string
+  readOnly?: boolean
 }
 
-const FloatingLabelInputWithPrefix = forwardRef<HTMLInputElement, FloatingLabelInputWithPrefixProps>(
-  ({ label, prefix, error, className = '', ...props }, ref) => {
-    const hasValue = props.value !== undefined && props.value !== ''
-    const isDateTimeInput = props.type === 'date' || props.type === 'time' || props.type === 'datetime-local'
-    const isFileInput = props.type === 'file'
+const FloatingInputWithPrefix = ({
+  label,
+  prefix,
+  value = '',
+  onChange,
+  error,
+  required = false,
+  type = "text",
+  readOnly = false
+}: FloatingInputWithPrefixProps) => {
+  const [isFocused, setIsFocused] = useState(false)
 
-    return (
-      <div className={`relative ${className}`}>
-        <div className="relative">
-          {prefix && (
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 pointer-events-none z-10">
-              {prefix}
-            </span>
-          )}
-          <input
-            ref={ref}
-            {...props}
-            placeholder=" "
-            className={`peer w-full ${prefix ? 'pl-8' : 'pl-3'} pr-3 pt-5 pb-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all ${
-              error ? 'border-red-500' : 'border-gray-300'
-            } ${props.readOnly ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'}`}
-          />
-        </div>
-        <label
-          className={`absolute ${prefix ? 'left-8' : 'left-3'} transition-all pointer-events-none
-            peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400
-            peer-focus:top-1.5 peer-focus:text-xs peer-focus:text-blue-600
-            ${hasValue || isDateTimeInput || isFileInput ? 'top-1.5 text-xs text-gray-600' : 'top-3.5 text-base text-gray-400'}
-          `}
-        >
-          {label}
-        </label>
-        {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
-      </div>
-    )
-  }
-)
+  const hasValue = value && value.length > 0
+  const active = isFocused || hasValue
+  const showPrefix = isFocused || hasValue
 
-FloatingLabelInputWithPrefix.displayName = 'FloatingLabelInputWithPrefix'
+  return (
+    <div className="relative w-full">
+      {showPrefix && (
+        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 pointer-events-none z-10">
+          {prefix}
+        </span>
+      )}
+      <input
+        type={type}
+        value={value}
+        onChange={onChange}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        readOnly={readOnly}
+        className={`peer w-full ${showPrefix ? 'pl-8' : 'pl-4'} p-2 border rounded-md outline-none transition-all
+          ${readOnly ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'}
+          ${
+            error
+              ? "border-red-500 focus:border-red-500"
+              : "border-gray-300 focus:border-blue-500"
+          }`}
+      />
 
-export default FloatingLabelInputWithPrefix
+      <label
+        className={`absolute ${showPrefix ? 'left-8' : 'left-3'} px-1 bg-white text-sm transition-all pointer-events-none
+          ${
+            active
+              ? "-top-2 text-xs"
+              : "top-3 text-sm text-gray-500"
+          }
+          ${error ? "text-red-500" : isFocused ? "text-blue-600" : "text-gray-600"}
+        `}
+      >
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
+
+      {error && (
+        <p className="mt-1 text-sm text-red-500">
+          {error}
+        </p>
+      )}
+    </div>
+  )
+}
+
+export default FloatingInputWithPrefix

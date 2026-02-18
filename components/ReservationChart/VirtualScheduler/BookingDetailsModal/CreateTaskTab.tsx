@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
-import FloatingLabelInput from '@/components/common/FloatingLabelInput'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
 import { SOURCE_LIST_FOR_CREATE_TASK, PRIORITY_LIST_FOR_CREATE_TASK } from '@/constants/constant'
 
@@ -72,10 +71,9 @@ const CreateTaskTab = ({ apartmentName = 'Apartment 101' }: CreateTaskTabProps) 
           onChange={(value) => setFormData({ ...formData, priority: value })}
           required
         />
-        <FloatingLabelInput 
+        <FloatingInput 
           label="Due Date" 
           type="date" 
-          placeholder=" " 
           value={formData.dueDate}
           onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
         />
@@ -101,10 +99,9 @@ const CreateTaskTab = ({ apartmentName = 'Apartment 101' }: CreateTaskTabProps) 
           value={formData.sourcePhone}
           onChange={(e) => setFormData({ ...formData, sourcePhone: e.target.value })}
         />
-        <FloatingLabelInput 
+        <FloatingInput 
           label="Add Image" 
           type="file" 
-          placeholder=" " 
           onChange={handleImageChange}
         />
       </div>

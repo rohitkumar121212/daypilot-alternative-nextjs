@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 interface FloatingInputProps {
   label: string
-  value: string
+  value?: string
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   error?: string
   required?: boolean
@@ -13,7 +13,7 @@ interface FloatingInputProps {
 
 export function FloatingInput({
   label,
-  value,
+  value = '',
   onChange,
   error,
   required = false,
@@ -24,19 +24,19 @@ export function FloatingInput({
   const [isFocused, setIsFocused] = useState(false)
 
   const hasValue = value && value.length > 0
-  const active = isFocused || hasValue
+  const active = isFocused || hasValue || type === 'file' || type === 'date' || type === 'time' || type === 'datetime-local'
 
   return (
     <div className="relative w-full">
       <input
         type={type}
-        value={value}
+        value={type === 'file' ? undefined : value}
         onChange={onChange}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         readOnly={readOnly}
         placeholder={placeholder}
-        className={`peer w-full p-2 px-3 border rounded-md outline-none transition-all
+        className={`peer w-full p-2 px-4 border rounded-md outline-none transition-all
           ${readOnly ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'}
           ${
             error

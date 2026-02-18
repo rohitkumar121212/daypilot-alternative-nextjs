@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
-import FloatingLabelInput from '@/components/common/FloatingLabelInput'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
 import { PAYMENT_METHODS_LIST } from '@/constants/constant'
 
@@ -66,10 +65,9 @@ const AddPaymentTab = ({ acceptedBy = 'John Doe' }: AddPaymentTabProps) => {
           readOnly 
         />
       </div>
-      <FloatingLabelInput 
+      <FloatingInput 
         label="Receipt" 
         type="file" 
-        placeholder="" 
         onChange={handleFileChange}
       />
       <FloatingLabelTextarea 

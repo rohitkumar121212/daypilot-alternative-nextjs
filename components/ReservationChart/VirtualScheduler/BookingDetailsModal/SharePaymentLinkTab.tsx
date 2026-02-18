@@ -2,8 +2,7 @@
 
 import { useState } from 'react'
 import FloatingInput from '@/components/common/FloatingInput'
-import FloatingLabelInput from '@/components/common/FloatingLabelInput'
-import FloatingLabelInputWithPrefix from '@/components/common/FloatingLabelInputWithPrefix'
+import FloatingInputWithPrefix from '@/components/common/FloatingLabelInputWithPrefix'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
 
 interface SharePaymentLinkTabProps {
@@ -54,13 +53,13 @@ const SharePaymentLinkTab = ({
           onChange={() => {}}
           readOnly 
         />
-        <FloatingLabelInputWithPrefix 
+        <FloatingInputWithPrefix 
           label="Payment Amount" 
           prefix={CURRENCY}
           type="number" 
-          placeholder=" " 
           value={formData.paymentAmount}
           onChange={(e) => setFormData({ ...formData, paymentAmount: e.target.value })}
+          required
         />
       </div>
       <FloatingInput 

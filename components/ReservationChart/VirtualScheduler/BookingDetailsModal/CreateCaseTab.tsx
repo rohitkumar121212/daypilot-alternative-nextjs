@@ -92,10 +92,9 @@ const CreateCaseTab = ({ apartmentName = 'Apartment 101' }: CreateCaseTabProps) 
           onChange={(value) => setFormData({ ...formData, assignTo: value })}
           required
         />
-        <FloatingLabelInput 
+        <FloatingInput 
           label="Attach Image" 
           type="file" 
-          placeholder="" 
           onChange={handleImageChange}
         />
       </div>
