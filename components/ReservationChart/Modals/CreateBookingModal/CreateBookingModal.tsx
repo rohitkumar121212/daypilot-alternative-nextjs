@@ -35,8 +35,8 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
     enquiryAppId: '',
     holdBookingTill: '',
     status: '',
-    notes: '',
-    bookingType: 'book'
+    dnrNotes: '',
+    bookingType: 'block'
   })
   
   const isEditing = !!booking
@@ -64,7 +64,7 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
         enquiryAppId: booking.enquiryAppId || '',
         holdBookingTill: booking.holdBookingTill || '',
         status: booking.status || '',
-        notes: booking.notes || '',
+        dnrNotes: booking.dnrNotes || '',
         bookingType: booking.bookingType || 'book'
       })
     } else if (isOpen) {
@@ -88,7 +88,7 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
         enquiryAppId: '',
         holdBookingTill: '',
         status: '',
-        notes: '',
+        dnrNotes: '',
         bookingType: 'book'
       })
     }
@@ -147,7 +147,7 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
             <HoldForm formData={formData} handleChange={handleChange} dayCount={dayCount} />
           )}
           {formData.bookingType === 'block' && (
-            <BlockForm formData={formData} handleChange={handleChange} dayCount={dayCount} />
+            <BlockForm formData={formData} handleChange={handleChange} dayCount={dayCount} setFormData={setFormData}/>
           )}
 
           {/* Booking Type Section - At Top */}

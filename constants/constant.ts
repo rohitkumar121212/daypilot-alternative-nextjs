@@ -105,7 +105,7 @@ export const DNR_TYPE_LIST = [
   { value: "DNR SERVICE RECOVERY", label: "DNR SERVICE RECOVERY" },
   { value: "DNR VIEWING APARTMENT", label: "DNR VIEWING APARTMENT" },
   { value: "DNR PRE ONBOARDING", label: "DNR PRE ONBOARDING" },
-] as const;
+];
 
 
 export const NATIONALITY_LIST = [
