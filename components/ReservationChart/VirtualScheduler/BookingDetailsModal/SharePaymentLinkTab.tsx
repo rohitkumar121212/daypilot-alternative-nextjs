@@ -25,7 +25,20 @@ const SharePaymentLinkTab = ({
     notes: ''
   })
 
+  const [errors, setErrors] = useState<Record<string, string>>({})
+
   const handleSendLink = () => {
+    const newErrors: Record<string, string> = {}
+
+    if (!formData.paymentAmount.trim()) newErrors.paymentAmount = 'Payment amount is required'
+    else if (parseFloat(formData.paymentAmount) <= 0) newErrors.paymentAmount = 'Payment amount must be greater than 0'
+    if (!formData.email.trim()) newErrors.email = 'Email is required'
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Invalid email format'
+
+    setErrors(newErrors)
+
+    if (Object.keys(newErrors).length > 0) return
+
     console.log('Send payment link:', formData)
     // TODO: Call API
   }
@@ -58,7 +71,11 @@ const SharePaymentLinkTab = ({
           prefix={CURRENCY}
           type="number" 
           value={formData.paymentAmount}
-          onChange={(e) => setFormData({ ...formData, paymentAmount: e.target.value })}
+          onChange={(e) => {
+            setFormData({ ...formData, paymentAmount: e.target.value })
+            if (errors.paymentAmount) setErrors({ ...errors, paymentAmount: '' })
+          }}
+          error={errors.paymentAmount}
           required
         />
       </div>
@@ -66,13 +83,16 @@ const SharePaymentLinkTab = ({
         label="Email" 
         type="email"
         value={formData.email}
-        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+        onChange={(e) => {
+          setFormData({ ...formData, email: e.target.value })
+          if (errors.email) setErrors({ ...errors, email: '' })
+        }}
+        error={errors.email}
         required
       />
       <FloatingLabelTextarea 
         label="Notes" 
         rows={3} 
-        required={true}
         value={formData.notes}
         onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
       />
