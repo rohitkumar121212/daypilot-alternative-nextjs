@@ -141,7 +141,7 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
 
           {/* Dynamic Form Based on Booking Type */}
           {formData.bookingType === 'book' && (
-            <BookForm formData={formData} handleChange={handleChange} dayCount={dayCount} />
+            <BookForm formData={formData} handleChange={handleChange} dayCount={dayCount} setFormData={setFormData}/>
           )}
           {formData.bookingType === 'hold' && (
             <HoldForm formData={formData} handleChange={handleChange} dayCount={dayCount} setFormData={setFormData}/>

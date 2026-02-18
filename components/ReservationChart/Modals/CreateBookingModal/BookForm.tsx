@@ -1,7 +1,10 @@
 import React from 'react'
 import { TITLES, ACCOUNT_LIST, TAXSET_LIST, NATIONALITY_LIST } from '@/constants/constant'
 import guestsData from '@/mocks/data/guests-data.json'
-import AutoSuggestionInput from '@/components/common/AutoSuggestionInput'
+import FloatingInput from '@/components/common/FloatingInput'
+import FloatingDropdown from '@/components/common/FloatingDropdown'
+import FloatingAutocomplete from '@/components/common/FloatingAutocomplete'
+import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
 
 interface BookFormProps {
   formData: any
@@ -36,185 +39,131 @@ const BookForm = ({ formData, handleChange, dayCount }: BookFormProps) => {
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Check-in</label>
-        <input
-          type="date"
-          value={formData.checkIn}
-          onChange={(e) => handleChange('checkIn', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
+      <FloatingInput
+        label="Check-in"
+        type="date"
+        value={formData.checkIn}
+        onChange={(e) => handleChange('checkIn', e.target.value)}
+      />
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Check-out</label>
-        <input
-          type="date"
-          value={formData.checkOut}
-          onChange={(e) => handleChange('checkOut', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
+      <FloatingInput
+        label="Check-out"
+        type="date"
+        value={formData.checkOut}
+        onChange={(e) => handleChange('checkOut', e.target.value)}
+      />
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Number of Days</label>
-        <input
-          type="number"
-          value={dayCount}
-          readOnly
-          className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50"
-        />
-      </div>
+      <FloatingInput
+        label="Duration"
+        type="text"
+        value={`${dayCount} ${dayCount === 1 ? "Night" : "Nights"}`}
+        onChange={() => {}}
+        readOnly
+      />
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Adults</label>
-        <select
-          value={formData.adults}
-          onChange={(e) => handleChange('adults', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          {[...Array(10)].map((_, i) => (
-            <option key={i + 1} value={i + 1}>{i + 1}</option>
-          ))}
-        </select>
-      </div>
+      <FloatingDropdown
+        label="Adults"
+        options={[...Array(10)].map((_, i) => ({ value: String(i + 1), label: String(i + 1) }))}
+        value={formData.adults}
+        onChange={(value) => handleChange('adults', value)}
+      />
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Children</label>
-        <select
-          value={formData.children}
-          onChange={(e) => handleChange('children', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="0">0</option>
-          {[...Array(5)].map((_, i) => (
-            <option key={i + 1} value={i + 1}>{i + 1}</option>
-          ))}
-        </select>
-      </div>
+      <FloatingDropdown
+        label="Children"
+        options={[{ value: '0', label: '0' }, ...Array(5).fill(0).map((_, i) => ({ value: String(i + 1), label: String(i + 1) }))].filter((_, i) => i === 0 || i > 0)}
+        value={formData.children}
+        onChange={(value) => handleChange('children', value)}
+      />
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-        <select
-          value={formData.title}
-          onChange={(e) => handleChange('title', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="">Select title</option>
-          {Object.values(TITLES).map((title) => (
-            <option key={title} value={title}>{title}</option>
-          ))}
-        </select>
-      </div>
+      <FloatingDropdown
+        label="Title"
+        options={Object.values(TITLES).map(title => ({ value: title, label: title }))}
+        value={formData.title}
+        onChange={(value) => handleChange('title', value)}
+      />
 
-      <AutoSuggestionInput
+      <FloatingAutocomplete
         label="Name"
         value={formData.guestName || ''}
         onChange={(value) => handleChange('guestName', value)}
         onSelect={handleSelectGuest}
-        placeholder="Enter guest name"
         suggestions={guestsData.guest_list}
         filterKey="guest_name"
         displayKey="guest_name"
         secondaryDisplayKey="data-string"
       />
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-        <input
-          type="email"
-          value={formData.email}
-          onChange={(e) => handleChange('email', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Enter email"
-        />
-      </div>
+      <FloatingInput
+        label="Email"
+        type="email"
+        value={formData.email}
+        onChange={(e) => handleChange('email', e.target.value)}
+      />
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-        <input
-          type="tel"
-          value={formData.phone}
-          onChange={(e) => handleChange('phone', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Enter phone"
-        />
-      </div>
+      <FloatingInput
+        label="Phone"
+        type="tel"
+        value={formData.phone}
+        onChange={(e) => handleChange('phone', e.target.value)}
+      />
 
-      <AutoSuggestionInput
+      <FloatingAutocomplete
         label="Account"
         value={formData.account || ''}
         onChange={(value) => handleChange('account', value)}
         onSelect={handleSelectAccount}
-        placeholder="Enter account"
         suggestions={ACCOUNT_LIST}
         filterKey="label"
         displayKey="label"
       />
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Rent Per Night</label>
-        <input
-          type="number"
-          value={formData.totalPrice}
-          onChange={(e) => handleChange('totalPrice', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Enter amount..."
-        />
-      </div>
+      <FloatingInput
+        label="Rent Per Night"
+        type="number"
+        value={formData.totalPrice}
+        onChange={(e) => handleChange('totalPrice', e.target.value)}
+      />
 
-      <AutoSuggestionInput
+      <FloatingAutocomplete
         label="Select Tax"
         value={formData.tax || ''}
         onChange={(value) => handleChange('tax', value)}
         onSelect={handleSelectTax}
-        placeholder="Enter tax"
         suggestions={TAXSET_LIST}
         filterKey="label"
         displayKey="label"
       />
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">ID Number</label>
-        <input
-          type="text"
-          value={formData.idNumber}
-          onChange={(e) => handleChange('idNumber', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Enter ID number"
-        />
-      </div>
+      <FloatingInput
+        label="ID Number"
+        type="text"
+        value={formData.idNumber}
+        onChange={(e) => handleChange('idNumber', e.target.value)}
+      />
 
-      <AutoSuggestionInput
+      <FloatingAutocomplete
         label="Nationality"
         value={formData.nationality || ''}
         onChange={(value) => handleChange('nationality', value)}
         onSelect={handleSelectNationality}
-        placeholder="Enter nationality"
         suggestions={NATIONALITY_LIST}
         filterKey="label"
         displayKey="label"
       />
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Commission %</label>
-        <input
-          type="number"
-          value={formData.commission}
-          onChange={(e) => handleChange('commission', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Enter commission %"
-        />
-      </div>
+      <FloatingInput
+        label="Commission %"
+        type="number"
+        value={formData.commission}
+        onChange={(e) => handleChange('commission', e.target.value)}
+      />
 
       <div className="md:col-span-2 lg:col-span-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-        <textarea
+        <FloatingLabelTextarea
+          label="Notes"
           value={formData.notes}
           onChange={(e) => handleChange('notes', e.target.value)}
           rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Additional notes (optional)"
         />
       </div>
     </div>
