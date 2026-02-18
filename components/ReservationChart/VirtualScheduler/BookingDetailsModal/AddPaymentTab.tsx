@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import FloatingInput from '@/components/common/FloatingInput'
 import FloatingLabelInput from '@/components/common/FloatingLabelInput'
 import FloatingLabelDropdown from '@/components/common/FloatingLabelDropdown'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
@@ -37,12 +38,12 @@ const AddPaymentTab = ({ acceptedBy = 'John Doe' }: AddPaymentTabProps) => {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FloatingLabelInput 
+        <FloatingInput 
           label="Amount" 
-          type="number" 
-          placeholder=" " 
+          type="number"
           value={formData.amount}
           onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+          required
         />
         <FloatingLabelDropdown 
           label="Payment Method" 
@@ -57,14 +58,17 @@ const AddPaymentTab = ({ acceptedBy = 'John Doe' }: AddPaymentTabProps) => {
         />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FloatingLabelInput 
+        <FloatingInput 
           label="Reference No." 
-          type="text" 
-          placeholder=" " 
           value={formData.referenceNo}
           onChange={(e) => setFormData({ ...formData, referenceNo: e.target.value })}
         />
-        <FloatingLabelInput label="Accepted By" type="text" value={acceptedBy} readOnly />
+        <FloatingInput 
+          label="Accepted By" 
+          value={acceptedBy} 
+          onChange={() => {}}
+          readOnly 
+        />
       </div>
       <FloatingLabelInput 
         label="Receipt" 

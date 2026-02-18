@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import FloatingInput from '@/components/common/FloatingInput'
 import FloatingLabelInput from '@/components/common/FloatingLabelInput'
 import FloatingLabelDropdown from '@/components/common/FloatingLabelDropdown'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
@@ -42,17 +43,18 @@ const CreateTaskTab = ({ apartmentName = 'Apartment 101' }: CreateTaskTabProps) 
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FloatingLabelInput 
+        <FloatingInput 
           label="Apartment Name" 
           value={apartmentName} 
+          onChange={() => {}}
           readOnly 
         />
-        <FloatingLabelInput 
+        <FloatingInput 
           label="Task Title" 
-          type="text" 
-          placeholder="Title - Ex - Leak under the sink" 
           value={formData.taskTitle}
           onChange={(e) => setFormData({ ...formData, taskTitle: e.target.value })}
+          placeholder="Title - Ex - Leak under the sink"
+          required
         />
         <FloatingLabelDropdown 
           label="Source" 
@@ -77,31 +79,25 @@ const CreateTaskTab = ({ apartmentName = 'Apartment 101' }: CreateTaskTabProps) 
           value={formData.dueDate}
           onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
         />
-        <FloatingLabelInput 
+        <FloatingInput 
           label="Assigned To" 
-          type="text" 
-          placeholder=" " 
           value={formData.assignedTo}
           onChange={(e) => setFormData({ ...formData, assignedTo: e.target.value })}
         />
-        <FloatingLabelInput 
+        <FloatingInput 
           label="Source Name" 
-          type="text" 
-          placeholder=" " 
           value={formData.sourceName}
           onChange={(e) => setFormData({ ...formData, sourceName: e.target.value })}
         />
-        <FloatingLabelInput 
+        <FloatingInput 
           label="Source Email" 
-          type="email" 
-          placeholder=" " 
+          type="email"
           value={formData.sourceEmail}
           onChange={(e) => setFormData({ ...formData, sourceEmail: e.target.value })}
         />
-        <FloatingLabelInput 
+        <FloatingInput 
           label="Source Phone" 
-          type="tel" 
-          placeholder=" " 
+          type="tel"
           value={formData.sourcePhone}
           onChange={(e) => setFormData({ ...formData, sourcePhone: e.target.value })}
         />

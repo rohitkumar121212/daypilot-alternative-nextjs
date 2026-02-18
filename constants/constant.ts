@@ -303,3 +303,46 @@ export const NATIONALITY_LIST = [
 ] as const;
 
 
+
+export const REASON_LIST_FOR_CASE_TAB = [
+  { value: "ac", label: "AC" },
+  { value: "adaptor", label: "Adaptor" },
+  { value: "wifi", label: "WiFi" },
+  { value: "plumbing", label: "Plumbing" },
+  { value: "electrical", label: "Electrical" },
+  { value: "heating", label: "Heating" },
+  { value: "cleaning", label: "Cleaning" },
+  { value: "appliance", label: "Appliance" },
+  { value: "furniture", label: "Furniture" },
+  { value: "other", label: "Other" },
+]
+
+export const SUB_REASON_LIST_FOR_CASE_TAB = [
+  { value: "ac", label: "AC" },
+  { value: "adaptor", label: "Adaptor" },
+  { value: "wifi", label: "WiFi" },
+  { value: "plumbing", label: "Plumbing" },
+  { value: "electrical", label: "Electrical" },
+  { value: "heating", label: "Heating" },
+  { value: "cleaning", label: "Cleaning" },
+  { value: "appliance", label: "Appliance" },
+  { value: "furniture", label: "Furniture" },
+  { value: "other", label: "Other" },
+]
+
+export const ORIGIN_LIST_FOR_CASE_TAB = [
+  { value: "inspection", label: "Inspection" },
+  { value: "web", label: "Web" },
+  { value: "phone", label: "Phone" },
+  { value: "app", label: "App" },
+  { value: "email", label: "Email" },
+  { value: "walk-in", label: "Walk-in" },
+]
+
+export const ASSIGN_CASE_TO_LIST = [
+  { value: "john-doe", label: "John Doe" },
+  { value: "jane-smith", label: "Jane Smith" },
+  { value: "mike-johnson", label: "Mike Johnson" },
+  { value: "sarah-williams", label: "Sarah Williams" },
+  { value: "david-brown", label: "David Brown" },
+]

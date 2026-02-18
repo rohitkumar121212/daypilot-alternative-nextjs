@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import FloatingInput from '@/components/common/FloatingInput'
 import FloatingLabelInput from '@/components/common/FloatingLabelInput'
 import FloatingLabelInputWithPrefix from '@/components/common/FloatingLabelInputWithPrefix'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
@@ -33,21 +34,24 @@ const SharePaymentLinkTab = ({
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FloatingLabelInput 
+        <FloatingInput 
           label="Total Amount" 
           value={`${CURRENCY} ${totalAmount}`} 
+          onChange={() => {}}
           readOnly 
         />
-        <FloatingLabelInput 
+        <FloatingInput 
           label="Paid" 
           value={`${CURRENCY} ${paid}`} 
+          onChange={() => {}}
           readOnly 
         />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FloatingLabelInput 
+        <FloatingInput 
           label="Balance" 
           value={`${CURRENCY} ${balance}`} 
+          onChange={() => {}}
           readOnly 
         />
         <FloatingLabelInputWithPrefix 
@@ -59,12 +63,12 @@ const SharePaymentLinkTab = ({
           onChange={(e) => setFormData({ ...formData, paymentAmount: e.target.value })}
         />
       </div>
-      <FloatingLabelInput 
+      <FloatingInput 
         label="Email" 
-        type="email" 
-        placeholder=" " 
+        type="email"
         value={formData.email}
         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+        required
       />
       <FloatingLabelTextarea 
         label="Notes" 
