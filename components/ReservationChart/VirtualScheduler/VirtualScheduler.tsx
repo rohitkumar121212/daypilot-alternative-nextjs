@@ -25,7 +25,8 @@ const VirtualScheduler = ({
   startDate = null,
   daysToShow = 30,
   cellWidth = 100,
-  rowHeight = 60
+  rowHeight = 60,
+  className = ""
 }) => {
   const dates = useMemo(() => generateDateRange(daysToShow, startDate), [daysToShow, startDate])
   
@@ -89,9 +90,26 @@ const VirtualScheduler = ({
   const [cancelCheckInModalOpen, setCancelCheckInModalOpen] = useState(false)
   const [bookingToCancel, setBookingToCancel] = useState(null)
   
+  // Container ref for dynamic sizing
+  const containerRef = useRef(null)
+  const [containerDimensions, setContainerDimensions] = useState({ width: 0, height: 0 })
+  
+  // Update container dimensions
+  useEffect(() => {
+    const updateDimensions = () => {
+      if (containerRef.current) {
+        const { width, height } = containerRef.current.getBoundingClientRect()
+        setContainerDimensions({ width, height })
+      }
+    }
+    
+    updateDimensions()
+    window.addEventListener('resize', updateDimensions)
+    return () => window.removeEventListener('resize', updateDimensions)
+  }, [])
+  
   // Virtual scrolling state
   const [scrollTop, setScrollTop] = useState(0)
-  const containerRef = useRef(null)
   
   // Track mouse state
   const mouseDownRef = useRef(false)
@@ -128,8 +146,8 @@ const VirtualScheduler = ({
     })
   }, [resources])
   
-  // Virtual scrolling calculations
-  const containerHeight = 600
+  // Virtual scrolling calculations - use dynamic container height
+  const containerHeight = containerDimensions.height - 60 // Account for header height
   const totalHeight = visibleRows.length * rowHeight
   const startIndex = Math.floor(scrollTop / rowHeight)
   const endIndex = Math.min(startIndex + Math.ceil(containerHeight / rowHeight) + 1, visibleRows.length)
@@ -514,7 +532,7 @@ const VirtualScheduler = ({
   }, [])
   
   return (
-    <div className="w-full h-full flex flex-col bg-white select-none">
+    <div ref={containerRef} className={`w-full h-full flex flex-col bg-white select-none ${className}`}>
       {/* Header Row */}
       <div className="flex border-b border-gray-300 bg-gray-50 sticky top-0 z-30 shadow-sm">
         <div className="w-64 min-w-64 border-r border-gray-200 bg-gray-50 sticky left-0 z-40 flex items-center justify-center font-semibold text-gray-700">

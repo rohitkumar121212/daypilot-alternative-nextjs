@@ -178,7 +178,7 @@ const ReservationChart = ()=>{
               onDaysChange={setDaysToShow}
               bookings={bookings}
             />
-            <div className="h-[82vh]">
+            <div className="h-screen overflow-auto">
                 <VirtualScheduler
                 resources={filteredResources}
                 bookings={bookings}
