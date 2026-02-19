@@ -244,9 +244,20 @@ const VirtualScheduler = ({
     const booking = contextMenu.booking
     setContextMenu({ isOpen: false, position: { x: 0, y: 0 }, booking: null })
     
-    if (action === 'view') {
-      setSelectedBooking(booking)
-      setDetailsModalOpen(true)
+    if (action === 'logs') {
+      // window.location.href = `https://aperfectstay.ai/aperfect-pms/booking/${booking?.id}/logs`
+       window.open(
+      `https://aperfectstay.ai/aperfect-pms/booking/${booking?.id}/logs`,
+      '_blank',
+      'noopener,noreferrer'
+    )
+    } else if (action === 'view') {
+      // window.location.href = `https://aperfectstay.ai/aperfect-pms/booking/${booking?.id}/view-details`
+       window.open(
+      `https://aperfectstay.ai/aperfect-pms/booking/${booking?.id}/view-details`,
+      '_blank',
+      'noopener,noreferrer'
+    )
     } else if (action === 'split') {
       setBookingToSplit(booking)
       setSplitModalOpen(true)
