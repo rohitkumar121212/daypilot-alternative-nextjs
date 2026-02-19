@@ -5,6 +5,7 @@ import ResourceRow from './ResourceRow'
 import CreateBookingModal from '../Modals/CreateBookingModal/CreateBookingModal'
 import BookingDetailsModal from './BookingDetailsModal'
 import BookingContextMenu from './BookingContextMenu'
+import ResourceContextMenu from './ResourceContextMenu'
 import BookingChangeConfirmModal from './BookingChangeConfirmModal'
 import SplitBookingModal from './SplitBookingModal'
 import SkipCheckInModal from './SkipCheckInModal'
@@ -66,6 +67,9 @@ const VirtualScheduler = ({
   
   // Context menu state
   const [contextMenu, setContextMenu] = useState({ isOpen: false, position: { x: 0, y: 0 }, booking: null })
+  
+  // Resource context menu state
+  const [resourceContextMenu, setResourceContextMenu] = useState({ isOpen: false, position: { x: 0, y: 0 }, resource: null })
   
   // Drag state
   const [dragState, setDragState] = useState(null)
@@ -429,6 +433,33 @@ const VirtualScheduler = ({
     setBookingToCancel(null)
   }, [])
   
+  // Handle resource right-click
+  const handleResourceRightClick = useCallback((resource, e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
+    // Close any existing context menu first
+    setResourceContextMenu({ isOpen: false, position: { x: 0, y: 0 }, resource: null })
+    
+    // Open new context menu after a brief delay to ensure previous one is closed
+    setTimeout(() => {
+      setResourceContextMenu({
+        isOpen: true,
+        position: { x: e.clientX, y: e.clientY },
+        resource
+      })
+    }, 10)
+  }, [])
+  
+  // Handle resource context menu action
+  const handleResourceContextMenuAction = useCallback((action) => {
+    const resource = resourceContextMenu.resource
+    setResourceContextMenu({ isOpen: false, position: { x: 0, y: 0 }, resource: null })
+    
+    console.log(`Resource action: ${action} on resource:`, resource)
+    // Add your resource action handlers here
+  }, [resourceContextMenu.resource])
+  
   // Handle parent expand/collapse toggle
   const handleToggleExpand = useCallback((parentId) => {
     const updatedResources = resources.map(parent => {
@@ -531,6 +562,7 @@ const VirtualScheduler = ({
                       height: rowHeight,
                       top: (startIndex + index) * rowHeight
                     }}
+                    {...(row.type === 'child' && { onContextMenu: (e) => handleResourceRightClick(row, e) })}
                   >
                     {row.type === 'parent' && (
                       <button
@@ -629,6 +661,15 @@ const VirtualScheduler = ({
         position={contextMenu.position}
         onClose={() => setContextMenu({ isOpen: false, position: { x: 0, y: 0 }, booking: null })}
         onAction={handleContextMenuAction}
+      />
+      
+      {/* Resource Context Menu */}
+      <ResourceContextMenu
+        isOpen={resourceContextMenu.isOpen}
+        position={resourceContextMenu.position}
+        resource={resourceContextMenu.resource}
+        onClose={() => setResourceContextMenu({ isOpen: false, position: { x: 0, y: 0 }, resource: null })}
+        onAction={handleResourceContextMenuAction}
       />
       
       {/* Change Confirmation Modal */}
