@@ -7,6 +7,7 @@ import BookingDetailsModal from './BookingDetailsModal'
 import BookingContextMenu from './BookingContextMenu'
 import BookingChangeConfirmModal from './BookingChangeConfirmModal'
 import SplitBookingModal from './SplitBookingModal'
+import SkipCheckInModal from './SkipCheckInModal'
 import { generateDateRange, getDateIndex } from '@/utils/dateUtils'
 
 /**
@@ -74,6 +75,10 @@ const VirtualScheduler = ({
   // Split booking state
   const [splitModalOpen, setSplitModalOpen] = useState(false)
   const [bookingToSplit, setBookingToSplit] = useState(null)
+  
+  // Skip check-in state
+  const [skipCheckInModalOpen, setSkipCheckInModalOpen] = useState(false)
+  const [bookingToSkip, setBookingToSkip] = useState(null)
   
   // Virtual scrolling state
   const [scrollTop, setScrollTop] = useState(0)
@@ -261,6 +266,9 @@ const VirtualScheduler = ({
     } else if (action === 'split') {
       setBookingToSplit(booking)
       setSplitModalOpen(true)
+    } else if (action === 'skip') {
+      setBookingToSkip(booking)
+      setSkipCheckInModalOpen(true)
     } else if (action === 'new-task') {
       setSelectedBooking(booking)
       setDetailsModalOpen(true)
@@ -398,6 +406,13 @@ const VirtualScheduler = ({
     setSplitModalOpen(false)
     setBookingToSplit(null)
   }, [bookings, onBookingUpdate, onBookingCreate])
+  
+  // Handle skip check-in
+  const handleSkipCheckIn = useCallback((skipData) => {
+    console.log('Skip check-in confirmed:', skipData)
+    setSkipCheckInModalOpen(false)
+    setBookingToSkip(null)
+  }, [])
   
   // Handle parent expand/collapse toggle
   const handleToggleExpand = useCallback((parentId) => {
@@ -618,6 +633,18 @@ const VirtualScheduler = ({
         onClose={() => {
           setSplitModalOpen(false)
           setBookingToSplit(null)
+        }}
+      />
+      
+      {/* Skip Check-In Modal */}
+      <SkipCheckInModal
+        isOpen={skipCheckInModalOpen}
+        booking={bookingToSkip}
+        resources={resources}
+        onSkip={handleSkipCheckIn}
+        onClose={() => {
+          setSkipCheckInModalOpen(false)
+          setBookingToSkip(null)
         }}
       />
     </div>
