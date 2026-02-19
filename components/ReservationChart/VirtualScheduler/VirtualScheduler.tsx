@@ -8,6 +8,7 @@ import BookingContextMenu from './BookingContextMenu'
 import BookingChangeConfirmModal from './BookingChangeConfirmModal'
 import SplitBookingModal from './SplitBookingModal'
 import SkipCheckInModal from './SkipCheckInModal'
+import CancelCheckInModal from './CancelCheckInModal'
 import { generateDateRange, getDateIndex } from '@/utils/dateUtils'
 
 /**
@@ -79,6 +80,10 @@ const VirtualScheduler = ({
   // Skip check-in state
   const [skipCheckInModalOpen, setSkipCheckInModalOpen] = useState(false)
   const [bookingToSkip, setBookingToSkip] = useState(null)
+  
+  // Cancel check-in state
+  const [cancelCheckInModalOpen, setCancelCheckInModalOpen] = useState(false)
+  const [bookingToCancel, setBookingToCancel] = useState(null)
   
   // Virtual scrolling state
   const [scrollTop, setScrollTop] = useState(0)
@@ -269,6 +274,9 @@ const VirtualScheduler = ({
     } else if (action === 'skip') {
       setBookingToSkip(booking)
       setSkipCheckInModalOpen(true)
+    } else if (action === 'cancel-check-in') {
+      setBookingToCancel(booking)
+      setCancelCheckInModalOpen(true)
     } else if (action === 'new-task') {
       setSelectedBooking(booking)
       setDetailsModalOpen(true)
@@ -412,6 +420,13 @@ const VirtualScheduler = ({
     console.log('Skip check-in confirmed:', skipData)
     setSkipCheckInModalOpen(false)
     setBookingToSkip(null)
+  }, [])
+  
+  // Handle cancel check-in
+  const handleCancelCheckIn = useCallback((cancelData) => {
+    console.log('Cancel check-in confirmed:', cancelData)
+    setCancelCheckInModalOpen(false)
+    setBookingToCancel(null)
   }, [])
   
   // Handle parent expand/collapse toggle
@@ -645,6 +660,18 @@ const VirtualScheduler = ({
         onClose={() => {
           setSkipCheckInModalOpen(false)
           setBookingToSkip(null)
+        }}
+      />
+      
+      {/* Cancel Check-In Modal */}
+      <CancelCheckInModal
+        isOpen={cancelCheckInModalOpen}
+        booking={bookingToCancel}
+        resources={resources}
+        onCancel={handleCancelCheckIn}
+        onClose={() => {
+          setCancelCheckInModalOpen(false)
+          setBookingToCancel(null)
         }}
       />
     </div>

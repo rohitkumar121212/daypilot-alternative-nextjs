@@ -129,7 +129,7 @@ const HoldForm = ({ formData, handleChange, dayCount }: HoldFormProps) => {
           onChange={(e) => handleChange('notes', e.target.value)}
           rows={3}
         />
-    </div>
+      </div>
     </>
   )
 }
