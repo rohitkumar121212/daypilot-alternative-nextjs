@@ -5,12 +5,15 @@ import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
 import { PAYMENT_METHODS_LIST } from '@/constants/constant'
+import { addNewBookingPayment } from '@/apiData/services/pms/booking-details-tabs'
 
 interface AddPaymentTabProps {
   acceptedBy?: string
+  booking: any
+  onClose?: () => void
 }
 
-const AddPaymentTab = ({ acceptedBy = 'John Doe' }: AddPaymentTabProps) => {
+const AddPaymentTab = ({ acceptedBy = 'John Doe', booking, onClose }: AddPaymentTabProps) => {
   const [formData, setFormData] = useState({
     amount: '',
     paymentMethod: '',
@@ -21,8 +24,10 @@ const AddPaymentTab = ({ acceptedBy = 'John Doe' }: AddPaymentTabProps) => {
 
   const [errors, setErrors] = useState<Record<string, string>>({})
 
+
   const handleSubmit = async () => {
     const newErrors: Record<string, string> = {}
+    console.log("booking_key--", booking?.booking_details?.booking_key)
 
     if (!formData.amount.trim()) newErrors.amount = 'Amount is required'
     else if (parseFloat(formData.amount) < 0) newErrors.amount = 'Amount cannot be negative'
@@ -33,12 +38,23 @@ const AddPaymentTab = ({ acceptedBy = 'John Doe' }: AddPaymentTabProps) => {
 
     if (Object.keys(newErrors).length > 0) return
 
-    const payload = {
-      ...formData,
-      acceptedBy
+    const payload = new FormData()
+    payload.append('amount', formData.amount)
+    payload.append('mode', formData.paymentMethod)
+    payload.append('refernce', formData.referenceNo)
+    payload.append('accepted_by', acceptedBy)
+    payload.append('notes', formData.notes)
+    payload.append('enq_id_payment', booking?.booking_id) // TODO: Replace with actual booking ID
+    if (formData.receipt) payload.append('receipt_img', formData.receipt)
+
+    try {
+      const response = await addNewBookingPayment(payload)
+      console.log('Payment added successfully:', response.data)
+      // TODO: Show success message and reset form
+    } catch (error) {
+      console.error('Failed to add payment:', error)
+      // TODO: Show error message
     }
-    console.log('Payment payload:', payload)
-    // TODO: Call API with payload
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,7 +106,8 @@ const AddPaymentTab = ({ acceptedBy = 'John Doe' }: AddPaymentTabProps) => {
         type="file" 
         onChange={handleFileChange}
       />
-      
+      {    console.log("booking_key--", booking?.booking_details?.booking_key)
+}
       </div>
       <div className="grid grid-cols-1 gap-4">
         <FloatingLabelTextarea 
@@ -108,7 +125,7 @@ const AddPaymentTab = ({ acceptedBy = 'John Doe' }: AddPaymentTabProps) => {
         >
           Add Payment
         </button>
-        <button className="border border-gray-300 text-red-500 px-4 py-2 rounded hover:bg-gray-50">Close</button>
+        <button onClick={onClose} className="border border-gray-300 text-red-500 px-4 py-2 rounded hover:bg-gray-50">Close</button>
       </div>
     </div>
   )
