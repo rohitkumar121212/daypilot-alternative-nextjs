@@ -1,15 +1,51 @@
-import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
+import React, { useState, useCallback, useMemo, useRef, useEffect, Suspense } from 'react'
 import dayjs from 'dayjs'
+import dynamic from 'next/dynamic'
+
 import DateHeader from './DateHeader'
 import ResourceRow from './ResourceRow'
-import CreateBookingModal from '../Modals/CreateBookingModal/CreateBookingModal'
-import BookingDetailsModal from './BookingDetailsModal'
-import BookingContextMenu from './BookingContextMenu'
-import ResourceContextMenu from './ResourceContextMenu'
-import BookingChangeConfirmModal from './BookingChangeConfirmModal'
-import SplitBookingModal from './SplitBookingModal'
-import SkipCheckInModal from './SkipCheckInModal'
-import CancelCheckInModal from './CancelCheckInModal'
+
+// Lazy load modals only when needed
+const CreateBookingModal = dynamic(() => import('@/components/ReservationChart/Modals/CreateBookingModal/CreateBookingModal'), {
+  ssr: false,
+  loading: () => null
+})
+const BookingDetailsModal = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/BookingDetailsModal'), {
+  ssr: false,
+  loading: () => null
+})
+const BookingContextMenu = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/BookingContextMenu'), {
+  ssr: false,
+  loading: () => null
+})
+const ResourceContextMenu = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/ResourceContextMenu'), {
+  ssr: false,
+  loading: () => null
+})
+const BookingChangeConfirmModal = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/BookingChangeConfirmModal'), {
+  ssr: false,
+  loading: () => null
+})
+const SplitBookingModal = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/SplitBookingModal'), {
+  ssr: false,
+  loading: () => null
+})
+const SkipCheckInModal = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/SkipCheckInModal'), {
+  ssr: false,
+  loading: () => null
+})
+const CancelCheckInModal = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/CancelCheckInModal'), {
+  ssr: false,
+  loading: () => null
+})  
+// import CreateBookingModal from '../Modals/CreateBookingModal/CreateBookingModal'
+// import BookingDetailsModal from './BookingDetailsModal'
+// import BookingContextMenu from './BookingContextMenu'
+// import ResourceContextMenu from './ResourceContextMenu'
+// import BookingChangeConfirmModal from './BookingChangeConfirmModal'
+// import SplitBookingModal from './SplitBookingModal'
+// import SkipCheckInModal from './SkipCheckInModal'
+// import CancelCheckInModal from './CancelCheckInModal'
 import { generateDateRange, getDateIndex } from '@/utils/dateUtils'
 
 /**
@@ -638,83 +674,113 @@ const VirtualScheduler = ({
         </div>
       </div>
       
-      {/* Booking Modal */}
-      <CreateBookingModal
-        isOpen={modalOpen}
-        selection={selection}
-        resource={selectedResource}
-        onClose={handleModalClose}
-        onConfirm={handleBookingConfirm}
-      />
+      {/* Conditionally render modals only when needed */}
+      {modalOpen && (
+        <Suspense fallback={null}>
+          <CreateBookingModal
+            isOpen={modalOpen}
+            selection={selection}
+            resource={selectedResource}
+            onClose={handleModalClose}
+            onConfirm={handleBookingConfirm}
+          />
+        </Suspense>
+      )}
       
-      {/* Booking Details Modal */}
-      <BookingDetailsModal
-        isOpen={detailsModalOpen}
-        booking={selectedBooking}
-        onClose={handleDetailsModalClose}
-        initialTab={detailsModalInitialTab}
-      />
+      {detailsModalOpen && (
+        <Suspense fallback={null}>
+          <BookingDetailsModal
+            isOpen={detailsModalOpen}
+            booking={selectedBooking}
+            onClose={handleDetailsModalClose}
+            initialTab={detailsModalInitialTab}
+            onCancelBooking={(booking) => {
+              setBookingToCancel(booking)
+              setCancelCheckInModalOpen(true)
+              setDetailsModalOpen(false)
+            }}
+          />
+        </Suspense>
+      )}
       
-      {/* Context Menu */}
-      <BookingContextMenu
-        isOpen={contextMenu.isOpen}
-        position={contextMenu.position}
-        onClose={() => setContextMenu({ isOpen: false, position: { x: 0, y: 0 }, booking: null })}
-        onAction={handleContextMenuAction}
-      />
+      {contextMenu.isOpen && (
+        <Suspense fallback={null}>
+          <BookingContextMenu
+            isOpen={contextMenu.isOpen}
+            position={contextMenu.position}
+            onClose={() => setContextMenu({ isOpen: false, position: { x: 0, y: 0 }, booking: null })}
+            onAction={handleContextMenuAction}
+          />
+        </Suspense>
+      )}
       
-      {/* Resource Context Menu */}
-      <ResourceContextMenu
-        isOpen={resourceContextMenu.isOpen}
-        position={resourceContextMenu.position}
-        resource={resourceContextMenu.resource}
-        onClose={() => setResourceContextMenu({ isOpen: false, position: { x: 0, y: 0 }, resource: null })}
-        onAction={handleResourceContextMenuAction}
-      />
+      {resourceContextMenu.isOpen && (
+        <Suspense fallback={null}>
+          <ResourceContextMenu
+            isOpen={resourceContextMenu.isOpen}
+            position={resourceContextMenu.position}
+            resource={resourceContextMenu.resource}
+            onClose={() => setResourceContextMenu({ isOpen: false, position: { x: 0, y: 0 }, resource: null })}
+            onAction={handleResourceContextMenuAction}
+          />
+        </Suspense>
+      )}
       
-      {/* Change Confirmation Modal */}
-      <BookingChangeConfirmModal
-        isOpen={changeConfirmation.isOpen}
-        changeData={changeConfirmation.data}
-        onConfirm={handleConfirmChange}
-        onCancel={handleCancelChange}
-      />
+      {changeConfirmation.isOpen && (
+        <Suspense fallback={null}>
+          <BookingChangeConfirmModal
+            isOpen={changeConfirmation.isOpen}
+            changeData={changeConfirmation.data}
+            onConfirm={handleConfirmChange}
+            onCancel={handleCancelChange}
+          />
+        </Suspense>
+      )}
       
-      {/* Split Booking Modal */}
-      <SplitBookingModal
-        isOpen={splitModalOpen}
-        booking={bookingToSplit}
-        resources={resources}
-        onSplit={handleSplitBooking}
-        onClose={() => {
-          setSplitModalOpen(false)
-          setBookingToSplit(null)
-        }}
-      />
+      {splitModalOpen && (
+        <Suspense fallback={null}>
+          <SplitBookingModal
+            isOpen={splitModalOpen}
+            booking={bookingToSplit}
+            resources={resources}
+            onSplit={handleSplitBooking}
+            onClose={() => {
+              setSplitModalOpen(false)
+              setBookingToSplit(null)
+            }}
+          />
+        </Suspense>
+      )}
       
-      {/* Skip Check-In Modal */}
-      <SkipCheckInModal
-        isOpen={skipCheckInModalOpen}
-        booking={bookingToSkip}
-        resources={resources}
-        onSkip={handleSkipCheckIn}
-        onClose={() => {
-          setSkipCheckInModalOpen(false)
-          setBookingToSkip(null)
-        }}
-      />
+      {skipCheckInModalOpen && (
+        <Suspense fallback={null}>
+          <SkipCheckInModal
+            isOpen={skipCheckInModalOpen}
+            booking={bookingToSkip}
+            resources={resources}
+            onSkip={handleSkipCheckIn}
+            onClose={() => {
+              setSkipCheckInModalOpen(false)
+              setBookingToSkip(null)
+            }}
+          />
+        </Suspense>
+      )}
       
-      {/* Cancel Check-In Modal */}
-      <CancelCheckInModal
-        isOpen={cancelCheckInModalOpen}
-        booking={bookingToCancel}
-        resources={resources}
-        onCancel={handleCancelCheckIn}
-        onClose={() => {
-          setCancelCheckInModalOpen(false)
-          setBookingToCancel(null)
-        }}
-      />
+      {cancelCheckInModalOpen && (
+        <Suspense fallback={null}>
+          <CancelCheckInModal
+            isOpen={cancelCheckInModalOpen}
+            booking={bookingToCancel}
+            resources={resources}
+            onCancel={handleCancelCheckIn}
+            onClose={() => {
+              setCancelCheckInModalOpen(false)
+              setBookingToCancel(null)
+            }}
+          />
+        </Suspense>
+      )}
     </div>
   )
 }
