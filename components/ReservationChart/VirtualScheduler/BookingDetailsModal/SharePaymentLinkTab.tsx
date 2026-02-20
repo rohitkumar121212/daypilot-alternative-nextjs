@@ -4,6 +4,7 @@ import { useState } from 'react'
 import FloatingInput from '@/components/common/FloatingInput'
 import FloatingInputWithPrefix from '@/components/common/FloatingLabelInputWithPrefix'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
+import { sharePaymentLink } from '@/apiData/services/pms/booking-details-tabs'
 
 interface SharePaymentLinkTabProps {
   totalAmount?: number
@@ -27,7 +28,7 @@ const SharePaymentLinkTab = ({
 
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const handleSendLink = () => {
+  const handleSendLink = async() => {
     const newErrors: Record<string, string> = {}
 
     if (!formData.paymentAmount.trim()) newErrors.paymentAmount = 'Payment amount is required'
@@ -40,6 +41,17 @@ const SharePaymentLinkTab = ({
     if (Object.keys(newErrors).length > 0) return
 
     console.log('Send payment link:', formData)
+    try{
+      const response = await sharePaymentLink({
+        bookingId: '12345', // TODO: Replace with actual booking ID
+        amount: parseFloat(formData.paymentAmount),
+        email: formData.email,
+        notes: formData.notes
+      })
+      console.log('Payment link sent successfully:', response.data)
+    } catch(error){
+      console.error('Failed to send payment link:', error)
+    }
     // TODO: Call API
   }
 

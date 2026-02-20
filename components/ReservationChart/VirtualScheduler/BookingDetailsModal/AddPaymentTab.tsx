@@ -9,17 +9,18 @@ import { addNewBookingPayment } from '@/apiData/services/pms/booking-details-tab
 
 interface AddPaymentTabProps {
   acceptedBy?: string
-  booking: any
+  bookingId: Number | string | null
   onClose?: () => void
 }
 
-const AddPaymentTab = ({ acceptedBy = 'John Doe', booking, onClose }: AddPaymentTabProps) => {
+const AddPaymentTab = ({ bookingId, acceptedBy, onClose }: AddPaymentTabProps) => {
   const [formData, setFormData] = useState({
     amount: '',
     paymentMethod: '',
     referenceNo: '',
     receipt: null as File | null,
-    notes: ''
+    notes: '',
+    acceptedBy: acceptedBy || ''
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -27,12 +28,11 @@ const AddPaymentTab = ({ acceptedBy = 'John Doe', booking, onClose }: AddPayment
 
   const handleSubmit = async () => {
     const newErrors: Record<string, string> = {}
-    console.log("booking_key--", booking?.booking_details?.booking_key)
-
+    console.log("booking_key--", bookingId)
     if (!formData.amount.trim()) newErrors.amount = 'Amount is required'
     else if (parseFloat(formData.amount) < 0) newErrors.amount = 'Amount cannot be negative'
     if (!formData.paymentMethod) newErrors.paymentMethod = 'Payment method is required'
-    if (!acceptedBy.trim()) newErrors.acceptedBy = 'Accepted by is required'
+    if (!acceptedBy?.trim()) newErrors.acceptedBy = 'Accepted by is required'
 
     setErrors(newErrors)
 
@@ -42,9 +42,9 @@ const AddPaymentTab = ({ acceptedBy = 'John Doe', booking, onClose }: AddPayment
     payload.append('amount', formData.amount)
     payload.append('mode', formData.paymentMethod)
     payload.append('refernce', formData.referenceNo)
-    payload.append('accepted_by', acceptedBy)
+    payload.append('accepted_by', formData.acceptedBy)
     payload.append('notes', formData.notes)
-    payload.append('enq_id_payment', booking?.booking_id) // TODO: Replace with actual booking ID
+    payload.append('enq_id_payment', bookingId?.toString() || '') // TODO: Replace with actual booking ID
     if (formData.receipt) payload.append('receipt_img', formData.receipt)
 
     try {
@@ -106,8 +106,6 @@ const AddPaymentTab = ({ acceptedBy = 'John Doe', booking, onClose }: AddPayment
         type="file" 
         onChange={handleFileChange}
       />
-      {    console.log("booking_key--", booking?.booking_details?.booking_key)
-}
       </div>
       <div className="grid grid-cols-1 gap-4">
         <FloatingLabelTextarea 

@@ -34,9 +34,9 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
       case 'task':
         return <CreateTaskTab />
       case 'payment':
-        return <AddPaymentTab booking={booking} onClose={onClose}/>
+        return <AddPaymentTab bookingId={booking?.booking_id} onClose={onClose} acceptedBy={booking?.booking_details?.booked_by} />
       case 'share':
-        return <SharePaymentLinkTab />
+        return <SharePaymentLinkTab totalAmount={booking?.booking_details?.total_amount} paid={booking?.booking_details?.paid_amount} email={booking?.booking_details?.guest_email} />
       default:
         return null
     }
