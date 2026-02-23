@@ -169,10 +169,25 @@ const VirtualScheduler = ({
     const heightsMap = new Map()
     visibleRows.forEach(row => {
       if (row.type === 'child') {
-        const overbookingCount = bookings.filter(
-          b => String(b.resourceId) === String(row.id) && b.isOverbooked
+        // Get bookings for this resource sorted by start date
+        const resourceBookings = bookings
+          .filter(b => String(b.resourceId) === String(row.id))
+          .sort((a, b) => new Date(a.startDate || a.start) - new Date(b.startDate || b.start))
+        
+        // Count only overbooked bookings that are NOT the first booking
+        const overbookingCount = resourceBookings.filter((b, index) => 
+          index > 0 && b.isOverbooked
         ).length
-        const totalRows = overbookingCount > 0 ? 1 + overbookingCount : 1
+        
+        // Debug for 445CP
+        if (row.id === '5011653521309696' || row.name === '445CP') {
+          console.log('445CP row:', row.name, 'id:', row.id)
+          console.log('445CP ALL bookings:', resourceBookings)
+          console.log('445CP overbooking count:', overbookingCount)
+          console.log('445CP total rows:', 1 + overbookingCount)
+        }
+        
+        const totalRows = 1 + overbookingCount
         heightsMap.set(row.id, rowHeight * totalRows)
       } else {
         heightsMap.set(row.id, rowHeight)

@@ -26,14 +26,31 @@ const ResourceRow = memo(({
   // Filter bookings for this resource
   const resourceBookings = bookings.filter(b => String(b.resourceId) === String(resource.id))
   
-  // Separate normal and overbooked bookings
-  const normalBookings = resourceBookings.filter(b => !b.isOverbooked)
-  const overbookedBookings = resourceBookings.filter(b => b.isOverbooked)
+  // Sort by start date to determine which goes in main row
+  const sortedBookings = [...resourceBookings].sort((a, b) => 
+    new Date(a.startDate || a.start) - new Date(b.startDate || b.start)
+  )
   
-  // Calculate dynamic height based on overbooking count
-  const overbookingCount = overbookedBookings.length
+  // Separate: first booking stays in row 0, overlapping ones go to additional rows
+  const mainRowBookings = []
+  const overbookingRowBookings = []
+  
+  sortedBookings.forEach((booking, index) => {
+    // First booking always goes to main row, even if marked as overbooked
+    // Only subsequent overbooked bookings go to additional rows
+    if (index === 0) {
+      mainRowBookings.push(booking)
+    } else if (booking.isOverbooked) {
+      overbookingRowBookings.push(booking)
+    } else {
+      mainRowBookings.push(booking)
+    }
+  })
+  
+  // Calculate dynamic height based on actual overbooking rows needed
+  const overbookingCount = overbookingRowBookings.length
   const hasOverbooking = overbookingCount > 0
-  const totalRows = hasOverbooking ? 1 + overbookingCount : 1
+  const totalRows = 1 + overbookingCount
   const actualRowHeight = resource.type === 'child' ? rowHeight * totalRows : rowHeight
   const subRowHeight = rowHeight
   
@@ -82,8 +99,8 @@ const ResourceRow = memo(({
         ))
       )}
       
-      {/* Normal booking blocks - first row */}
-      {normalBookings.map(booking => {
+      {/* Main row bookings - row 0 */}
+      {mainRowBookings.map(booking => {
         const isDragging = dragState?.draggedBooking?.id === booking.id
         
         return (
@@ -104,8 +121,8 @@ const ResourceRow = memo(({
         )
       })}
       
-      {/* Overbooked booking blocks - subsequent rows */}
-      {overbookedBookings.map((booking, index) => {
+      {/* Overbooking row bookings - subsequent rows */}
+      {overbookingRowBookings.map((booking, index) => {
         const isDragging = dragState?.draggedBooking?.id === booking.id
         
         return (
