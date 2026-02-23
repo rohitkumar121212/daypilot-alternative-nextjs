@@ -6,5 +6,5 @@ export const addNewBookingPayment = (formData: FormData) =>
     headers: { 'Content-Type': 'multipart/form-data' }
   })
 
-export const sharePaymentLink = (data: { bookingId: string, amount: number, email: string, notes?: string }) =>
+export const sharePaymentLink = (data: any) =>
   apiClient.post<ApiResponse>('/aperfect-pms/share-payment-link', data)

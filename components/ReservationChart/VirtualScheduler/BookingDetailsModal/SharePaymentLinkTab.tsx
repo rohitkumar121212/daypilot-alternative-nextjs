@@ -8,17 +8,23 @@ import { sharePaymentLink } from '@/apiData/services/pms/booking-details-tabs'
 
 interface SharePaymentLinkTabProps {
   totalAmount?: number
+  paidAmount: number
   paid?: number
   email?: string
+  bookingId?: string | number
 }
 
 const SharePaymentLinkTab = ({ 
-  totalAmount = 10000, 
-  paid = 5000,
-  email = 'guest@example.com'
+  totalAmount = 0.00, 
+  paidAmount,
+  paid = 0.000,
+  email = 'guest@example.com',
+  bookingId
 }: SharePaymentLinkTabProps) => {
   const CURRENCY = '₹'
+  console.log("totalAmount, paid, email, bookingId--", totalAmount, paid, email, bookingId)
   const balance = totalAmount - paid
+  console.log("balance--", balance)
 
   const [formData, setFormData] = useState({
     paymentAmount: '',
@@ -43,7 +49,17 @@ const SharePaymentLinkTab = ({
     console.log('Send payment link:', formData)
     try{
       const response = await sharePaymentLink({
-        bookingId: '12345', // TODO: Replace with actual booking ID
+        enq_id_payment: '328748324',
+        payment_booking_id: bookingId,
+        total_booking_amount: totalAmount.toString(),
+        booking_amount_paid: paidAmount.toString(),  
+        booking_amount_balance: balance.toString(),
+        payment_amount: parseFloat(formData.paymentAmount),
+        send_email: formData.email,
+        payment_notes: formData.notes,
+        send_payment_link: 'Send Payment Link',
+
+        bookingId: bookingId, // Use the actual booking ID passed in props
         amount: parseFloat(formData.paymentAmount),
         email: formData.email,
         notes: formData.notes
@@ -66,7 +82,7 @@ const SharePaymentLinkTab = ({
         />
         <FloatingInput 
           label="Paid" 
-          value={`${CURRENCY} ${paid}`} 
+          value={`${CURRENCY} ${paidAmount}`} 
           onChange={() => {}}
           readOnly 
         />

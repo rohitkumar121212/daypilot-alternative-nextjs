@@ -36,7 +36,13 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
       case 'payment':
         return <AddPaymentTab bookingId={booking?.booking_id} onClose={onClose} acceptedBy={booking?.booking_details?.booked_by} />
       case 'share':
-        return <SharePaymentLinkTab totalAmount={booking?.booking_details?.total_amount} paid={booking?.booking_details?.paid_amount} email={booking?.booking_details?.guest_email} />
+        return <SharePaymentLinkTab 
+                  totalAmount={Number(booking?.booking_details?.price)} 
+                  paid={Number(booking?.booking_details?.paid)} 
+                  bookingId={booking?.booking_id}
+                  email={booking?.booking_details?.email} 
+                  paidAmount={Number(booking?.booking_details?.paid)}
+                />
       default:
         return null
     }
@@ -53,7 +59,7 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
             </svg>
           </button>
         </div>
-        {console.log('Booking in Modal:', booking)}
+        {/* {console.log('Booking in Modal:', booking)} */}
         <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
         
         <div className="flex-1 overflow-y-auto p-6">
