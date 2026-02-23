@@ -43,7 +43,7 @@ const ResourceRow = memo(({
   return (
     <div className="relative overflow-hidden" style={{ height: actualRowHeight }}>
       {/* Date cells */}
-      <div className="flex relative overflow-hidden">
+      <div className="flex relative overflow-hidden" style={{ height: actualRowHeight }}>
         {dates.map((date) => {
           const isDropTarget = dragState?.dropTarget?.date === date && 
                               dragState?.dropTarget?.resourceId === resource.id
@@ -59,6 +59,7 @@ const ResourceRow = memo(({
               date={date}
               resourceId={resource.id}
               cellWidth={cellWidth}
+              cellHeight={actualRowHeight}
               isSelected={hasSelection && isDateInSelection(date, selection)}
               isDropTarget={isDropTarget}
               availability={availability}
