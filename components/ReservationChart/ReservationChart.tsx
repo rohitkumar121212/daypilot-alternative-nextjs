@@ -3,6 +3,7 @@ import { useEffect, useState, useMemo } from 'react';
 import dayjs from 'dayjs';
 import VirtualScheduler from './VirtualScheduler/VirtualScheduler';
 import FilterContainer from './Filter/FilterContainer';
+import { detectOverbookings } from '@/utils/overbookingUtils';
 
 const ReservationChart = ()=>{
   const [resources, setResources] = useState([])
@@ -144,12 +145,25 @@ const ReservationChart = ()=>{
             name: 'Room Booking',
             notes: 'Sample booking for Room-1',
             resourceId: parent?.booking_details?.apartment_id
-          })) || []
+          })).filter(booking => {
+            // Filter out invalid bookings where end date is before start date
+            const start = dayjs(booking.startDate)
+            const end = dayjs(booking.endDate)
+            return start.isValid() && end.isValid() && !end.isBefore(start)
+          }) || []
+        
+        // Remove duplicate bookings by ID
+        const uniqueBookings = Array.from(
+          new Map(normalizedBookingData.map(b => [b.id || b.booking_id, b])).values()
+        )
+        
+        // Detect and mark overbookings
+        const bookingsWithOverbooking = detectOverbookings(uniqueBookings)
           
         setResources(resourcesJson?.data?.apt_build_details || [])
         setResourcesLoaded(true)
 
-        setBookings(normalizedBookingData)
+        setBookings(bookingsWithOverbooking)
         setBookingsLoaded(true)
         
         setAvailability(availabilityJson?.data || null)

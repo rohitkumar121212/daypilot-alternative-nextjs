@@ -164,12 +164,49 @@ const VirtualScheduler = ({
     })
   }, [resources])
   
+  // Calculate row heights with overbooking support
+  const rowHeightsMap = useMemo(() => {
+    const heightsMap = new Map()
+    visibleRows.forEach(row => {
+      if (row.type === 'child') {
+        const overbookingCount = bookings.filter(
+          b => String(b.resourceId) === String(row.id) && b.isOverbooked
+        ).length
+        const totalRows = overbookingCount > 0 ? 1 + overbookingCount : 1
+        heightsMap.set(row.id, rowHeight * totalRows)
+      } else {
+        heightsMap.set(row.id, rowHeight)
+      }
+    })
+    return heightsMap
+  }, [visibleRows, bookings, rowHeight])
+  
+  // Calculate cumulative positions for virtual scrolling
+  const rowPositions = useMemo(() => {
+    const positions = []
+    let cumulative = 0
+    visibleRows.forEach(row => {
+      positions.push({ id: row.id, top: cumulative, height: rowHeightsMap.get(row.id) })
+      cumulative += rowHeightsMap.get(row.id)
+    })
+    return positions
+  }, [visibleRows, rowHeightsMap])
+  
   // Virtual scrolling calculations
   const containerHeight = 600
-  const totalHeight = visibleRows.length * rowHeight
-  const startIndex = Math.floor(scrollTop / rowHeight)
-  const endIndex = Math.min(startIndex + Math.ceil(containerHeight / rowHeight) + 1, visibleRows.length)
-  const visibleItems = visibleRows.slice(startIndex, endIndex)
+  const totalHeight = rowPositions.length > 0 ? rowPositions[rowPositions.length - 1].top + rowPositions[rowPositions.length - 1].height : 0
+  
+  // Find visible items based on scroll position
+  const visibleItems = useMemo(() => {
+    const items = []
+    for (let i = 0; i < rowPositions.length; i++) {
+      const pos = rowPositions[i]
+      if (pos.top + pos.height >= scrollTop && pos.top <= scrollTop + containerHeight) {
+        items.push({ ...visibleRows[i], ...pos })
+      }
+    }
+    return items
+  }, [rowPositions, visibleRows, scrollTop, containerHeight])
   
   // Handle scroll - sync both sides
   const handleScroll = useCallback((e) => {
@@ -585,7 +622,7 @@ const VirtualScheduler = ({
             onScroll={handleScroll}
           >
             <div style={{ height: totalHeight, position: 'relative' }}>
-              {visibleItems.map((row, index) => {
+              {visibleItems.map((row) => {
                 return (
                   <div
                     key={row.id}
@@ -595,8 +632,8 @@ const VirtualScheduler = ({
                         : 'pl-8 text-gray-700'
                     }`}
                     style={{ 
-                      height: rowHeight,
-                      top: (startIndex + index) * rowHeight
+                      height: row.height,
+                      top: row.top
                     }}
                     {...(row.type === 'child' && { onContextMenu: (e) => handleResourceRightClick(row, e) })}
                   >
@@ -642,13 +679,13 @@ const VirtualScheduler = ({
               onScroll={handleScroll}
             >
               <div style={{ height: totalHeight, position: 'relative' }}>
-                {visibleItems.map((row, index) => (
+                {visibleItems.map((row) => (
                   <div
                     key={row.id}
                     className="absolute w-full"
                     style={{ 
-                      height: rowHeight,
-                      top: (startIndex + index) * rowHeight
+                      height: row.height,
+                      top: row.top
                     }}
                   >
                     <ResourceRow
@@ -665,6 +702,7 @@ const VirtualScheduler = ({
                       onBookingRightClick={handleBookingRightClick}
                       onBookingDragStart={handleBookingDragStart}
                       cellWidth={cellWidth}
+                      rowHeight={rowHeight}
                     />
                   </div>
                 ))}
