@@ -8,6 +8,7 @@ const DateCell = memo(({
   date,
   resourceId,
   cellWidth = 100,
+  cellHeight = 60,
   isSelected = false,
   isDropTarget = false,
   availability = null,
@@ -35,7 +36,7 @@ const DateCell = memo(({
         isDropTarget ? 'bg-green-100 ring-2 ring-green-400' :
         isParentRow ? '' : 'hover:bg-gray-50'
       }`}
-      style={{ width: cellWidth, minWidth: cellWidth, height: 60 }}
+      style={{ width: cellWidth, minWidth: cellWidth, height: cellHeight }}
       data-date={date}
       data-resource-id={resourceId}
       onMouseDown={handleMouseDown}

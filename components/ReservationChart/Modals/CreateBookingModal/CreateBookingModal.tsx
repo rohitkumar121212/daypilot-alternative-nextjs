@@ -3,6 +3,7 @@ import { daysBetween } from '@/utils/dateUtils'
 import BookForm from './BookForm'
 import HoldForm from './HoldForm'
 import BlockForm from './BlockForm'
+import { createReservation, createHold, createBlock } from '@/apiData/services/pms/bookings'
 
 /**
  * CreateBookingModal - Modal dialog for creating/editing bookings
@@ -14,6 +15,14 @@ import BlockForm from './BlockForm'
  * @param {Function} props.onClose - Handler to close the modal
  * @param {Function} props.onConfirm - Handler to confirm booking creation/update
  */
+
+const reservationMap: Record<string, string> = {
+  book: 'reserve',
+  hold: 'temp_reserve',
+  block: 'do_not_reserve',
+}
+
+
 const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onConfirm }) => {
   const [formData, setFormData] = useState({
     bookingName: '',
@@ -98,16 +107,61 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
   
   const dayCount = daysBetween(modalData.startDate, modalData.endDate)
   
-  const handleConfirm = () => {
-    onConfirm({
-      ...(booking || {}),
-      resourceId: modalData.resourceId,
-      startDate: modalData.startDate,
-      endDate: modalData.endDate,
-      text: formData.bookingName,
-      ...formData
-    })
-    onClose()
+  const handleConfirm = async () => {
+    const reservationType = reservationMap[formData.bookingType] || ''
+
+    const payload = {
+      prop_abbr_id: resource?.id,
+      new_start_date: modalData.startDate,
+      new_end_date: modalData.endDate,
+      duration: `${dayCount} Nights`,
+      adult_count: formData.adults || '1',
+      child_count: formData.children || '0',
+      room_count: '1',
+      title: formData.title || '',
+      rate: formData.totalPrice || '',
+      first_name: formData.guestName || '',
+      phone: formData.phone || '',
+      email: formData.email || '',
+      account_name: formData.account || '',
+      total_amount: formData.totalPrice || '',
+      total_vat: formData.tax || '',
+      hold_till_date: formData.holdBookingTill?.split('T')[0] || '',
+      hold_till_time: formData.holdBookingTill?.split('T')[1]?.substring(0, 5) || '',
+      enquiry_app_id: formData.enquiryAppId || '',
+      total_commission: formData.commission || '0',
+      dnr_type: formData.dnrReason || '',
+      dnr_reason: formData.dnrNotes || '',
+      dnr_close_calendar: 'yes',
+      reservation_type: reservationType,
+      new_entry: 'Save'
+    }
+
+    try {
+      let response
+      if (formData.bookingType === 'book') {
+        response = await createReservation(payload)
+      } else if (formData.bookingType === 'hold') {
+        response = await createHold(payload)
+      } else if (formData.bookingType === 'block') {
+        response = await createBlock(payload)
+      }
+      
+      console.log('Booking created successfully:', response?.data)
+      
+      onConfirm({
+        ...(booking || {}),
+        resourceId: modalData.resourceId,
+        startDate: modalData.startDate,
+        endDate: modalData.endDate,
+        text: formData.bookingName,
+        ...formData
+      })
+      onClose()
+    } catch (error) {
+      console.error('Failed to create booking:', error)
+      // TODO: Show error message to user
+    }
   }
   
   const handleBackdropClick = (e) => {

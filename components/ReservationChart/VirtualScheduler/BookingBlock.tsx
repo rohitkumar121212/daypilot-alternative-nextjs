@@ -22,7 +22,10 @@ const BookingBlock = ({
   onBookingRightClick,
   onBookingDragStart,
   isDragging = false,
-  dragOffset = { x: 0, y: 0 }
+  dragOffset = { x: 0, y: 0 },
+  rowIndex = 0,
+  subRowHeight,
+  isOverbooked = false
 }) => {
   const [showTooltip, setShowTooltip] = useState(false)
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 })
@@ -105,8 +108,12 @@ const BookingBlock = ({
   }
   
   // Get background color from booking data or use default
-  const backgroundColor = booking.backColor || '#40c970'
-  const borderColor = booking.backColor || '#40c970'
+  const backgroundColor = isOverbooked 
+    ? 'rgb(109, 46, 70)' 
+    : (booking.backColor || '#40c970')
+  const borderColor = isOverbooked 
+    ? 'rgb(109, 46, 70)' 
+    : (booking.backColor || '#40c970')
   
   // Parse bubbleHtml to check for Lead_Source and is_left
   let bubbleData = {}
@@ -124,19 +131,23 @@ const BookingBlock = ({
   const shouldShowIcon = booking.Lead_Source_icon === "true" && bubbleData.Lead_Source
   const showOnLeft = bubbleData.is_left === "true" || bubbleData.is_left === true
   
+  // Calculate vertical position based on row index
+  const topPosition = subRowHeight ? (rowIndex * subRowHeight) + 1 : 1
+  const blockHeight = subRowHeight ? subRowHeight - 2 : 50
+  
   return (
     <>
       <div
-        className={`absolute top-1 bottom-1 border rounded text-white text-xs flex items-center justify-start font-medium shadow-md z-20 cursor-pointer transition-all ${
+        className={`absolute top-1 bottom-1 border rounded-xl text-white text-xs flex items-center justify-start font-medium shadow-md z-20 cursor-pointer transition-all ${
           isDragging 
             ? 'opacity-75 shadow-lg transform scale-105' 
             : 'hover:shadow-lg'
         }`}
         style={{
           left: `${left + dragOffset.x}px`,
-          top: `${1 + dragOffset.y}px`,
+          top: `${topPosition + dragOffset.y}px`,
           width: `${width}px`,
-          height: '50px',
+          height: `${blockHeight}px`,
           backgroundColor: isDragging ? `${backgroundColor}99` : backgroundColor,
           borderColor: borderColor,
           transform: isDragging ? 'rotate(2deg)' : 'none',

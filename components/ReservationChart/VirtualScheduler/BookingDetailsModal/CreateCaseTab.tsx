@@ -5,12 +5,16 @@ import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
 import { REASON_LIST_FOR_CASE_TAB, SUB_REASON_LIST_FOR_CASE_TAB, ORIGIN_LIST_FOR_CASE_TAB, PRIORITY_LIST_FOR_CREATE_TASK, ASSIGN_CASE_TO_LIST } from '@/constants/constant'
+import { createTask } from '@/apiData/services/pms/bookings'
 
 interface CreateCaseTabProps {
   apartmentName?: string
+  bookingId?: string
+  propertyId?: string
+  guestId?: string
 }
 
-const CreateCaseTab = ({ apartmentName = 'Apartment 101' }: CreateCaseTabProps) => {
+const CreateCaseTab = ({ apartmentName = 'Apartment 101', bookingId = '', propertyId = '', guestId = '' }: CreateCaseTabProps) => {
   const [formData, setFormData] = useState({
     caseTitle: '',
     issueType: 'guest',
@@ -25,7 +29,7 @@ const CreateCaseTab = ({ apartmentName = 'Apartment 101' }: CreateCaseTabProps) 
 
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const handleCreateCase = () => {
+  const handleCreateCase = async () => {
     const newErrors: Record<string, string> = {}
 
     if (!formData.caseTitle.trim()) newErrors.caseTitle = 'Case title is required'
@@ -41,11 +45,30 @@ const CreateCaseTab = ({ apartmentName = 'Apartment 101' }: CreateCaseTabProps) 
     if (Object.keys(newErrors).length > 0) return
 
     const payload = {
-      ...formData,
-      apartmentName
+      curr_apartment_case2: apartmentName,
+      title: formData.caseTitle,
+      source: formData.origin,
+      priority: formData.priority,
+      due_date: new Date().toISOString().split('T')[0],
+      name: formData.assignTo,
+      phone: '',
+      email: '',
+      booking: bookingId,
+      prop: propertyId,
+      guest: guestId,
+      account: '',
+      description: formData.description,
+      save: 'Create Task'
     }
-    console.log('Create case payload:', payload)
-    // TODO: Call API
+
+    try {
+      const response = await createTask(payload)
+      console.log('Task created successfully:', response.data)
+      // TODO: Show success message and reset form
+    } catch (error) {
+      console.error('Failed to create task:', error)
+      // TODO: Show error message
+    }
   }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
