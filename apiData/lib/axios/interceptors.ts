@@ -1,9 +1,15 @@
 import { apiClient } from './client'
+import { tokenManager } from '../tokenManager'
 
 apiClient.interceptors.request.use(
   (config) => {
     config.headers['X-App-Version'] = '1.0.0'
-    // cookies are handled automatically by the browser
+    
+    const accessToken = tokenManager.getAccessToken()
+    if (accessToken) {
+      config.headers['Authorization'] = `Bearer ${accessToken}`
+    }
+    
     return config
   },
   (error) => Promise.reject(error)

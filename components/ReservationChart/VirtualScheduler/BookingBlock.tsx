@@ -138,7 +138,7 @@ const BookingBlock = ({
   return (
     <>
       <div
-        className={`absolute top-1 bottom-1 border rounded text-white text-xs flex items-center justify-start font-medium shadow-md z-20 cursor-pointer transition-all ${
+        className={`absolute top-1 bottom-1 border rounded-xl text-white text-xs flex items-center justify-start font-medium shadow-md z-20 cursor-pointer transition-all ${
           isDragging 
             ? 'opacity-75 shadow-lg transform scale-105' 
             : 'hover:shadow-lg'
