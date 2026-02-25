@@ -115,6 +115,7 @@ const BookingBlock = ({
             transform: isDragging ? 'rotate(2deg)' : 'none',
             pointerEvents: isDragging ? 'none' : 'auto'
           }}
+          onMouseDown={handleMouseDown}
           onContextMenu={handleContextMenu}
         >
           {shouldShowIcon && showOnLeft && (
