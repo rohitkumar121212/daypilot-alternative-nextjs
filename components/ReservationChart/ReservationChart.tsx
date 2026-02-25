@@ -194,7 +194,7 @@ const ReservationChart = ()=>{
       const resourcesUrl = `https://aperfectstay.ai/api/aps-pms/apts/private`
       const bookingsUrl = `https://aperfectstay.ai/api/aps-pms/reservations/private?start=${startDate}&end=${endDate}`
       const availabilityUrl = `https://aperfectstay.ai/api/aps-pms/buildings/avail/private?start=${startDate}&end=${endDate}`
-
+      const caseAccountUrl = `https://aperfectstay.ai/aps-api/v1/case-accounts/`
       // ⚡ Fast requests first
       const [resourcesJson, bookingsJson] = await Promise.all([
         apiFetch(resourcesUrl),
@@ -239,6 +239,17 @@ const ReservationChart = ()=>{
         })
         .catch(err => {
           console.error('Failed to load availability data', err)
+        })
+      // 🔄 Fetch availability in background
+      apiFetch(caseAccountUrl)
+        .then(caseAccountJson => {
+          if (!cancelled) {
+            // setAvailability(availabilityJson?.data || null)
+            console.log('Case Accounts:', caseAccountJson?.data || [])
+          }
+        })
+        .catch(err => {
+          console.error('Failed to load case accounts data', err)
         })
 
     } catch (err) {
