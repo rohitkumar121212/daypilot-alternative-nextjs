@@ -27,9 +27,14 @@ const DateHeader = ({ date, cellWidth = 100, totalAvailability = null }) => {
         {formatted.month}
       </div>
       {totalAvailability && (
-        <div className={`text-xs font-semibold mt-1 ${totalAvailability.available > 0 ? 'text-green-700' : 'text-red-700'}`}>
+        <>
+          {/* <div className={`text-xs font-semibold mt-1 ${totalAvailability.available > 0 ? 'text-green-700' : 'text-red-700'}`}>
+          {totalAvailability.available}/{totalAvailability.total}
+        </div> */}
+        <div className={`text-xs font-semibold mt-1 bg-gray-500 rounded-lg w-full text-center text-white p-2`}>
           {totalAvailability.available}/{totalAvailability.total}
         </div>
+        </>
       )}
     </div>
   )
