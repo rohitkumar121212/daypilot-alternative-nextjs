@@ -188,6 +188,9 @@ const ReservationChart = ()=>{
                 <h2 className="text-lg font-semibold text-blue-800">SimpleVirtualScheduler (Custom Implementation)</h2>
                 <p className="text-sm text-blue-600">Manual virtualization without external dependencies</p>
             </div>
+            <div>
+              <button className='p-2 bg-red-500 rounded-lg text-white mt-2 ml-4' onClick={() => window.location.href = 'https://aperfectstay.ai/aperfect-pms'}>Go back to APS</button>
+            </div>
             <FilterContainer 
               onSearchChange={setSearchTerm}
               onBookingIdChange={setBookingIdFilter}
