@@ -119,6 +119,7 @@ const ReservationChart = ()=>{
         })
 
         const bookingsRequest = fetch(bookingsUrl,{
+          credentials: "include", // include cookies for authentication
           next: { revalidate: 600 } // revalidate every 60 seconds
         })
 
