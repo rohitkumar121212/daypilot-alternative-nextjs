@@ -103,86 +103,171 @@ const ReservationChart = ()=>{
   /* =========================
      Parallel data fetching
   ========================= */
-  useEffect(() => {
-    let cancelled = false
+  // useEffect(() => {
+  //   let cancelled = false
 
-    async function loadData() {
-      try {
-        const endDate = dayjs(startDate).add(daysToShow, 'day').format('YYYY-MM-DD')
-        // const resourcesUrl = `https://aperfectstay.ai/api/aps-pms/apts/?user=6552614495846400&start=${startDate}`
-        const resourcesUrl = `https://aperfectstay.ai/api/aps-pms/apts/private`
+  //   async function loadData() {
+  //     try {
+  //       const endDate = dayjs(startDate).add(daysToShow, 'day').format('YYYY-MM-DD')
+  //       // const resourcesUrl = `https://aperfectstay.ai/api/aps-pms/apts/?user=6552614495846400&start=${startDate}`
+  //       const resourcesUrl = `https://aperfectstay.ai/api/aps-pms/apts/private`
 
-        const bookingsUrl = `https://aperfectstay.ai/api/aps-pms/reservations/private?start=${startDate}&end=${endDate}`
-        const availabilityUrl = `https://aperfectstay.ai/api/aps-pms/buildings/avail/private?start=${startDate}&end=${endDate}`
-        const resourcesRequest = fetch(resourcesUrl,{
-          credentials: "include", // include cookies for authentication
-          next: { revalidate: 600 } // revalidate every 60 seconds
-        })
+  //       const bookingsUrl = `https://aperfectstay.ai/api/aps-pms/reservations/private?start=${startDate}&end=${endDate}`
+  //       const availabilityUrl = `https://aperfectstay.ai/api/aps-pms/buildings/avail/private?start=${startDate}&end=${endDate}`
+  //       const resourcesRequest = fetch(resourcesUrl,{
+  //         credentials: "include", // include cookies for authentication
+  //         next: { revalidate: 600 } // revalidate every 60 seconds
+  //       })
 
-        const bookingsRequest = fetch(bookingsUrl,{
-          credentials: "include", // include cookies for authentication
-          next: { revalidate: 600 } // revalidate every 60 seconds
-        })
+  //       const bookingsRequest = fetch(bookingsUrl,{
+  //         credentials: "include", // include cookies for authentication
+  //         next: { revalidate: 600 } // revalidate every 60 seconds
+  //       })
 
-        const availabilityRequest = fetch(availabilityUrl,{
-          credentials: "include", // include cookies for authentication
-          next: { revalidate: 600 } // revalidate every 60 seconds
-        })
+  //       const availabilityRequest = fetch(availabilityUrl,{
+  //         credentials: "include", // include cookies for authentication
+  //         next: { revalidate: 600 } // revalidate every 60 seconds
+  //       })
 
-        // 🚀 parallel execution
-        const [resourcesRes, bookingsRes, availabilityRes] = await Promise.all([
-          resourcesRequest,
-          bookingsRequest, 
-          availabilityRequest
-        ])
+  //       // 🚀 parallel execution
+  //       const [resourcesRes, bookingsRes, availabilityRes] = await Promise.all([
+  //         resourcesRequest,
+  //         bookingsRequest, 
+  //         availabilityRequest
+  //       ])
 
-        const resourcesJson = await resourcesRes.json()
-        const bookingsJson = await bookingsRes.json()
-        const availabilityJson = await availabilityRes.json()
+  //       const resourcesJson = await resourcesRes.json()
+  //       const bookingsJson = await bookingsRes.json()
+  //       const availabilityJson = await availabilityRes.json()
 
-        if (cancelled) return
+  //       if (cancelled) return
 
-        const normalizedBookingData =
-           bookingsJson.data.reservations?.map(parent => ({
-            ...parent,
-            startDate: dayjs(parent.start).format('YYYY-MM-DD'),
-            endDate: dayjs(parent.end).format('YYYY-MM-DD'),
-            name: 'Room Booking',
-            notes: 'Sample booking for Room-1',
-            resourceId: parent?.booking_details?.apartment_id
-          })).filter(booking => {
-            // Filter out invalid bookings where end date is before start date
-            const start = dayjs(booking.startDate)
-            const end = dayjs(booking.endDate)
-            return start.isValid() && end.isValid() && !end.isBefore(start)
-          }) || []
+  //       const normalizedBookingData =
+  //          bookingsJson.data.reservations?.map(parent => ({
+  //           ...parent,
+  //           startDate: dayjs(parent.start).format('YYYY-MM-DD'),
+  //           endDate: dayjs(parent.end).format('YYYY-MM-DD'),
+  //           name: 'Room Booking',
+  //           notes: 'Sample booking for Room-1',
+  //           resourceId: parent?.booking_details?.apartment_id
+  //         })).filter(booking => {
+  //           // Filter out invalid bookings where end date is before start date
+  //           const start = dayjs(booking.startDate)
+  //           const end = dayjs(booking.endDate)
+  //           return start.isValid() && end.isValid() && !end.isBefore(start)
+  //         }) || []
         
-        // Remove duplicate bookings by ID
-        const uniqueBookings = Array.from(
-          new Map(normalizedBookingData.map(b => [b.id || b.booking_id, b])).values()
-        )
+  //       // Remove duplicate bookings by ID
+  //       const uniqueBookings = Array.from(
+  //         new Map(normalizedBookingData.map(b => [b.id || b.booking_id, b])).values()
+  //       )
         
-        // Detect and mark overbookings
-        const bookingsWithOverbooking = detectOverbookings(uniqueBookings)
+  //       // Detect and mark overbookings
+  //       const bookingsWithOverbooking = detectOverbookings(uniqueBookings)
           
-        setResources(resourcesJson?.data?.apt_build_details || [])
-        setResourcesLoaded(true)
+  //       setResources(resourcesJson?.data?.apt_build_details || [])
+  //       setResourcesLoaded(true)
 
-        setBookings(bookingsWithOverbooking)
-        setBookingsLoaded(true)
+  //       setBookings(bookingsWithOverbooking)
+  //       setBookingsLoaded(true)
         
-        setAvailability(availabilityJson?.data || null)
-      } catch (err) {
-        console.error('Failed to load scheduler data', err)
-      }
-    }
+  //       setAvailability(availabilityJson?.data || null)
+  //     } catch (err) {
+  //       console.error('Failed to load scheduler data', err)
+  //     }
+  //   }
 
-    loadData()
+  //   loadData()
 
-    return () => {
-      cancelled = true
+  //   return () => {
+  //     cancelled = true
+  //   }
+  // }, [startDate, daysToShow])
+  useEffect(() => {
+  let cancelled = false
+
+  async function loadData() {
+    try {
+      const endDate = dayjs(startDate).add(daysToShow, 'day').format('YYYY-MM-DD')
+      
+      const resourcesUrl = `https://aperfectstay.ai/api/aps-pms/apts/private`
+      const bookingsUrl = `https://aperfectstay.ai/api/aps-pms/reservations/private?start=${startDate}&end=${endDate}`
+      const availabilityUrl = `https://aperfectstay.ai/api/aps-pms/buildings/avail/private?start=${startDate}&end=${endDate}`
+
+      // const resourcesUrl = `https://aperfectstay.ai/api/aps-pms/apts/?user=6552614495846400&start=${startDate}`
+      // const bookingsUrl = `https://aperfectstay.ai/api/aps-pms/reservations/?user=6552614495846400&start=${startDate}&end=${endDate}`
+      // const availabilityUrl = `https://aperfectstay.ai/api/aps-pms/buildings/avail?user=6552614495846400&start=${startDate}&end=${endDate}`
+      // ⚡ Fast requests first - don't wait for availability
+      const [resourcesRes, bookingsRes] = await Promise.all([
+        fetch(resourcesUrl, {
+          credentials: "include",
+          next: { revalidate: 600 }
+        }),
+        fetch(bookingsUrl, {
+          credentials: "include",
+          next: { revalidate: 600 }
+        })
+      ])
+
+      const resourcesJson = await resourcesRes.json()
+      const bookingsJson = await bookingsRes.json()
+
+      if (cancelled) return
+
+      // Process and show data immediately
+      const normalizedBookingData =
+        bookingsJson.data.reservations?.map(parent => ({
+          ...parent,
+          startDate: dayjs(parent.start).format('YYYY-MM-DD'),
+          endDate: dayjs(parent.end).format('YYYY-MM-DD'),
+          name: 'Room Booking',
+          notes: 'Sample booking for Room-1',
+          resourceId: parent?.booking_details?.apartment_id
+        })).filter(booking => {
+          const start = dayjs(booking.startDate)
+          const end = dayjs(booking.endDate)
+          return start.isValid() && end.isValid() && !end.isBefore(start)
+        }) || []
+      
+      const uniqueBookings = Array.from(
+        new Map(normalizedBookingData.map(b => [b.id || b.booking_id, b])).values()
+      )
+      
+      const bookingsWithOverbooking = detectOverbookings(uniqueBookings)
+        
+      // ✅ Show resources and bookings immediately
+      setResources(resourcesJson?.data?.apt_build_details || [])
+      setResourcesLoaded(true)
+      setBookings(bookingsWithOverbooking)
+      setBookingsLoaded(true)
+
+      // 🔄 Fetch availability in background (non-blocking)
+      fetch(availabilityUrl, {
+        credentials: "include",
+        next: { revalidate: 600 }
+      })
+        .then(res => res.json())
+        .then(availabilityJson => {
+          if (!cancelled) {
+            setAvailability(availabilityJson?.data || null)
+          }
+        })
+        .catch(err => {
+          console.error('Failed to load availability data', err)
+          // Availability fails silently - app still works
+        })
+
+    } catch (err) {
+      console.error('Failed to load scheduler data', err)
     }
-  }, [startDate, daysToShow])
+  }
+
+  loadData()
+
+  return () => {
+    cancelled = true
+  }
+}, [startDate, daysToShow])
     return (
         <div className="flex-1 overflow-hidden flex flex-col">
             <div className="flex-1 border-b-2 border-gray-300">
