@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import VirtualScheduler from './VirtualScheduler/VirtualScheduler';
 import FilterContainer from './Filter/FilterContainer';
 import { detectOverbookings } from '@/utils/overbookingUtils';
+import { apiFetch } from '@/utils/apiRequest';
 
 const ReservationChart = ()=>{
   const [resources, setResources] = useState([])
@@ -194,23 +195,11 @@ const ReservationChart = ()=>{
       const bookingsUrl = `https://aperfectstay.ai/api/aps-pms/reservations/private?start=${startDate}&end=${endDate}`
       const availabilityUrl = `https://aperfectstay.ai/api/aps-pms/buildings/avail/private?start=${startDate}&end=${endDate}`
 
-      // const resourcesUrl = `https://aperfectstay.ai/api/aps-pms/apts/?user=6552614495846400&start=${startDate}`
-      // const bookingsUrl = `https://aperfectstay.ai/api/aps-pms/reservations/?user=6552614495846400&start=${startDate}&end=${endDate}`
-      // const availabilityUrl = `https://aperfectstay.ai/api/aps-pms/buildings/avail?user=6552614495846400&start=${startDate}&end=${endDate}`
-      // ⚡ Fast requests first - don't wait for availability
-      const [resourcesRes, bookingsRes] = await Promise.all([
-        fetch(resourcesUrl, {
-          credentials: "include",
-          next: { revalidate: 600 }
-        }),
-        fetch(bookingsUrl, {
-          credentials: "include",
-          next: { revalidate: 600 }
-        })
+      // ⚡ Fast requests first
+      const [resourcesJson, bookingsJson] = await Promise.all([
+        apiFetch(resourcesUrl),
+        apiFetch(bookingsUrl)
       ])
-
-      const resourcesJson = await resourcesRes.json()
-      const bookingsJson = await bookingsRes.json()
 
       if (cancelled) return
 
@@ -241,12 +230,8 @@ const ReservationChart = ()=>{
       setBookings(bookingsWithOverbooking)
       setBookingsLoaded(true)
 
-      // 🔄 Fetch availability in background (non-blocking)
-      fetch(availabilityUrl, {
-        credentials: "include",
-        next: { revalidate: 600 }
-      })
-        .then(res => res.json())
+      // 🔄 Fetch availability in background
+      apiFetch(availabilityUrl)
         .then(availabilityJson => {
           if (!cancelled) {
             setAvailability(availabilityJson?.data || null)
@@ -254,7 +239,6 @@ const ReservationChart = ()=>{
         })
         .catch(err => {
           console.error('Failed to load availability data', err)
-          // Availability fails silently - app still works
         })
 
     } catch (err) {
