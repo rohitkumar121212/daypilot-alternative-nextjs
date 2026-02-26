@@ -3,6 +3,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE_URL: https://aperfectstay.ai
+        NEXT_PUBLIC_AUTH_URL: https://aperfectstay.ai
     ports:
       - "3000:3000"
     restart: unless-stopped

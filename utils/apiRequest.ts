@@ -1,7 +1,8 @@
 // Development token - update this when needed
-const DEV_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2NTUyNjE0NDk1ODQ2NDAwLCJlbWFpbCI6ImFwc3RyaWFsQGdtYWlsLmNvbSIsInVzZXJfdHlwZSI6MSwiZXhwIjoxNzcyMTMwMDE4LCJpYXQiOjE3NzIxMDEyMTh9.y6FyeJET7oqO_MN3eDBnPXKk9O4vU1aqcBqxDI_-Zfk'
+const DEV_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo0Nzg5ODM5OTE2NDMzNDA4LCJlbWFpbCI6ImFwc2RlbW8yMDIzQGdtYWlsLmNvbSIsInVzZXJfdHlwZSI6MSwiZXhwIjoxNzcyMTMxMzg2LCJpYXQiOjE3NzIxMDI1ODZ9.jI9AeFlvocsiapK6zrIDiik6tygiX-rnMsdwHfQQpQo'
 
 const isDevelopment = process.env.NODE_ENV === 'development'
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://aperfectstay.ai'
 
 export async function apiFetch(url: string, options: RequestInit = {}) {
   const headers: HeadersInit = {
@@ -18,7 +19,9 @@ export async function apiFetch(url: string, options: RequestInit = {}) {
     }
   }
 
-  const response = await fetch(url, {
+  const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`
+
+  const response = await fetch(fullUrl, {
     credentials: 'include',
     ...options,
     headers,

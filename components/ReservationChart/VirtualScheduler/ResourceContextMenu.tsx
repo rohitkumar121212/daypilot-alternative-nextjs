@@ -1,5 +1,25 @@
+import { apiFetch } from '@/utils/apiRequest'
+
 const ResourceContextMenu = ({ isOpen, position, resource, onClose, onAction }) => {
   if (!isOpen) return null
+
+  const handleStatusChange = async (status) => {
+    try {
+      await apiFetch('/api/aperfect-pms/change-property-cleaning-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prop_id: resource?.id,
+          status
+        })
+      })
+      onAction(status)
+    } catch (error) {
+      console.error('Failed to update cleaning status:', error)
+    }
+  }
+
+  const statusActions = ['dirty', 'touch-up', 'clean', 'repair', 'inspect', 'dnr', 'house-use']
 
   const getMenuItems = () => {
     if (resource?.type === 'parent') {
@@ -14,7 +34,7 @@ const ResourceContextMenu = ({ isOpen, position, resource, onClose, onAction }) 
       // Apartment/Child options
       return [
         { id: 'dirty', label: 'Dirty', icon: '🧹' },
-        { id: 'touch-up', label: 'Touch Up', icon: '🖌️' },
+        { id: 'touch_up', label: 'Touch Up', icon: '🖌️' },
         { id: 'clean', label: 'Clean', icon: '✅' },
         { id: 'repair', label: 'Repair', icon: '🔧' },
         { id: 'inspect', label: 'Inspect', icon: '🔍' },
@@ -45,7 +65,7 @@ const ResourceContextMenu = ({ isOpen, position, resource, onClose, onAction }) 
         {menuItems.map(item => (
           <button
             key={item.id}
-            onClick={() => onAction(item.id)}
+            onClick={() => statusActions.includes(item.id) ? handleStatusChange(item.id) : onAction(item.id)}
             className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center gap-2"
           >
             <span>{item.icon}</span>

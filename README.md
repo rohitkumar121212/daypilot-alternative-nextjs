@@ -24,14 +24,14 @@ cp .env.example .env.local
 ### Build and Run
 
 ```bash
-# Build image
-docker build -t daypilot-app .
+# Build image with environment variables
+docker build \
+  --build-arg NEXT_PUBLIC_API_BASE_URL=https://aperfectstay.ai \
+  --build-arg NEXT_PUBLIC_AUTH_URL=https://aperfectstay.ai \
+  -t daypilot-app .
 
 # Run container
-docker run -p 3000:3000 \
-  -e NEXT_PUBLIC_API_BASE_URL=https://aperfectstay.ai \
-  -e NEXT_PUBLIC_AUTH_URL=https://aperfectstay.ai \
-  daypilot-app
+docker run -p 3000:3000 daypilot-app
 ```
 
 ### Using Docker Compose
@@ -42,6 +42,21 @@ docker-compose up -d
 
 # Stop
 docker-compose down
+```
+
+### GCP Cloud Run Deployment
+
+```bash
+# Build and push to GCP Container Registry
+gcloud builds submit --tag gcr.io/PROJECT_ID/daypilot-app \
+  --substitutions=_NEXT_PUBLIC_API_BASE_URL=https://aperfectstay.ai,_NEXT_PUBLIC_AUTH_URL=https://aperfectstay.ai
+
+# Deploy to Cloud Run
+gcloud run deploy daypilot-app \
+  --image gcr.io/PROJECT_ID/daypilot-app \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated
 ```
 
 ## Production Build

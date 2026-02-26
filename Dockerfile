@@ -14,6 +14,12 @@ COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Build-time environment variables for Next.js
+ARG NEXT_PUBLIC_API_BASE_URL=https://aperfectstay.ai
+ARG NEXT_PUBLIC_AUTH_URL=https://aperfectstay.ai
+ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+ENV NEXT_PUBLIC_AUTH_URL=$NEXT_PUBLIC_AUTH_URL
+
 RUN npm run build
 
 FROM base AS runner
