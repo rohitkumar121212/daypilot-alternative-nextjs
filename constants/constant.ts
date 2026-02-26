@@ -17,23 +17,23 @@ export const TITLES = {
 export const ACCOUNT_LIST = [
   {
     account_id: "5363662837514240",
-    label: "Agent  1 - saurabh@thesqua.re - APS Demo Account",
+    label: "Agent  1 - saurabh@thesqua.re - APS Demo Account-test",
   },
   {
     account_id: "6603633791598592",
-    label: "Agent 2 - apsdemo2023@gmail.com - APS Demo Account",
+    label: "Agent 2 - apsdemo2023@gmail.com - APS Demo Account-test",
   },
   {
     account_id: "5917376618954752",
-    label: "abhi - ac1@gmail.com - APS Demo Account",
+    label: "abhi - ac1@gmail.com - APS Demo Account-test",
   },
   {
     account_id: "6663015422230528",
-    label: "fet - ac1111@gmail.com - APS Demo Account",
+    label: "fet - ac1111@gmail.com - APS Demo Account-test",
   },
   {
     account_id: "4641994670342144",
-    label: "- - APS Demo Account",
+    label: "- - APS Demo Account-test",
   },
 ] as const;
 
