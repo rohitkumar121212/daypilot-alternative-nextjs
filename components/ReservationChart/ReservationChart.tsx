@@ -5,6 +5,7 @@ import VirtualScheduler from './VirtualScheduler/VirtualScheduler';
 import FilterContainer from './Filter/FilterContainer';
 import { detectOverbookings } from '@/utils/overbookingUtils';
 import { apiFetch } from '@/utils/apiRequest';
+import { sessionFetch } from '@/utils/sessionFetch';
 
 const ReservationChart = ()=>{
   const [resources, setResources] = useState([])
@@ -240,11 +241,10 @@ const ReservationChart = ()=>{
         .catch(err => {
           console.error('Failed to load availability data', err)
         })
-      // 🔄 Fetch availability in background
-      apiFetch(caseAccountUrl)
+      // 🔄 Fetch case accounts in background (uses session)
+      sessionFetch(caseAccountUrl)
         .then(caseAccountJson => {
           if (!cancelled) {
-            // setAvailability(availabilityJson?.data || null)
             console.log('Case Accounts:', caseAccountJson?.data || [])
           }
         })

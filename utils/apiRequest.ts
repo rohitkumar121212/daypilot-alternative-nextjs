@@ -1,5 +1,5 @@
 // Development token - update this when needed
-const DEV_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2NTUyNjE0NDk1ODQ2NDAwLCJlbWFpbCI6ImFwc3RyaWFsQGdtYWlsLmNvbSIsInVzZXJfdHlwZSI6MSwiZXhwIjoxNzcyMDUzNDYzLCJpYXQiOjE3NzIwMjQ2NjN9.8hJmB4VAdRmKE0e9NzbJsL8vk6Ujz0TCqAsbU9Mz9YA'
+const DEV_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2NTUyNjE0NDk1ODQ2NDAwLCJlbWFpbCI6ImFwc3RyaWFsQGdtYWlsLmNvbSIsInVzZXJfdHlwZSI6MSwiZXhwIjoxNzcyMTEzMDk3LCJpYXQiOjE3NzIwODQyOTd9.CgrbT_T6_DUDRdpqXUYqGMpyJMrvndjVncUHOp21GKw'
 
 export async function apiFetch(url: string, options: RequestInit = {}) {
   const token =  DEV_TOKEN
