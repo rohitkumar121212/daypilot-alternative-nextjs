@@ -1,5 +1,6 @@
 import FloatingInput from '@/components/common/FloatingInput'
 import { formatDateTime } from '@/utils/formatDateTime'
+import BookingNotes from '@/components/common/StringToHtml'
 
 interface BookingDetailsTabProps {
   booking: any
@@ -19,8 +20,10 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose }: BookingDetails
           <FloatingInput label="Duration" value={`${booking?.booking_details?.days} nights` || 'N/A'} onChange={() => {}} readOnly />
           <FloatingInput label="Adults" value={booking?.booking_details?.adult_count || 'N/A'} onChange={() => {}} readOnly />
           <FloatingInput label="Children" value={booking?.booking_details?.child_count || 'N/A'} onChange={() => {}} readOnly />
-          <FloatingInput label="Enquiry ID" value={booking?.booking_details?.enq_app_id || 'N/A'} onChange={() => {}} readOnly />
+          <FloatingInput label="Enquiry No" value={booking?.booking_details?.enq_app_id || 'N/A'} onChange={() => {}} readOnly />
           <FloatingInput label="Reserved By" value={booking?.booking_details?.booked_by || 'N/A'} onChange={() => {}} readOnly />
+          <FloatingInput label="Channex ID" value={booking?.booking_details?.channex_id || 'N/A'} onChange={() => {}} readOnly />
+
         </div>
       </div>
 
@@ -32,6 +35,20 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose }: BookingDetails
           <FloatingInput label="Phone" value={booking?.booking_details?.phone || 'N/A'} onChange={() => {}} readOnly />
           <FloatingInput label="Email" value={booking?.booking_details?.email || 'N/A'} onChange={() => {}} readOnly />
         </div>
+      </div>
+
+      {/* Other Details */}
+      {/* <div className='pt-4 border-t border-gray-300'>
+        <h3 className="text-lg font-semibold text-gray-800 mb-1 pb-2">Other Details</h3>
+        <div 
+          className="prose max-w-none"
+          dangerouslySetInnerHTML={{ __html: booking?.booking_details?.booking_notes || 'No additional details available' }}
+        />
+      </div> */}
+      {/* Other Details */}
+      <div className='pt-4 border-t border-gray-300'>
+        <h3 className="text-lg font-semibold text-gray-800 mb-1 pb-2">Other Details</h3>
+        <BookingNotes booking={booking} />
       </div>
         {/* CTA */}
         <div className='border-t border-gray-300 pt-4'>
