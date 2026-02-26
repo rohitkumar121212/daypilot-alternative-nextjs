@@ -1,4 +1,5 @@
 import FloatingInput from '@/components/common/FloatingInput'
+import { formatDateTime } from '@/utils/formatDateTime'
 
 interface BookingDetailsTabProps {
   booking: any
@@ -13,13 +14,13 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose }: BookingDetails
       <div>
         <h3 className="text-lg font-semibold text-gray-800 mb-1 pb-2 ">Booking Details</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <FloatingInput label="Start Date" value={booking.startDate} onChange={() => {}} readOnly />
-          <FloatingInput label="End Date" value={booking.endDate} onChange={() => {}} readOnly />
-          <FloatingInput label="Duration" value={booking.duration || 'N/A'} onChange={() => {}} readOnly />
-          <FloatingInput label="Adults" value={booking.adults || 'N/A'} onChange={() => {}} readOnly />
-          <FloatingInput label="Children" value={booking.children || 'N/A'} onChange={() => {}} readOnly />
-          <FloatingInput label="Enquiry ID" value={booking.enquiryId || 'N/A'} onChange={() => {}} readOnly />
-          <FloatingInput label="Reserved By" value={booking.reservedBy || 'N/A'} onChange={() => {}} readOnly />
+          <FloatingInput label="Start Date" value={formatDateTime(booking?.booking_details?.start)} onChange={() => {}} readOnly />
+          <FloatingInput label="End Date" value={formatDateTime(booking?.booking_details?.end)} onChange={() => {}} readOnly />
+          <FloatingInput label="Duration" value={`${booking?.booking_details?.days} nights` || 'N/A'} onChange={() => {}} readOnly />
+          <FloatingInput label="Adults" value={booking?.booking_details?.adult_count || 'N/A'} onChange={() => {}} readOnly />
+          <FloatingInput label="Children" value={booking?.booking_details?.child_count || 'N/A'} onChange={() => {}} readOnly />
+          <FloatingInput label="Enquiry ID" value={booking?.booking_details?.enq_app_id || 'N/A'} onChange={() => {}} readOnly />
+          <FloatingInput label="Reserved By" value={booking?.booking_details?.booked_by || 'N/A'} onChange={() => {}} readOnly />
         </div>
       </div>
 
@@ -27,9 +28,9 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose }: BookingDetails
       <div className='pt-4 border-t border-gray-300'>
         <h3 className="text-lg font-semibold text-gray-800 mb-1 pb-2">Guest Details</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <FloatingInput label="Name" value={booking.guestName || 'N/A'} onChange={() => {}} readOnly />
-          <FloatingInput label="Phone" value={booking.phone || 'N/A'} onChange={() => {}} readOnly />
-          <FloatingInput label="Email" value={booking.email || 'N/A'} onChange={() => {}} readOnly />
+          <FloatingInput label="Name" value={booking?.booking_details?.name || 'N/A'} onChange={() => {}} readOnly />
+          <FloatingInput label="Phone" value={booking?.booking_details?.phone || 'N/A'} onChange={() => {}} readOnly />
+          <FloatingInput label="Email" value={booking?.booking_details?.email || 'N/A'} onChange={() => {}} readOnly />
         </div>
       </div>
         {/* CTA */}

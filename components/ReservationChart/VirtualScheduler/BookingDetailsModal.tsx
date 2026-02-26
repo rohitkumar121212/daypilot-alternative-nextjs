@@ -8,6 +8,7 @@ import SharePaymentLinkTab from './BookingDetailsModal/SharePaymentLinkTab'
 
 const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details', onCancelBooking }) => {
   const [activeTab, setActiveTab] = useState(initialTab)
+  console.log("booking in BookingDetailsModal:", booking)
   
   useEffect(() => {
     if (isOpen) {
