@@ -52,9 +52,17 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose }: BookingDetails
       </div>
         {/* CTA */}
         <div className='border-t border-gray-300 pt-4'>
-          <button className=" px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition cursor-pointer">
+          {/* <button className=" px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition cursor-pointer">
             View Details 
-          </button>
+          </button> */}
+          <a
+            href={`https://aperfectstay.ai/aperfect-pms/booking/${booking?.booking_details?.booking_key}/view-details`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition cursor-pointer inline-block"
+          >
+            View Details
+          </a>
           <button 
             onClick={() => onCancelBooking?.(booking)}
             className="ml-3 px-4 py-2 border text-red-500 rounded hover:bg-gray-100 transition cursor-pointer"

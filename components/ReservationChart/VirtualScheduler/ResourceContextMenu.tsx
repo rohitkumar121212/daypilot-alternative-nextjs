@@ -13,11 +13,17 @@ const ResourceContextMenu = ({ isOpen, position, resource, onClose, onAction }) 
     } else {
       // Apartment/Child options
       return [
-        { id: 'view-apartment', label: 'View Apartment Details', icon: '🏠' },
-        { id: 'edit-apartment', label: 'Edit Apartment', icon: '✏️' },
-        { id: 'maintenance', label: 'Schedule Maintenance', icon: '🔧' },
-        { id: 'block-dates', label: 'Block Dates', icon: '🚫' },
-        { id: 'apartment-reports', label: 'Apartment Reports', icon: '📈' }
+        { id: 'dirty', label: 'Dirty', icon: '🧹' },
+        { id: 'touch-up', label: 'Touch Up', icon: '🖌️' },
+        { id: 'clean', label: 'Clean', icon: '✅' },
+        { id: 'repair', label: 'Repair', icon: '🔧' },
+        { id: 'inspect', label: 'Inspect', icon: '🔍' },
+        { id: 'dnr', label: 'DNR', icon: '🚫' },
+        { id: 'house-use', label: 'House Use', icon: '🏠' },
+        { id: 'view-offered-details', label: 'View Offered Details', icon: '👁️' },
+        { id: 'view-cases-and-tasks', label: 'View Cases & Tasks', icon: '📋' },
+        { id: 'view-address-and-details', label: 'View Address & Details', icon: '📍' },
+        // { id: 'apartment-reports', label: 'Apartment Reports', icon: '📈' }
       ]
     }
   }
