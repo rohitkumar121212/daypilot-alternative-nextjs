@@ -1,5 +1,5 @@
 // Development token - update this when needed
-const DEV_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2NTUyNjE0NDk1ODQ2NDAwLCJlbWFpbCI6ImFwc3RyaWFsQGdtYWlsLmNvbSIsInVzZXJfdHlwZSI6MSwiZXhwIjoxNzcyMTI2MTgyLCJpYXQiOjE3NzIwOTczODJ9._n-ZVackxZsj4w7hcrThIq_9GalYsv5ULqQBY1bw7LU'
+const DEV_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2NTUyNjE0NDk1ODQ2NDAwLCJlbWFpbCI6ImFwc3RyaWFsQGdtYWlsLmNvbSIsInVzZXJfdHlwZSI6MSwiZXhwIjoxNzcyMTMwMDE4LCJpYXQiOjE3NzIxMDEyMTh9.y6FyeJET7oqO_MN3eDBnPXKk9O4vU1aqcBqxDI_-Zfk'
 
 const isDevelopment = process.env.NODE_ENV === 'development'
 

@@ -290,8 +290,8 @@ const ReservationChart = ()=>{
                 onResourcesChange={setResources}
                 startDate={startDate}
                 daysToShow={daysToShow}
-                cellWidth={90}
-                rowHeight={40}
+                cellWidth={100}
+                rowHeight={60}
                 />
             </div>
             </div> 
