@@ -1,5 +1,5 @@
 // Development token - update this when needed
-const DEV_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo0Nzg5ODM5OTE2NDMzNDA4LCJlbWFpbCI6ImFwc2RlbW8yMDIzQGdtYWlsLmNvbSIsInVzZXJfdHlwZSI6MSwiZXhwIjoxNzcyMTMxMzg2LCJpYXQiOjE3NzIxMDI1ODZ9.jI9AeFlvocsiapK6zrIDiik6tygiX-rnMsdwHfQQpQo'
+const DEV_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo0Nzg5ODM5OTE2NDMzNDA4LCJlbWFpbCI6ImFwc2RlbW8yMDIzQGdtYWlsLmNvbSIsInVzZXJfdHlwZSI6MSwiZXhwIjoxNzcyMjE3MDMwLCJpYXQiOjE3NzIxODgyMzB9.HoviqRQ4XJXbSOXRQzeMXDLcWs_-w2NMizAmJ-AG37s'
 
 const isDevelopment = process.env.NODE_ENV === 'development'
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://aperfectstay.ai'

@@ -291,7 +291,7 @@ const ReservationChart = ()=>{
                 startDate={startDate}
                 daysToShow={daysToShow}
                 cellWidth={100}
-                rowHeight={60}
+                rowHeight={40}
                 />
             </div>
             </div> 
