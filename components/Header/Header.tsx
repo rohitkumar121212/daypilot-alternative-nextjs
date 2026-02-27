@@ -6,12 +6,11 @@ const Header = () => {
   const baseDomain="https://aperfectstay.ai"
   
   const menuItems = [
-    { label: 'About Us', url: `${baseDomain}/about` },
-    { label: 'Dashboard', url: `${baseDomain}/dashboard` },
-    { label: 'PMS', url: `${baseDomain}/pms` },
-    { label: 'Manage Properties', url: `${baseDomain}/manage-properties` },
-    { label: 'Reports', url: `${baseDomain}/reports` },
-    { label: 'APS Channel Manager', url: `${baseDomain}/aps-channel-manager` }
+    { label: 'aPerfect Housekeeping', url: `${baseDomain}/aperfect10/gsadmin` },
+    { label: 'aPerfect Team: Collaborate', url: `${baseDomain}/aperfect10/staff_accountability/report` },
+    { label: 'aPerfect PMS', url: `${baseDomain}/aperfect-pms` },
+    { label: 'aPerfect HRMS', url: `${baseDomain}/hrcloud/dashboard` },
+    { label: 'aPerfect Dashboard', url: `${baseDomain}/select_products` }
   ]
   
   const navItems = [
@@ -116,7 +115,7 @@ const Header = () => {
                     <a
                       key={menuItem.label}
                       href={menuItem.url}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-red-600 transition-colors"
+                      className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-red-600 transition-colors"
                     >
                       {menuItem.label}
                     </a>
