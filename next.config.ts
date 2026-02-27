@@ -17,6 +17,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'images.thesqua.re',
       },
+      {
+        protocol: 'https',
+        hostname: 'aperfectstay.ai',
+      },
     ],
   },
 };
