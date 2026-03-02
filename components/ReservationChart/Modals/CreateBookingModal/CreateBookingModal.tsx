@@ -28,6 +28,7 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
   const [caseAccounts, setCaseAccounts] = useState([])
   const [guests, setGuests] = useState([])
   const [taxSets, setTaxSets] = useState([])
+  const [constants, setConstants] = useState(null)
   const [isLoadingData, setIsLoadingData] = useState(false)
   const [formData, setFormData] = useState({
     bookingName: '',
@@ -64,16 +65,19 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
       Promise.all([
         proxyFetch('/aps-api/v1/case-accounts/'),
         proxyFetch('/aps-api/v1/guests/'),
-        proxyFetch('/aps-api/v1/taxsets/')
+        proxyFetch('/aps-api/v1/taxsets/'),
+        fetch('https://aperfectstay.ai/aps-api/v1/constants/').then(res => res.json())
       ])
-        .then(([caseAccountsData, guestsData, taxSetsData]) => {
+        .then(([caseAccountsData, guestsData, taxSetsData, constantsData]) => {
           console.log('Case Accounts:', caseAccountsData)
           console.log('Guests:', guestsData)
           console.log('Tax Sets:', taxSetsData)
+          console.log('Constants:', constantsData)
           
           setCaseAccounts(caseAccountsData?.data || [])
           setGuests(guestsData?.data || [])
           setTaxSets(taxSetsData?.data || [])
+          setConstants(constantsData?.data || null)
         })
         .catch(err => console.error('Failed to fetch modal data:', err))
         .finally(() => setIsLoadingData(false))
@@ -234,13 +238,31 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
 
           {/* Dynamic Form Based on Booking Type */}
           {formData.bookingType === 'book' && (
-            <BookForm formData={formData} handleChange={handleChange} dayCount={dayCount} setFormData={setFormData}/>
+            <BookForm 
+              formData={formData} 
+              handleChange={handleChange} 
+              dayCount={dayCount} 
+              setFormData={setFormData}
+              constants={constants}
+            />
           )}
           {formData.bookingType === 'hold' && (
-            <HoldForm formData={formData} handleChange={handleChange} dayCount={dayCount} setFormData={setFormData}/>
+            <HoldForm 
+              formData={formData} 
+              handleChange={handleChange} 
+              dayCount={dayCount} 
+              setFormData={setFormData}
+              constants={constants}
+            />
           )}
           {formData.bookingType === 'block' && (
-            <BlockForm formData={formData} handleChange={handleChange} dayCount={dayCount} setFormData={setFormData}/>
+            <BlockForm 
+              formData={formData} 
+              handleChange={handleChange} 
+              dayCount={dayCount} 
+              setFormData={setFormData}
+              constants={constants}
+            />
           )}
 
           {/* Booking Type Section - At Top */}

@@ -1,5 +1,5 @@
 import React from 'react'
-import { TITLES, ACCOUNT_LIST, TAXSET_LIST, NATIONALITY_LIST } from '@/constants/constant'
+import { ACCOUNT_LIST, TAXSET_LIST } from '@/constants/constant'
 import guestsData from '@/mocks/data/guests-data.json'
 import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
@@ -10,9 +10,18 @@ interface BookFormProps {
   formData: any
   handleChange: (field: string, value: string) => void
   dayCount: number
+  constants?: any
 }
 
-const BookForm = ({ formData, handleChange, dayCount }: BookFormProps) => {
+const BookForm = ({ formData, handleChange, dayCount, constants }: BookFormProps) => {
+  // Convert API constants to dropdown format
+  const titleOptions = constants?.titles 
+    ? Object.values(constants.titles).map((title: string) => ({ value: title, label: title }))
+    : []
+  
+  const nationalityOptions = constants?.nationalities || []
+  const adultOptions = constants?.adultCountList || []
+  const childrenOptions = constants?.childrenCountList || []
   const handleSelectGuest = (guest: any) => {
     handleChange('guestName', guest.guest_name)
     handleChange('email', guest.guest_email !== 'None' && guest.guest_email !== '' ? guest.guest_email : '')
@@ -63,21 +72,21 @@ const BookForm = ({ formData, handleChange, dayCount }: BookFormProps) => {
 
       <FloatingDropdown
         label="Adults"
-        options={[...Array(10)].map((_, i) => ({ value: String(i + 1), label: String(i + 1) }))}
+        options={adultOptions}
         value={formData.adults}
         onChange={(value) => handleChange('adults', value)}
       />
 
       <FloatingDropdown
         label="Children"
-        options={[{ value: '0', label: '0' }, ...Array(5).fill(0).map((_, i) => ({ value: String(i + 1), label: String(i + 1) }))].filter((_, i) => i === 0 || i > 0)}
+        options={childrenOptions}
         value={formData.children}
         onChange={(value) => handleChange('children', value)}
       />
 
       <FloatingDropdown
         label="Title"
-        options={Object.values(TITLES).map(title => ({ value: title, label: title }))}
+        options={titleOptions}
         value={formData.title}
         onChange={(value) => handleChange('title', value)}
       />
@@ -146,7 +155,7 @@ const BookForm = ({ formData, handleChange, dayCount }: BookFormProps) => {
         value={formData.nationality || ''}
         onChange={(value) => handleChange('nationality', value)}
         onSelect={handleSelectNationality}
-        suggestions={NATIONALITY_LIST}
+        suggestions={nationalityOptions}
         filterKey="label"
         displayKey="label"
       />
