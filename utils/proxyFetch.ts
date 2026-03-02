@@ -1,7 +1,6 @@
 const isDevelopment = process.env.NODE_ENV === 'development'
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://aperfectstay.ai'
 
-// Map of API endpoints to their proxy routes
 const PROXY_ROUTES: Record<string, string> = {
   '/aps-api/v1/case-accounts/': '/api/proxy/case-accounts',
   '/aps-api/v1/users/details/private': '/api/proxy/user-details',

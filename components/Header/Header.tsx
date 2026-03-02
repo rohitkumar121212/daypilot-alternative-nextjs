@@ -1,12 +1,17 @@
 'use client'
 
 import Image from 'next/image'
+import { useEffect, useState } from 'react'
+import { proxyFetch } from '@/utils/proxyFetch'
 
-interface HeaderProps {
-  user?: any
-}
-
-const Header = ({ user }: HeaderProps) => {
+const Header = () => {
+  const [user, setUser] = useState<any>(null)
+  
+  useEffect(() => {
+    proxyFetch('/aps-api/v1/users/details/private')
+      .then(data => setUser(data?.data?.user_details || "Unknown User"))
+      .catch(err => console.error('Failed to fetch user:', err))
+  }, [])
   const baseDomain="https://aperfectstay.ai"
   
   const menuItems = [
@@ -168,6 +173,7 @@ const Header = ({ user }: HeaderProps) => {
             </ul>
           </nav>
         </div>
+        {console.log('User Info:', user)}
 
         {/* User Info */}
         <div className="flex-shrink-0 flex items-center gap-3 relative group cursor-pointer">
@@ -175,8 +181,8 @@ const Header = ({ user }: HeaderProps) => {
             U
           </div>
           <div className="text-right">
-            <div className="text-sm font-medium text-gray-900">User Name</div>
-            <div className="text-xs text-gray-500">user@example.com</div>
+            <div className="text-sm font-medium text-gray-900">{user?.name || "User Name"}</div>
+            <div className="text-xs text-gray-500">{user?.email || "user@example.com"}</div>
           </div>
           
           {/* User Dropdown Menu */}

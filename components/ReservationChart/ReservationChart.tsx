@@ -5,7 +5,7 @@ import VirtualScheduler from './VirtualScheduler/VirtualScheduler';
 import FilterContainer from './Filter/FilterContainer';
 import { detectOverbookings } from '@/utils/overbookingUtils';
 import { apiFetch } from '@/utils/apiRequest';
-import { sessionFetch } from '@/utils/sessionFetch';
+import { proxyFetch } from '@/utils/proxyFetch';
 
 const ReservationChart = ()=>{
   const [resources, setResources] = useState([])
@@ -195,7 +195,7 @@ const ReservationChart = ()=>{
       const resourcesUrl = `https://aperfectstay.ai/api/aps-pms/apts/private`
       const bookingsUrl = `https://aperfectstay.ai/api/aps-pms/reservations/private?start=${startDate}&end=${endDate}`
       const availabilityUrl = `https://aperfectstay.ai/api/aps-pms/buildings/avail/private?start=${startDate}&end=${endDate}`
-      const caseAccountUrl = `https://aperfectstay.ai/aps-api/v1/case-accounts/`
+      const caseAccountUrl = '/aps-api/v1/case-accounts/'
       // ⚡ Fast requests first
       const [resourcesJson, bookingsJson] = await Promise.all([
         apiFetch(resourcesUrl),
@@ -241,11 +241,12 @@ const ReservationChart = ()=>{
         .catch(err => {
           console.error('Failed to load availability data', err)
         })
-      // 🔄 Fetch case accounts in background (uses session)
-      sessionFetch(caseAccountUrl)
+      // 🔄 Fetch case accounts in background (uses proxy in dev, direct in prod)
+      proxyFetch(caseAccountUrl)
         .then(caseAccountJson => {
           if (!cancelled) {
-            console.log('Case Accounts:', caseAccountJson?.data || [])
+            console.log('Case Accounts Full Response:', caseAccountJson)
+            console.log('Case Accounts Data:', caseAccountJson?.data || [])
           }
         })
         .catch(err => {
