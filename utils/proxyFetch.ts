@@ -4,6 +4,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://aperfectstay.a
 const PROXY_ROUTES: Record<string, string> = {
   '/aps-api/v1/case-accounts/': '/api/proxy/case-accounts',
   '/aps-api/v1/users/details/private': '/api/proxy/user-details',
+  '/aps-api/v1/guests/': '/api/proxy/guests',
+  '/aps-api/v1/taxsets/': '/api/proxy/taxsets',
 }
 
 export async function proxyFetch(url: string, options: RequestInit = {}) {

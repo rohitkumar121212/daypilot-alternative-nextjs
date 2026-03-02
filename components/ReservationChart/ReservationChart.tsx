@@ -244,16 +244,16 @@ const ReservationChart = ()=>{
           console.error('Failed to load availability data', err)
         })
       // 🔄 Fetch case accounts in background (uses proxy in dev, direct in prod)
-      proxyFetch(caseAccountUrl)
-        .then(caseAccountJson => {
-          if (!cancelled) {
-            console.log('Case Accounts Full Response:', caseAccountJson)
-            console.log('Case Accounts Data:', caseAccountJson?.data || [])
-          }
-        })
-        .catch(err => {
-          console.error('Failed to load case accounts data', err)
-        })
+      // proxyFetch(caseAccountUrl)
+      //   .then(caseAccountJson => {
+      //     if (!cancelled) {
+      //       console.log('Case Accounts Full Response:', caseAccountJson)
+      //       console.log('Case Accounts Data:', caseAccountJson?.data || [])
+      //     }
+      //   })
+      //   .catch(err => {
+      //     console.error('Failed to load case accounts data', err)
+      //   })
 
     } catch (err) {
       console.error('Failed to load scheduler data', err)

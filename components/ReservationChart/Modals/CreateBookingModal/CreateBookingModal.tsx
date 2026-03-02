@@ -4,6 +4,7 @@ import BookForm from './BookForm'
 import HoldForm from './HoldForm'
 import BlockForm from './BlockForm'
 import { createReservation, createHold, createBlock } from '@/apiData/services/pms/bookings'
+import { proxyFetch } from '@/utils/proxyFetch'
 
 /**
  * CreateBookingModal - Modal dialog for creating/editing bookings
@@ -24,6 +25,10 @@ const reservationMap: Record<string, string> = {
 
 
 const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onConfirm }) => {
+  const [caseAccounts, setCaseAccounts] = useState([])
+  const [guests, setGuests] = useState([])
+  const [taxSets, setTaxSets] = useState([])
+  const [isLoadingData, setIsLoadingData] = useState(false)
   const [formData, setFormData] = useState({
     bookingName: '',
     title: '',
@@ -50,6 +55,30 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
   
   const isEditing = !!booking
   const modalData = booking || selection
+  
+  // Fetch all required data when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setIsLoadingData(true)
+      
+      Promise.all([
+        proxyFetch('/aps-api/v1/case-accounts/'),
+        proxyFetch('/aps-api/v1/guests/'),
+        proxyFetch('/aps-api/v1/taxsets/')
+      ])
+        .then(([caseAccountsData, guestsData, taxSetsData]) => {
+          console.log('Case Accounts:', caseAccountsData)
+          console.log('Guests:', guestsData)
+          console.log('Tax Sets:', taxSetsData)
+          
+          setCaseAccounts(caseAccountsData?.data || [])
+          setGuests(guestsData?.data || [])
+          setTaxSets(taxSetsData?.data || [])
+        })
+        .catch(err => console.error('Failed to fetch modal data:', err))
+        .finally(() => setIsLoadingData(false))
+    }
+  }, [isOpen])
   
   useEffect(() => {
     if (isOpen && booking) {
@@ -180,9 +209,18 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
       onClick={handleBackdropClick}
     >
       <div
-        className="bg-white rounded-lg shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-lg shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto relative"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Loading Overlay */}
+        {isLoadingData && (
+          <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-10 rounded-lg">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              <p className="text-gray-700 font-medium">Loading data...</p>
+            </div>
+          </div>
+        )}
         {/* Header */}
         <div className="px-6 py-4 border-b border-gray-200 sticky top-0 bg-white">
           <h2 className="text-xl font-semibold text-gray-900">
