@@ -2,7 +2,11 @@
 
 import Image from 'next/image'
 
-const Header = () => {
+interface HeaderProps {
+  user?: any
+}
+
+const Header = ({ user }: HeaderProps) => {
   const baseDomain="https://aperfectstay.ai"
   
   const menuItems = [
