@@ -69,15 +69,19 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
         fetch('https://aperfectstay.ai/aps-api/v1/constants/').then(res => res.json())
       ])
         .then(([caseAccountsData, guestsData, taxSetsData, constantsData]) => {
-          console.log('Case Accounts:', caseAccountsData)
-          console.log('Guests:', guestsData)
-          console.log('Tax Sets:', taxSetsData)
-          console.log('Constants:', constantsData)
+          // Transform accounts to match FloatingAutocomplete format
+          const transformedAccounts = caseAccountsData?.account_list?.map((account: any) => ({
+            label: account['data-string'],
+            value: account.account_id
+          })) || []
           
           setCaseAccounts(caseAccountsData?.data || [])
           setGuests(guestsData?.data || [])
           setTaxSets(taxSetsData?.data || [])
-          setConstants(constantsData?.data || null)
+          setConstants({
+            ...constantsData?.data,
+            accounts: transformedAccounts
+          })
         })
         .catch(err => console.error('Failed to fetch modal data:', err))
         .finally(() => setIsLoadingData(false))
