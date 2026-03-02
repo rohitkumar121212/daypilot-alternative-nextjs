@@ -5,7 +5,7 @@ import VirtualScheduler from './VirtualScheduler/VirtualScheduler';
 import FilterContainer from './Filter/FilterContainer';
 import { detectOverbookings } from '@/utils/overbookingUtils';
 import { apiFetch } from '@/utils/apiRequest';
-import { sessionFetch } from '@/utils/sessionFetch';
+import { proxyFetch } from '@/utils/proxyFetch';
 
 const ReservationChart = ()=>{
   const [resources, setResources] = useState([])
@@ -18,6 +18,7 @@ const ReservationChart = ()=>{
 
   const [resourcesLoaded, setResourcesLoaded] = useState(false)
   const [bookingsLoaded, setBookingsLoaded] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   // Force landscape on mobile
   useEffect(() => {
@@ -195,7 +196,7 @@ const ReservationChart = ()=>{
       const resourcesUrl = `https://aperfectstay.ai/api/aps-pms/apts/private`
       const bookingsUrl = `https://aperfectstay.ai/api/aps-pms/reservations/private?start=${startDate}&end=${endDate}`
       const availabilityUrl = `https://aperfectstay.ai/api/aps-pms/buildings/avail/private?start=${startDate}&end=${endDate}`
-      const caseAccountUrl = `https://aperfectstay.ai/aps-api/v1/case-accounts/`
+      const caseAccountUrl = '/aps-api/v1/case-accounts/'
       // ⚡ Fast requests first
       const [resourcesJson, bookingsJson] = await Promise.all([
         apiFetch(resourcesUrl),
@@ -230,6 +231,7 @@ const ReservationChart = ()=>{
       setResourcesLoaded(true)
       setBookings(bookingsWithOverbooking)
       setBookingsLoaded(true)
+      setIsLoading(false)
 
       // 🔄 Fetch availability in background
       apiFetch(availabilityUrl)
@@ -241,19 +243,21 @@ const ReservationChart = ()=>{
         .catch(err => {
           console.error('Failed to load availability data', err)
         })
-      // 🔄 Fetch case accounts in background (uses session)
-      sessionFetch(caseAccountUrl)
-        .then(caseAccountJson => {
-          if (!cancelled) {
-            console.log('Case Accounts:', caseAccountJson?.data || [])
-          }
-        })
-        .catch(err => {
-          console.error('Failed to load case accounts data', err)
-        })
+      // 🔄 Fetch case accounts in background (uses proxy in dev, direct in prod)
+      // proxyFetch(caseAccountUrl)
+      //   .then(caseAccountJson => {
+      //     if (!cancelled) {
+      //       console.log('Case Accounts Full Response:', caseAccountJson)
+      //       console.log('Case Accounts Data:', caseAccountJson?.data || [])
+      //     }
+      //   })
+      //   .catch(err => {
+      //     console.error('Failed to load case accounts data', err)
+      //   })
 
     } catch (err) {
       console.error('Failed to load scheduler data', err)
+      setIsLoading(false)
     }
   }
 
@@ -264,7 +268,15 @@ const ReservationChart = ()=>{
   }
 }, [startDate, daysToShow])
     return (
-        <div className="flex-1 overflow-hidden flex flex-col">
+        <div className="flex-1 overflow-hidden flex flex-col relative">
+            {isLoading && (
+              <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-50">
+                <div className="bg-white rounded-lg shadow-2xl p-8 flex flex-col items-center gap-4">
+                  <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                  <p className="text-gray-700 font-medium text-lg">Loading reservations...</p>
+                </div>
+              </div>
+            )}
             <div className="flex-1 border-b-2 border-gray-300">
             {/* <div className="bg-blue-50 px-4 py-2 border-b border-gray-200">
                 <h2 className="text-lg font-semibold text-blue-800">SimpleVirtualScheduler (Custom Implementation)</h2>
@@ -294,7 +306,7 @@ const ReservationChart = ()=>{
                 rowHeight={40}
                 />
             </div>
-            </div> 
+            </div>
          </div>
     );
 }
