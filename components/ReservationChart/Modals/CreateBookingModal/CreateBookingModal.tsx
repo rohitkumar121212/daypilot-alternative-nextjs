@@ -69,15 +69,25 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
         fetch('https://aperfectstay.ai/aps-api/v1/constants/').then(res => res.json())
       ])
         .then(([caseAccountsData, guestsData, taxSetsData, constantsData]) => {
-          console.log('Case Accounts:', caseAccountsData)
-          console.log('Guests:', guestsData)
-          console.log('Tax Sets:', taxSetsData)
-          console.log('Constants:', constantsData)
+          // Transform accounts and taxsets to match FloatingAutocomplete format
+          const transformedAccounts = caseAccountsData?.account_list?.map((account: any) => ({
+            label: account['data-string'],
+            value: account.account_id
+          })) || []
+          
+          const transformedTaxSets = taxSetsData?.account_list?.map((tax: any) => ({
+            label: tax['data-string'],
+            value: tax.account_id
+          })) || []
           
           setCaseAccounts(caseAccountsData?.data || [])
           setGuests(guestsData?.data || [])
           setTaxSets(taxSetsData?.data || [])
-          setConstants(constantsData?.data || null)
+          setConstants({
+            ...constantsData?.data,
+            accounts: transformedAccounts,
+            taxSets: transformedTaxSets
+          })
         })
         .catch(err => console.error('Failed to fetch modal data:', err))
         .finally(() => setIsLoadingData(false))
@@ -147,8 +157,9 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
       prop_abbr_id: resource?.id,
       new_start_date: modalData.startDate,
       new_end_date: modalData.endDate,
+      response_version: "v1",
       duration: `${dayCount} Nights`,
-      adult_count: formData.adults || '1',
+      adult_count: (formData.adults || 1).toString(),
       child_count: formData.children || '0',
       room_count: '1',
       title: formData.title || '',
@@ -171,16 +182,22 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
     }
 
     try {
-      let response
-      if (formData.bookingType === 'book') {
-        response = await createReservation(payload)
-      } else if (formData.bookingType === 'hold') {
-        response = await createHold(payload)
-      } else if (formData.bookingType === 'block') {
-        response = await createBlock(payload)
-      }
+      const isDevelopment = process.env.NODE_ENV === 'development'
+      const url = isDevelopment
+        ? '/api/proxy/add-reservation'
+        : 'https://aperfectstay.ai/api/aperfect-pms/add-new-reservation'
       
-      console.log('Booking created successfully:', response?.data)
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+        credentials: 'include',
+      })
+
+      const data = await response.json()
+      console.log('Booking created successfully:', data)
       
       onConfirm({
         ...(booking || {}),

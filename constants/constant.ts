@@ -17,7 +17,7 @@ export const TITLES = {
 export const ACCOUNT_LIST = [
   {
     account_id: "5363662837514240",
-    label: "Agent  1 - saurabh@thesqua.re - APS Demo Account-test",
+    label: "local Agent  1 - saurabh@thesqua.re - APS Demo Account",
   },
   {
     account_id: "6603633791598592",
@@ -29,7 +29,7 @@ export const ACCOUNT_LIST = [
   },
   {
     account_id: "6663015422230528",
-    label: "fet - ac1111@gmail.com - APS Demo Account-test",
+    label: "fetabcsdas - ac1111@gmail.com - APS Demo Account",
   },
   {
     account_id: "4641994670342144",
@@ -40,7 +40,7 @@ export const ACCOUNT_LIST = [
 export const TAXSET_LIST = [
   {
     account_id: "6545823393382400",
-    label: "Mandate Tax",
+    label: "Local Mandate Tax",
   },
   {
     account_id: "6327093392572416",

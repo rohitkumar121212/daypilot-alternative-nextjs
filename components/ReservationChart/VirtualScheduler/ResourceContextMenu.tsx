@@ -19,7 +19,7 @@ const ResourceContextMenu = ({ isOpen, position, resource, onClose, onAction }) 
     }
   }
 
-  const statusActions = ['dirty', 'touch-up', 'clean', 'repair', 'inspect', 'dnr', 'house-use']
+  const statusActions = ['dirty', 'touch-up', 'clean', 'repair', 'inspect', 'dnr', 'house_use']
 
   const getMenuItems = () => {
     if (resource?.type === 'parent') {
@@ -39,7 +39,7 @@ const ResourceContextMenu = ({ isOpen, position, resource, onClose, onAction }) 
         { id: 'repair', label: 'Repair', icon: '🔧' },
         { id: 'inspect', label: 'Inspect', icon: '🔍' },
         { id: 'dnr', label: 'DNR', icon: '🚫' },
-        { id: 'house-use', label: 'House Use', icon: '🏠' },
+        { id: 'house_use', label: 'House Use', icon: '🏠' },
         { id: 'view-offered-details', label: 'View Offered Details', icon: '👁️' },
         { id: 'view-cases-and-tasks', label: 'View Cases & Tasks', icon: '📋' },
         { id: 'view-address-and-details', label: 'View Address & Details', icon: '📍' },
