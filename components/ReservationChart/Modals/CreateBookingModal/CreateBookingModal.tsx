@@ -245,7 +245,7 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
         {/* Header */}
         <div className="px-6 py-4 border-b border-gray-200 sticky top-0 bg-white">
           <h2 className="text-xl font-semibold text-gray-900">
-            {console.log('Resource in Modal:', resource)}
+            {console.log('constants in CreateBookingModal:', constants)}
             {resource?.name} - Add Reservation
           </h2>
         </div>

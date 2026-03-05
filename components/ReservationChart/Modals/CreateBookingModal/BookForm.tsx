@@ -118,15 +118,17 @@ const BookForm = ({ formData, handleChange, dayCount, constants }: BookFormProps
         onChange={(e) => handleChange('phone', e.target.value)}
       />
 
-      <FloatingAutocomplete
-        label="Account"
-        value={formData.account || ''}
-        onChange={(value) => handleChange('account', value)}
-        onSelect={handleSelectAccount}
-        suggestions={accountOptions}
-        filterKey="label"
-        displayKey="label"
-      />
+      {accountOptions.length > 0 && (
+        <FloatingAutocomplete
+          label="Account"
+          value={formData.account || ''}
+          onChange={(value) => handleChange('account', value)}
+          onSelect={handleSelectAccount}
+          suggestions={accountOptions}
+          filterKey="label"
+          displayKey="label"
+        />
+      )}
 
       <FloatingInput
         label="Rent Per Night"
@@ -135,7 +137,7 @@ const BookForm = ({ formData, handleChange, dayCount, constants }: BookFormProps
         onChange={(e) => handleChange('totalPrice', e.target.value)}
       />
 
-      <FloatingAutocomplete
+      {taxOptions.length > 0 && (<FloatingAutocomplete
         label="Select Tax"
         value={formData.tax || ''}
         onChange={(value) => handleChange('tax', value)}
@@ -143,7 +145,7 @@ const BookForm = ({ formData, handleChange, dayCount, constants }: BookFormProps
         suggestions={taxOptions}
         filterKey="label"
         displayKey="label"
-      />
+      />)}
 
       <FloatingInput
         label="ID Number"

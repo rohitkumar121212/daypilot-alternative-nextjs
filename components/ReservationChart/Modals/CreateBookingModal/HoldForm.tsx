@@ -9,9 +9,17 @@ interface HoldFormProps {
   formData: any
   handleChange: (field: string, value: string) => void
   dayCount: number
+  constants?: any
 }
 
-const HoldForm = ({ formData, handleChange, dayCount }: HoldFormProps) => {
+const HoldForm = ({ formData, handleChange, dayCount, constants }: HoldFormProps) => {
+  const titleOptions = constants?.titles 
+    ? Object.values(constants.titles).map((title: string) => ({ value: title, label: title }))
+    : []
+  
+  const adultOptions = constants?.adultCountList || []
+  const childrenOptions = constants?.childrenCountList || []
+  const accountOptions = constants?.accounts || []
   const handleSelectGuest = (guest: any) => {
     handleChange('guestName', guest.guest_name)
     handleChange('email', guest.guest_email !== 'None' && guest.guest_email !== '' ? guest.guest_email : '')
@@ -49,21 +57,21 @@ const HoldForm = ({ formData, handleChange, dayCount }: HoldFormProps) => {
 
       <FloatingDropdown
         label="Adults"
-        options={[...Array(10)].map((_, i) => ({ value: String(i + 1), label: String(i + 1) }))}
+        options={adultOptions}
         value={formData.adults}
         onChange={(value) => handleChange('adults', value)}
       />
 
       <FloatingDropdown
         label="Children"
-        options={[{ value: '0', label: '0' }, ...Array(5).fill(0).map((_, i) => ({ value: String(i + 1), label: String(i + 1) }))].filter((_, i) => i === 0 || i > 0)}
+        options={childrenOptions}
         value={formData.children}
         onChange={(value) => handleChange('children', value)}
       />
 
       <FloatingDropdown
         label="Title"
-        options={Object.values(TITLES).map(title => ({ value: title, label: title }))}
+        options={titleOptions}
         value={formData.title}
         onChange={(value) => handleChange('title', value)}
       />
@@ -95,15 +103,17 @@ const HoldForm = ({ formData, handleChange, dayCount }: HoldFormProps) => {
         // placeholder="Enter email"
       />
 
-      <FloatingAutocomplete
-        label="Account"
-        value={formData.account || ''}
-        onChange={(value) => handleChange('account', value)}
-        onSelect={handleSelectAccount}
-        suggestions={ACCOUNT_LIST}
-        filterKey="label"
-        displayKey="label"
-      />
+      {accountOptions.length > 0 && (
+        <FloatingAutocomplete
+          label="Account"
+          value={formData.account || ''}
+          onChange={(value) => handleChange('account', value)}
+          onSelect={handleSelectAccount}
+          suggestions={accountOptions}
+          filterKey="label"
+          displayKey="label"
+        />
+      )}
 
       <FloatingInput
         label="Enquiry App ID"
