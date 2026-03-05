@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 // UPDATE THESE WITH FRESH VALUES FROM PRODUCTION
-const DEV_SESSION = '.eJxtkMFOxSAQRX_FdGn0PWjLQLsybtz6B80AQyWhtAFq8mL8d6lPTTRugOHeuZzhrZlcovzSjCXtdNdM3jZjo0BwSdhLPWjsXGskYMuJgEvrtCRw0gnNHMIgFCiORlmJ3DKpua0bCaKulbJnTIKWTA6gOq560gwVNxqcGxRwGFinsRWoW-gEZ9oMphNKmaaCbJQWjBTLD9qeKV35cMsleQwP84I-nMy6OEmsdqFdfPz0gBAt8L6vgD1Ujm8t4kI14fDGNV6OzGtpAuZcjy7gfHMs97M-rvd0GJ4en2vhfCiVQV8mTXYql-2Iuv0t7D5YH-cvIfjFlz8vLXsoPqyzj83oMOQ625bo1a97nvYUqumllC2P5zPWT3BkSi54OaE_1-ZMwf074PsHKWeOIQ.aak1mw.WoQZc0uQxh3vKlrdZdqit6wT_Mg'
-const DEV_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2NTUyNjE0NDk1ODQ2NDAwLCJlbWFpbCI6ImFwc3RyaWFsQGdtYWlsLmNvbSIsInVzZXJfdHlwZSI6MSwiZXhwIjoxNzcyNzI1NzgxLCJpYXQiOjE3NzI2OTY5ODF9.JbtiM_xjpDdP-R_g_bTs14_55RTVxz3ofMZsUSr5dUQ'
+const DEV_SESSION = process.env.DEV_SESSION || ''
+const DEV_TOKEN = process.env.DEV_TOKEN || ''
 
 export async function POST(request: NextRequest) {
   const isDevelopment = process.env.NODE_ENV === 'development'
