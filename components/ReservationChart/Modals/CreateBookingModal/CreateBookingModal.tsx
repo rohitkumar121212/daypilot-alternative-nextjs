@@ -182,12 +182,18 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
     }
 
     try {
-      const response = await fetch('/api/proxy/add-reservation', {
+      const isDevelopment = process.env.NODE_ENV === 'development'
+      const url = isDevelopment
+        ? '/api/proxy/add-reservation'
+        : 'https://aperfectstay.ai/api/aperfect-pms/add-new-reservation'
+      
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
+        credentials: 'include',
       })
 
       const data = await response.json()
