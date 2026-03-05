@@ -23,6 +23,7 @@ const BookForm = ({ formData, handleChange, dayCount, constants }: BookFormProps
   const adultOptions = constants?.adultCountList || []
   const childrenOptions = constants?.childrenCountList || []
   const accountOptions = constants?.accounts || []
+  const taxOptions = constants?.taxSets || []
   const handleSelectGuest = (guest: any) => {
     handleChange('guestName', guest.guest_name)
     handleChange('email', guest.guest_email !== 'None' && guest.guest_email !== '' ? guest.guest_email : '')
@@ -139,7 +140,7 @@ const BookForm = ({ formData, handleChange, dayCount, constants }: BookFormProps
         value={formData.tax || ''}
         onChange={(value) => handleChange('tax', value)}
         onSelect={handleSelectTax}
-        suggestions={TAXSET_LIST}
+        suggestions={taxOptions}
         filterKey="label"
         displayKey="label"
       />
