@@ -1,10 +1,10 @@
-const ViewDetailPage = () => {
+const ViewDetailsPage=() => {
   return (
     <div>
-      <h1>Booking Detail</h1>
+      <h1>Booking Details</h1>
       {/* Booking details content goes here */}
     </div>
   )
 }
 
-export default ViewDetailPage
+export default ViewDetailsPage
