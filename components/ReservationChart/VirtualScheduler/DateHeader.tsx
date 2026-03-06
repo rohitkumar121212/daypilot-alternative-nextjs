@@ -17,15 +17,16 @@ const DateHeader = ({ date, cellWidth = 100, totalAvailability = null }) => {
       }`}
       style={{ width: `${cellWidth}px`, minWidth: `${cellWidth}px`, flexShrink: 0 }}
     >
-      <div className={`text-xs font-medium ${formatted.isToday ? 'text-blue-600' : 'text-gray-600'}`}>
-        {formatted.dayName}
-      </div>
-      <div className={`text-lg font-semibold ${formatted.isToday ? 'text-blue-700' : 'text-gray-900'}`}>
-        {formatted.dayNumber}
-      </div>
       <div className={`text-xs ${formatted.isToday ? 'text-blue-600' : 'text-gray-500'}`}>
         {formatted.month}
       </div>
+      <div className={`text-xs font-medium ${formatted.isToday ? 'text-blue-600' : 'text-gray-600'}`}>
+        {formatted.dayName} {" "} {formatted.dayNumber}
+      </div>
+      {/* <div className={`text-lg font-semibold ${formatted.isToday ? 'text-blue-700' : 'text-gray-900'}`}>
+        {formatted.dayNumber}
+      </div> */}
+      
       {totalAvailability && (
         <>
           {/* <div className={`text-xs font-semibold mt-1 ${totalAvailability.available > 0 ? 'text-green-700' : 'text-red-700'}`}>
