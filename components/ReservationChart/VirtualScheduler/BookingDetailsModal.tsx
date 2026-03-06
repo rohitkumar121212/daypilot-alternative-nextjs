@@ -20,13 +20,18 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
   
   if (!isOpen || !booking) return null
 
-  const tabs = [
-    { id: 'details', label: 'Booking Details' },
-    { id: 'case', label: 'Create New Case' },
-    { id: 'task', label: 'Create New Task' },
-    { id: 'payment', label: 'Add Payment' },
-    { id: 'share', label: 'Share Payment Link' }
+  const bookingType = booking?.booking_details?.booking_type
+  
+  // Define tabs based on booking type
+  const allTabs = [
+    { id: 'details', label: 'Booking Details', types: ['reserve', 'temp_reserve', 'do_not_reserve'] },
+    { id: 'case', label: 'Create New Case', types: ['reserve', 'do_not_reserve'] },
+    { id: 'task', label: 'Create New Task', types: ['reserve', 'do_not_reserve'] },
+    { id: 'payment', label: 'Add Payment', types: ['reserve'] },
+    { id: 'share', label: 'Share Payment Link', types: ['reserve'] }
   ]
+  
+  const tabs = allTabs.filter(tab => tab.types.includes(bookingType))
 
   const renderTabContent = () => {
     switch (activeTab) {

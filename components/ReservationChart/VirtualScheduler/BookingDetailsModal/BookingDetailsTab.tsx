@@ -46,40 +46,51 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose }: BookingDetails
         />
       </div> */}
       {/* Other Details */}
-      <div className='pt-4 border-t border-gray-300'>
+      {/* <div className='pt-4 border-t border-gray-300'>
         <h3 className="text-lg font-semibold text-gray-800 mb-1 pb-2">Other Details</h3>
         <BookingNotes booking={booking} />
+      </div> */}
+      {/* CTA */}
+      <div className='border-t border-gray-300 pt-4'>
+        <a
+          href={`https://aperfectstay.ai/aperfect-pms/booking/${booking?.booking_details?.booking_key}/view-details`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition cursor-pointer inline-block"
+        >
+          View Details
+        </a>
+        <button 
+            onClick={()=>{}}
+            className="ml-3 px-4 py-2 border text-red-500 rounded-md hover:bg-gray-100 transition cursor-pointer"
+          >
+            Update Booking
+          </button>
+        {booking?.booking_details?.booking_type === 'temp_reserve' && (
+          <button 
+            onClick={()=>{}}
+            className="ml-3 px-4 py-2 border text-red-500 rounded-md hover:bg-gray-100 transition cursor-pointer"
+          >
+            Convert to Booking
+          </button>
+        )}
+        <button 
+          onClick={() => onCancelBooking?.(booking)}
+          className="ml-3 px-4 py-2 border text-red-500 rounded-md hover:bg-gray-100 transition cursor-pointer"
+        >
+          Cancel Booking
+        </button>
+        {/* <button className="ml-3 px-4 py-2 border text-red-500 rounded-md hover:bg-gray-100 transition cursor-pointer">
+          Edit Booking
+        </button> */}
+        
+        <button 
+          onClick={() => onClose?.()}
+          className="ml-3 px-4 py-2 border text-red-500 rounded-md hover:bg-gray-100 transition cursor-pointer"
+        >
+          Close
+        </button>
       </div>
-        {/* CTA */}
-        <div className='border-t border-gray-300 pt-4'>
-          {/* <button className=" px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition cursor-pointer">
-            View Details 
-          </button> */}
-          <a
-            href={`https://aperfectstay.ai/aperfect-pms/booking/${booking?.booking_details?.booking_key}/view-details`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition cursor-pointer inline-block"
-          >
-            View Details
-          </a>
-          <button 
-            onClick={() => onCancelBooking?.(booking)}
-            className="ml-3 px-4 py-2 border text-red-500 rounded hover:bg-gray-100 transition cursor-pointer"
-          >
-            Cancel Booking
-          </button>
-          <button className="ml-3 px-4 py-2 border text-red-500 rounded hover:bg-gray-100 transition cursor-pointer">
-            Edit Booking
-          </button>
-          
-          <button 
-            onClick={() => onClose?.()}
-            className="ml-3 px-4 py-2 border text-red-500 rounded hover:bg-gray-100 transition cursor-pointer"
-          >
-            Close
-          </button>
-        </div>
     </div>
   )
 }
