@@ -260,7 +260,7 @@ const VirtualScheduler = ({
     setSelection({
       resourceId,
       startDate: date,
-      endDate: date
+      endDate: dayjs(date).add(1, 'day').format('YYYY-MM-DD')
     })
   }, [visibleRows])
   

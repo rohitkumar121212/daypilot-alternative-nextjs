@@ -51,7 +51,8 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
     holdBookingTill: '',
     status: '',
     dnrNotes: '',
-    bookingType: 'block'
+    bookingType: 'block',
+    sendInstantMail: false
   })
   
   const isEditing = !!booking
@@ -117,7 +118,8 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
         holdBookingTill: booking.holdBookingTill || '',
         status: booking.status || '',
         dnrNotes: booking.dnrNotes || '',
-        bookingType: booking.bookingType || 'book'
+        bookingType: booking.bookingType || 'book',
+        sendInstantMail: booking.sendInstantMail || false
       })
     } else if (isOpen) {
       setFormData({
@@ -141,7 +143,8 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
         holdBookingTill: '',
         status: '',
         dnrNotes: '',
-        bookingType: 'book'
+        bookingType: 'book',
+        sendInstantMail: false
       })
     }
   }, [isOpen, booking, modalData])
@@ -178,7 +181,8 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
       dnr_reason: formData.dnrNotes || '',
       dnr_close_calendar: 'yes',
       reservation_type: reservationType,
-      new_entry: 'Save'
+      new_entry: 'Save',
+      send_instant_mail: formData.sendInstantMail ? 'yes' : 'no'
     }
 
     try {
@@ -321,6 +325,21 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
               </label>
             </div>
           </div>
+          {formData.bookingType === 'book' && (
+            <div className="mb-4">
+              <label className="flex items-center cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  id="send_instant_mail" 
+                  name="send_instant_mail"
+                  checked={formData.sendInstantMail}
+                  onChange={(e) => handleChange('sendInstantMail', e.target.checked)}
+                  className="w-4 h-4 text-blue-600 focus:ring-blue-500 rounded"
+                />
+                <span className="ml-2 text-sm text-gray-700">Send instant booking confirmation to guest via email</span>
+              </label>
+            </div>
+          )}
 
           {/* Action Buttons */}
           <div className="mt-6 flex justify-start gap-3">
