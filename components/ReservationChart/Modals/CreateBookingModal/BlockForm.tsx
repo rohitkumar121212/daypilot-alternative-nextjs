@@ -7,9 +7,11 @@ interface BlockFormProps {
   handleChange: (field: string, value: string) => void
   dayCount: number
   setFormData: (data: any) => void
+  errors?: any
+  setErrors?: (errors: any) => void
 }
 
-const BlockForm = ({ formData, handleChange, dayCount, setFormData }: BlockFormProps) => {
+const BlockForm = ({ formData, handleChange, dayCount, setFormData, errors = {}, setErrors }: BlockFormProps) => {
   return (
     <div className="space-y-4">
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -19,12 +21,14 @@ const BlockForm = ({ formData, handleChange, dayCount, setFormData }: BlockFormP
         type='date'
         value={formData?.checkIn} 
         onChange={(e) => handleChange('checkIn', e.target.value)}
+        required
       />
       <FloatingInput 
         label="Check-out" 
         type='date'
         value={formData?.checkOut} 
         onChange={(e) => handleChange('checkOut', e.target.value)}
+        required
       />
 
       <FloatingInput 
@@ -33,18 +37,18 @@ const BlockForm = ({ formData, handleChange, dayCount, setFormData }: BlockFormP
         value={`${dayCount} ${dayCount === 1 ? "Night" : "Nights"}`}
         onChange={(e) => handleChange('duration', e.target.value)}
         readOnly 
+        required
       />
 
       <FloatingDropdown 
           label="Reason" 
           options={DNR_TYPE_LIST}
           value={formData.dnrReason}
-          // onChange={(e) => handleChange('dnrReason', e.target.value)}
           onChange={(value) => {
             setFormData({ ...formData, dnrReason: value })
-            // if (errors.dnrReason) setErrors({ ...errors, dnrReason: '' })
+            if (errors.dnrReason && setErrors) setErrors({ ...errors, dnrReason: '' })
           }}
-          // error={errors.dnrReason}
+          error={errors.dnrReason}
           required
         />
       {/* <div>
@@ -79,9 +83,9 @@ const BlockForm = ({ formData, handleChange, dayCount, setFormData }: BlockFormP
         required={true}
         onChange={(e) => {
           setFormData({ ...formData, dnrNotes: e.target.value })
-          // if (errors.description) setErrors({ ...errors, description: '' })
+          if (errors.dnrNotes && setErrors) setErrors({ ...errors, dnrNotes: '' })
         }}
-        // error={errors.description}
+        error={errors.dnrNotes}
       />
       </div>
     </div>

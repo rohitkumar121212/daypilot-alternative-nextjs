@@ -30,6 +30,7 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
   const [taxSets, setTaxSets] = useState([])
   const [constants, setConstants] = useState(null)
   const [isLoadingData, setIsLoadingData] = useState(false)
+  const [errors, setErrors] = useState({})
   const [formData, setFormData] = useState({
     bookingName: '',
     title: '',
@@ -154,6 +155,19 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
   const dayCount = daysBetween(modalData.startDate, modalData.endDate)
   
   const handleConfirm = async () => {
+    const newErrors = {}
+    
+    // Validate based on booking type
+    if (formData.bookingType === 'block') {
+      if (!formData.dnrReason) newErrors.dnrReason = 'Reason is required'
+      if (!formData.dnrNotes) newErrors.dnrNotes = 'Notes are required'
+    }
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      return
+    }
+    
     const reservationType = reservationMap[formData.bookingType] || ''
 
     const payload = {
@@ -249,7 +263,6 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
         {/* Header */}
         <div className="px-6 py-4 border-b border-gray-200 sticky top-0 bg-white">
           <h2 className="text-xl font-semibold text-gray-900">
-            {console.log('constants in CreateBookingModal:', constants)}
             {resource?.name} - Add Reservation
           </h2>
         </div>
@@ -283,6 +296,8 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
               dayCount={dayCount} 
               setFormData={setFormData}
               constants={constants}
+              errors={errors}
+              setErrors={setErrors}
             />
           )}
 
