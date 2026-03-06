@@ -127,6 +127,7 @@ const BookingBlock = ({
           )}
         </div>
       </HoverCardTrigger>
+      {console.log('BookingBlock Rendered with details:', details)}
       {!isDragging && (
         <HoverCardContent side="top" align="center" className="w-80 z-50" sideOffset={5} collisionPadding={20}>
         <div className="space-y-2">
@@ -172,7 +173,7 @@ const BookingBlock = ({
             <div className="pt-2 border-t">
               <div className="flex justify-between text-xs">
                 <span className="text-gray-600">Rate/Night:</span>
-                <span className="font-medium text-green-700">{details.nightly_rate} INR</span>
+                <span className="font-medium text-green-700">{details.nightly_rate} {booking?.selected_currency}</span>
               </div>
             </div>
           )}
