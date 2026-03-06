@@ -11,9 +11,11 @@ interface BookFormProps {
   handleChange: (field: string, value: string) => void
   dayCount: number
   constants?: any
+  errors?: any
+  setErrors?: (errors: any) => void
 }
 
-const BookForm = ({ formData, handleChange, dayCount, constants }: BookFormProps) => {
+const BookForm = ({ formData, handleChange, dayCount, constants, errors = {}, setErrors }: BookFormProps) => {
   // Convert API constants to dropdown format
   const titleOptions = constants?.titles 
     ? Object.values(constants.titles).map((title: string) => ({ value: title, label: title }))
@@ -54,14 +56,24 @@ const BookForm = ({ formData, handleChange, dayCount, constants }: BookFormProps
         label="Check-in"
         type="date"
         value={formData.checkIn}
-        onChange={(e) => handleChange('checkIn', e.target.value)}
+        onChange={(e) => {
+          handleChange('checkIn', e.target.value)
+          if (errors.checkIn && setErrors) setErrors({ ...errors, checkIn: '' })
+        }}
+        error={errors.checkIn}
+        required
       />
 
       <FloatingInput
         label="Check-out"
         type="date"
         value={formData.checkOut}
-        onChange={(e) => handleChange('checkOut', e.target.value)}
+        onChange={(e) => {
+          handleChange('checkOut', e.target.value)
+          if (errors.checkOut && setErrors) setErrors({ ...errors, checkOut: '' })
+        }}
+        error={errors.checkOut}
+        required
       />
 
       <FloatingInput
@@ -70,6 +82,7 @@ const BookForm = ({ formData, handleChange, dayCount, constants }: BookFormProps
         value={`${dayCount} ${dayCount === 1 ? "Night" : "Nights"}`}
         onChange={() => {}}
         readOnly
+        required
       />
 
       <FloatingDropdown
@@ -96,12 +109,17 @@ const BookForm = ({ formData, handleChange, dayCount, constants }: BookFormProps
       <FloatingAutocomplete
         label="Name"
         value={formData.guestName || ''}
-        onChange={(value) => handleChange('guestName', value)}
+        onChange={(value) => {
+          handleChange('guestName', value)
+          if (errors.guestName && setErrors) setErrors({ ...errors, guestName: '' })
+        }}
         onSelect={handleSelectGuest}
         suggestions={guestsData.guest_list}
         filterKey="guest_name"
         displayKey="guest_name"
         secondaryDisplayKey="data-string"
+        error={errors.guestName}
+        required
       />
 
       <FloatingInput
@@ -115,7 +133,12 @@ const BookForm = ({ formData, handleChange, dayCount, constants }: BookFormProps
         label="Phone"
         type="tel"
         value={formData.phone}
-        onChange={(e) => handleChange('phone', e.target.value)}
+        onChange={(e) => {
+          handleChange('phone', e.target.value)
+          if (errors.phone && setErrors) setErrors({ ...errors, phone: '' })
+        }}
+        error={errors.phone}
+        required
       />
 
       {accountOptions.length > 0 && (
@@ -134,7 +157,12 @@ const BookForm = ({ formData, handleChange, dayCount, constants }: BookFormProps
         label="Rent Per Night"
         type="number"
         value={formData.totalPrice}
-        onChange={(e) => handleChange('totalPrice', e.target.value)}
+        onChange={(e) => {
+          handleChange('totalPrice', e.target.value)
+          if (errors.totalPrice && setErrors) setErrors({ ...errors, totalPrice: '' })
+        }}
+        error={errors.totalPrice}
+        required
       />
 
       {taxOptions.length > 0 && (<FloatingAutocomplete
@@ -168,7 +196,12 @@ const BookForm = ({ formData, handleChange, dayCount, constants }: BookFormProps
         label="Commission %"
         type="number"
         value={formData.commission}
-        onChange={(e) => handleChange('commission', e.target.value)}
+        onChange={(e) => {
+          handleChange('commission', e.target.value)
+          if (errors.commission && setErrors) setErrors({ ...errors, commission: '' })
+        }}
+        error={errors.commission}
+        required
       />
 
       <div className="md:col-span-2 lg:col-span-4">

@@ -165,6 +165,13 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
       if (!formData.checkIn) newErrors.checkIn = 'Check-in is required'
       if (!formData.checkOut) newErrors.checkOut = 'Check-out is required'
       if (!formData.holdBookingTill) newErrors.holdBookingTill = 'Hold booking till is required'
+    } else if (formData.bookingType === 'book') {
+      if (!formData.checkIn) newErrors.checkIn = 'Check-in is required'
+      if (!formData.checkOut) newErrors.checkOut = 'Check-out is required'
+      if (!formData.guestName) newErrors.guestName = 'Name is required'
+      if (!formData.phone) newErrors.phone = 'Phone is required'
+      if (!formData.totalPrice) newErrors.totalPrice = 'Rent per night is required'
+      if (!formData.commission) newErrors.commission = 'Commission is required'
     }
     
     if (Object.keys(newErrors).length > 0) {
@@ -282,6 +289,8 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
               dayCount={dayCount} 
               setFormData={setFormData}
               constants={constants}
+              errors={errors}
+              setErrors={setErrors}
             />
           )}
           {formData.bookingType === 'hold' && (
