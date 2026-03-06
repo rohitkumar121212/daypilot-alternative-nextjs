@@ -10,9 +10,11 @@ interface HoldFormProps {
   handleChange: (field: string, value: string) => void
   dayCount: number
   constants?: any
+  errors?: any
+  setErrors?: (errors: any) => void
 }
 
-const HoldForm = ({ formData, handleChange, dayCount, constants }: HoldFormProps) => {
+const HoldForm = ({ formData, handleChange, dayCount, constants, errors = {}, setErrors }: HoldFormProps) => {
   const titleOptions = constants?.titles 
     ? Object.values(constants.titles).map((title: string) => ({ value: title, label: title }))
     : []
@@ -32,19 +34,29 @@ const HoldForm = ({ formData, handleChange, dayCount, constants }: HoldFormProps
 
   return (
     <>
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mb-2">
       <FloatingInput 
         label="Check-in" 
         type="date"
         value={formData?.checkIn} 
-        onChange={(e) => handleChange('checkIn', e.target.value)}
+        onChange={(e) => {
+          handleChange('checkIn', e.target.value)
+          if (errors.checkIn && setErrors) setErrors({ ...errors, checkIn: '' })
+        }}
+        error={errors.checkIn}
+        required
       />
 
       <FloatingInput 
         label="Check-out" 
         type="date"
         value={formData?.checkOut} 
-        onChange={(e) => handleChange('checkOut', e.target.value)}
+        onChange={(e) => {
+          handleChange('checkOut', e.target.value)
+          if (errors.checkOut && setErrors) setErrors({ ...errors, checkOut: '' })
+        }}
+        error={errors.checkOut}
+        required
       />
 
       <FloatingInput 
@@ -53,6 +65,7 @@ const HoldForm = ({ formData, handleChange, dayCount, constants }: HoldFormProps
         value={`${dayCount} ${dayCount === 1 ? "Night" : "Nights"}`}
         onChange={() => {}}
         readOnly 
+        required
       />
 
       <FloatingDropdown
@@ -127,19 +140,24 @@ const HoldForm = ({ formData, handleChange, dayCount, constants }: HoldFormProps
         label="Hold Booking Till"
         type="datetime-local"
         value={formData.holdBookingTill}
-        onChange={(e) => handleChange('holdBookingTill', e.target.value)}
+        onChange={(e) => {
+          handleChange('holdBookingTill', e.target.value)
+          if (errors.holdBookingTill && setErrors) setErrors({ ...errors, holdBookingTill: '' })
+        }}
+        error={errors.holdBookingTill}
+        required
       />
 
       
       </div>
-      <div className="grid grid-cols-1 gap-4 pt-4">
+      {/* <div className="grid grid-cols-1 gap-4 pt-4">
         <FloatingLabelTextarea
           label="Notes"
           value={formData.notes}
           onChange={(e) => handleChange('notes', e.target.value)}
           rows={3}
         />
-      </div>
+      </div> */}
     </>
   )
 }

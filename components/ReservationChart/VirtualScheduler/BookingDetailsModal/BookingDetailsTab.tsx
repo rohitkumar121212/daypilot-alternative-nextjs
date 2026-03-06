@@ -23,7 +23,9 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose }: BookingDetails
           <FloatingInput label="Enquiry No" value={booking?.booking_details?.enq_app_id || 'N/A'} onChange={() => {}} readOnly />
           <FloatingInput label="Reserved By" value={booking?.booking_details?.booked_by || 'N/A'} onChange={() => {}} readOnly />
           <FloatingInput label="Channex ID" value={booking?.booking_details?.channex_id || 'N/A'} onChange={() => {}} readOnly />
-
+          {booking?.booking_details?.booking_type==='temp_reserve' && (
+            <FloatingInput label="Reserve Till" value={booking?.booking_details?.reserved_till !=='N/A' ? `${(formatDateTime(booking?.booking_details.reserved_till))}` : 'N/A'} onChange={() => {}} readOnly />
+          )}
         </div>
       </div>
 

@@ -161,6 +161,10 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
     if (formData.bookingType === 'block') {
       if (!formData.dnrReason) newErrors.dnrReason = 'Reason is required'
       if (!formData.dnrNotes) newErrors.dnrNotes = 'Notes are required'
+    } else if (formData.bookingType === 'hold') {
+      if (!formData.checkIn) newErrors.checkIn = 'Check-in is required'
+      if (!formData.checkOut) newErrors.checkOut = 'Check-out is required'
+      if (!formData.holdBookingTill) newErrors.holdBookingTill = 'Hold booking till is required'
     }
     
     if (Object.keys(newErrors).length > 0) {
@@ -287,6 +291,8 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
               dayCount={dayCount} 
               setFormData={setFormData}
               constants={constants}
+              errors={errors}
+              setErrors={setErrors}
             />
           )}
           {formData.bookingType === 'block' && (
