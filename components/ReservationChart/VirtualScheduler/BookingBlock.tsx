@@ -127,7 +127,6 @@ const BookingBlock = ({
           )}
         </div>
       </HoverCardTrigger>
-      {console.log('BookingBlock Rendered with details:', details)}
       {!isDragging && (
         <HoverCardContent side="top" align="center" className="w-80 z-50" sideOffset={5} collisionPadding={20}>
         <div className="space-y-2">

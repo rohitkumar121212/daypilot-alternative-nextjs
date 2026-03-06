@@ -228,15 +228,24 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
       const data = await response.json()
       console.log('Booking created successfully:', data)
       
-      onConfirm({
-        ...(booking || {}),
-        resourceId: modalData.resourceId,
-        startDate: modalData.startDate,
-        endDate: modalData.endDate,
-        text: formData.bookingName,
-        ...formData
-      })
-      onClose()
+      if (data.success) {
+        const bookingId = data.data?.reservation_id
+        if (bookingId) {
+          window.location.href = `/aperfect-pms/booking/${bookingId}/view-details`
+        } else {
+          onConfirm({
+            ...(booking || {}),
+            resourceId: modalData.resourceId,
+            startDate: modalData.startDate,
+            endDate: modalData.endDate,
+            text: formData.bookingName,
+            ...formData
+          })
+          onClose()
+        }
+      } else {
+        alert(data.error || 'Failed to create booking')
+      }
     } catch (error) {
       console.error('Failed to create booking:', error)
       // TODO: Show error message to user

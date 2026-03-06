@@ -53,12 +53,14 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify(responseData),
     })
 
-    const text = await response.text()
-    console.log('Response status:', response.status)
-    console.log('Response body:', text)
+    // const text = await response.text()
+    const data = await response.json()
+    console.log('proxy add-reservation Booking created successfully:', data)
+    // console.log('Response status:', response.status)
+    // console.log('Response body:', text)
 
-    if (response.status === 200) {
-      return NextResponse.json({ success: true, message: 'Reservation created successfully' })
+    if (data.success === true) {
+      return NextResponse.json({ data: data.data,success: true, message: data.message}, { status: 200 })
     }
 
     return NextResponse.json({ error: 'API request failed', status: response.status, response: text.substring(0, 500) }, { status: response.status })

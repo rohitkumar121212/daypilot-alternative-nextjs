@@ -180,12 +180,12 @@ const VirtualScheduler = ({
         ).length
         
         // Debug for 445CP
-        if (row.id === '5011653521309696' || row.name === '445CP') {
-          console.log('445CP row:', row.name, 'id:', row.id)
-          console.log('445CP ALL bookings:', resourceBookings)
-          console.log('445CP overbooking count:', overbookingCount)
-          console.log('445CP total rows:', 1 + overbookingCount)
-        }
+        // if (row.id === '5011653521309696' || row.name === '445CP') {
+        //   console.log('445CP row:', row.name, 'id:', row.id)
+        //   console.log('445CP ALL bookings:', resourceBookings)
+        //   console.log('445CP overbooking count:', overbookingCount)
+        //   console.log('445CP total rows:', 1 + overbookingCount)
+        // }
         
         const totalRows = 1 + overbookingCount
         heightsMap.set(row.id, rowHeight * totalRows)
