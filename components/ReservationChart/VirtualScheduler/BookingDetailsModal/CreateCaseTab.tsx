@@ -14,8 +14,9 @@ interface CreateCaseTabProps {
   guestId?: string
 }
 
-const CreateCaseTab = ({ apartmentName = 'Apartment 101', bookingId = '', propertyId = '', guestId = '' }: CreateCaseTabProps) => {
+const CreateCaseTab = ({ apartmentName = 'Apartment 101', bookingId = '', propertyId = '', guestId = '', reservationConstants, bookingDetails }: CreateCaseTabProps) => {
   const [formData, setFormData] = useState({
+
     caseTitle: '',
     issueType: 'guest',
     reason: '',
@@ -60,15 +61,43 @@ const CreateCaseTab = ({ apartmentName = 'Apartment 101', bookingId = '', proper
       description: formData.description,
       save: 'Create Task'
     }
-
     try {
-      const response = await createTask(payload)
-      console.log('Task created successfully:', response.data)
-      // TODO: Show success message and reset form
+      const isDevelopment = process.env.NODE_ENV === 'development'
+      const url = isDevelopment
+        ? '/api/proxy/create-case'
+        : 'https://aperfectstay.ai/api/aperfect10/pms/create-new-case'
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+        credentials: 'include',
+      })
+
+      const data = await response.json()
+      console.log('Case created successfully:', data)
+      
+      if (data.success) {
+        alert('Case created successfully!')
+        // Reset form or close modal
+      } else {
+        alert(data.error || 'Failed to create case')
+      }
     } catch (error) {
-      console.error('Failed to create task:', error)
-      // TODO: Show error message
+      console.error('Failed to create case:', error)
+      alert('Failed to create case')
     }
+
+    // try {
+    //   const response = await createTask(payload)
+    //   console.log('Task created successfully:', response.data)
+    //   // TODO: Show success message and reset form
+    // } catch (error) {
+    //   console.error('Failed to create task:', error)
+    //   // TODO: Show error message
+    // }
   }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,7 +111,7 @@ const CreateCaseTab = ({ apartmentName = 'Apartment 101', bookingId = '', proper
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FloatingInput 
           label="Apartment Name" 
-          value={apartmentName} 
+          value={bookingDetails?.apartment} 
           onChange={() => {}}
           readOnly 
         />
@@ -101,7 +130,7 @@ const CreateCaseTab = ({ apartmentName = 'Apartment 101', bookingId = '', proper
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FloatingDropdown 
           label="Reason" 
-          options={REASON_LIST_FOR_CASE_TAB}
+          options={reservationConstants?.reasonListForCaseTab}
           value={formData.reason}
           onChange={(value) => {
             setFormData({ ...formData, reason: value })
@@ -112,7 +141,7 @@ const CreateCaseTab = ({ apartmentName = 'Apartment 101', bookingId = '', proper
         />
         <FloatingDropdown 
           label="Sub Reason" 
-          options={SUB_REASON_LIST_FOR_CASE_TAB}
+          options={reservationConstants?.subReasonListForCaseTab}
           value={formData.subReason}
           onChange={(value) => {
             setFormData({ ...formData, subReason: value })
@@ -123,7 +152,7 @@ const CreateCaseTab = ({ apartmentName = 'Apartment 101', bookingId = '', proper
         />
         <FloatingDropdown 
           label="Origin" 
-          options={ORIGIN_LIST_FOR_CASE_TAB}
+          options={reservationConstants?.originListForCaseTab}
           value={formData.origin}
           onChange={(value) => {
             setFormData({ ...formData, origin: value })
@@ -134,7 +163,7 @@ const CreateCaseTab = ({ apartmentName = 'Apartment 101', bookingId = '', proper
         />
         <FloatingDropdown 
           label="Priority" 
-          options={PRIORITY_LIST_FOR_CREATE_TASK}
+          options={reservationConstants?.priorityList}
           value={formData.priority}
           onChange={(value) => {
             setFormData({ ...formData, priority: value })

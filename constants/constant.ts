@@ -69,13 +69,13 @@ export const TAXSET_LIST = [
 ] as const;
 
 export const SOURCE_LIST_FOR_CREATE_TASK=[
-  { value: "external", label: "External" },
-  { value: "internal", label: "Internal Team" },
+  { value: "external", label: "local External" },
+  { value: "internal", label: "local Internal Team" },
 ]
 
 export const PRIORITY_LIST_FOR_CREATE_TASK=[
-  { value: "emergency", label: "Emergency/Essential" },
-  { value: "low", label: "Low" },
+  { value: "emergency", label: " Local Emergency/Essential" },
+  { value: "low", label: "Local Low" },
   { value: "medium", label: "Medium" },
   { value: "high", label: "High" },
 ]
@@ -305,7 +305,7 @@ export const NATIONALITY_LIST = [
 
 
 export const REASON_LIST_FOR_CASE_TAB = [
-  { value: "ac", label: "AC" },
+  { value: "ac", label: " LOCAL AC" },
   { value: "adaptor", label: "Adaptor" },
   { value: "wifi", label: "WiFi" },
   { value: "plumbing", label: "Plumbing" },
@@ -318,7 +318,7 @@ export const REASON_LIST_FOR_CASE_TAB = [
 ]
 
 export const SUB_REASON_LIST_FOR_CASE_TAB = [
-  { value: "ac", label: "AC" },
+  { value: "ac", label: "LOcal AC" },
   { value: "adaptor", label: "Adaptor" },
   { value: "wifi", label: "WiFi" },
   { value: "plumbing", label: "Plumbing" },
@@ -331,7 +331,7 @@ export const SUB_REASON_LIST_FOR_CASE_TAB = [
 ]
 
 export const ORIGIN_LIST_FOR_CASE_TAB = [
-  { value: "inspection", label: "Inspection" },
+  { value: "inspection", label: "Local Inspection" },
   { value: "web", label: "Web" },
   { value: "phone", label: "Phone" },
   { value: "app", label: "App" },
@@ -340,7 +340,7 @@ export const ORIGIN_LIST_FOR_CASE_TAB = [
 ]
 
 export const ASSIGN_CASE_TO_LIST = [
-  { value: "john-doe", label: "John Doe" },
+  { value: "john-doe", label: "Local John Doe" },
   { value: "jane-smith", label: "Jane Smith" },
   { value: "mike-johnson", label: "Mike Johnson" },
   { value: "sarah-williams", label: "Sarah Williams" },

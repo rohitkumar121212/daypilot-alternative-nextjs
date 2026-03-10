@@ -7,11 +7,13 @@ import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
 import { SOURCE_LIST_FOR_CREATE_TASK, PRIORITY_LIST_FOR_CREATE_TASK } from '@/constants/constant'
 
 interface CreateTaskTabProps {
-  apartmentName?: string
+  bookingDetails?: any,
+  reservationConstants?: any
 }
 
-const CreateTaskTab = ({ apartmentName = 'Apartment 101' }: CreateTaskTabProps) => {
+const CreateTaskTab = ({ bookingDetails, reservationConstants }: CreateTaskTabProps) => {
   const [formData, setFormData] = useState({
+    apartmentName: bookingDetails?.apartment || '',
     taskTitle: '',
     source: '',
     priority: '',
@@ -26,7 +28,8 @@ const CreateTaskTab = ({ apartmentName = 'Apartment 101' }: CreateTaskTabProps) 
 
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const handleCreateTask = () => {
+  console.log('CreateTaskTab reservationConstants:', reservationConstants)
+  const handleCreateTask = async () => {
     const newErrors: Record<string, string> = {}
 
     if (!formData.taskTitle.trim()) newErrors.taskTitle = 'Task title is required'
@@ -39,12 +42,69 @@ const CreateTaskTab = ({ apartmentName = 'Apartment 101' }: CreateTaskTabProps) 
 
     if (Object.keys(newErrors).length > 0) return
 
+    // const payload = {
+    //   curr_apartment_case2: formData.apartmentName || '',
+    //   title: formData.taskTitle,
+    //   source: formData.source,
+    //   priority: formData.priority,
+    //   due_date: formData.dueDate,
+    //   // assigned_to: formData.assignedTo,
+    //   name: formData.sourceName,
+    //   email: formData.sourceEmail,
+    //   phone: formData.sourcePhone,
+    //   images: formData.image?.name || '',
+    //   description: formData.description,
+    //   booking: bookingDetails?.booking_key || '',
+    //   prop: bookingDetails?.apartment_id || '',
+    //   guest: bookingDetails?.guest_key || '',
+    //   save: "Create Task"
+    // }
     const payload = {
-      ...formData,
-      apartmentName
+      curr_apartment_case2: '450DH',
+      title: 'test',
+      source: 'External',
+      priority: 'low',
+      due_date: '2026-03-11',
+      // assigned_to: formData.assignedTo,
+      name: '',
+      email: '',
+      phone: '',
+      images: '',
+      description: formData.description,
+      booking: '5675156698562560',
+      prop: '6155469875838976',
+      guest: '6099323868676096',
+      save: "Create Task"
     }
-    console.log('Create task payload:', payload)
-    // TODO: Call API
+    
+    try {
+      const isDevelopment = process.env.NODE_ENV === 'development'
+      const url = isDevelopment
+        ? '/api/proxy/create-task'
+        : 'https://aperfectstay.ai/api/aperfect10/pms/create-new-task'
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+        credentials: 'include',
+      })
+
+      const data = await response.json()
+      console.log('Task created successfully:', data)
+      
+      if (data.success) {
+        alert('Task created successfully!')
+        // Reset form or close modal
+      } else {
+        alert(data.error || 'Failed to create task')
+      }
+    } catch (error) {
+      console.error('Failed to create task:', error)
+      alert('Failed to create task')
+    }
   }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +118,7 @@ const CreateTaskTab = ({ apartmentName = 'Apartment 101' }: CreateTaskTabProps) 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <FloatingInput 
           label="Apartment Name" 
-          value={apartmentName} 
+          value={formData?.apartmentName} 
           onChange={() => {}}
           readOnly 
         />
@@ -74,7 +134,7 @@ const CreateTaskTab = ({ apartmentName = 'Apartment 101' }: CreateTaskTabProps) 
         />
         <FloatingDropdown 
           label="Source" 
-          options={SOURCE_LIST_FOR_CREATE_TASK}
+          options={reservationConstants?.sourceList}
           value={formData.source}
           onChange={(value) => {
             setFormData({ ...formData, source: value })
@@ -85,7 +145,7 @@ const CreateTaskTab = ({ apartmentName = 'Apartment 101' }: CreateTaskTabProps) 
         />
         <FloatingDropdown 
           label="Priority" 
-          options={PRIORITY_LIST_FOR_CREATE_TASK}
+          options={reservationConstants?.priorityList}
           value={formData.priority}
           onChange={(value) => {
             setFormData({ ...formData, priority: value })
@@ -147,11 +207,11 @@ const CreateTaskTab = ({ apartmentName = 'Apartment 101' }: CreateTaskTabProps) 
       <div className="flex gap-2">
         <button 
           onClick={handleCreateTask}
-          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+          className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
         >
           Create Task
         </button>
-        <button className="border border-gray-300 text-red-500 px-4 py-2 rounded hover:bg-gray-50">Close</button>
+        <button className="border border-gray-300 text-red-500 px-4 py-2 rounded-md hover:bg-gray-50">Close</button>
       </div>
     </div>
   )

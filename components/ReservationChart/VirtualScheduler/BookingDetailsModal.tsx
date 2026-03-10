@@ -10,11 +10,20 @@ import {formatBookingType} from '@/utils/common'
 
 const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details', onCancelBooking }) => {
   const [activeTab, setActiveTab] = useState(initialTab)
+  const [reservationConstants, setReservationConstants] = useState(null)
   console.log("booking in BookingDetailsModal:", booking)
   
   useEffect(() => {
     if (isOpen) {
       setActiveTab(initialTab)
+      
+      // Fetch reservation constants
+      fetch('https://aperfectstay.ai/aps-api/v1/constants/reservation', {
+        credentials: 'include'
+      })
+        .then(res => res.json())
+        .then(data => setReservationConstants(data?.data))
+        .catch(err => console.error('Failed to fetch reservation constants:', err))
     }
   }, [isOpen, initialTab])
   
@@ -38,11 +47,11 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
       case 'details':
         return <BookingDetailsTab booking={booking} onCancelBooking={onCancelBooking} onClose={onClose} />
       case 'case':
-        return <CreateCaseTab />
+        return <CreateCaseTab reservationConstants={reservationConstants} bookingDetails={booking?.booking_details}/>
       case 'task':
-        return <CreateTaskTab />
+        return <CreateTaskTab reservationConstants={reservationConstants} bookingDetails={booking?.booking_details} />
       case 'payment':
-        return <AddPaymentTab bookingId={booking?.booking_id} onClose={onClose} acceptedBy={booking?.booking_details?.booked_by} />
+        return <AddPaymentTab bookingId={booking?.booking_id} onClose={onClose} acceptedBy={booking?.booking_details?.booked_by} reservationConstants={reservationConstants} bookingDetails={booking?.booking_details}/>
       case 'share':
         return <SharePaymentLinkTab 
                   totalAmount={Number(booking?.booking_details?.price)} 
