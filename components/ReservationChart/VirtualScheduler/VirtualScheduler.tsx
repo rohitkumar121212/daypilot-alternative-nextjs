@@ -128,11 +128,27 @@ const VirtualScheduler = ({
   // Virtual scrolling state
   const [scrollTop, setScrollTop] = useState(0)
   const containerRef = useRef(null)
+  const bodyContainerRef = useRef(null)
+  const [containerHeight, setContainerHeight] = useState(600)
   
   // Track mouse state
   const mouseDownRef = useRef(false)
   const startDateRef = useRef(null)
   const startResourceIdRef = useRef(null)
+  
+  // Measure container height dynamically
+  useEffect(() => {
+    const updateHeight = () => {
+      if (bodyContainerRef.current) {
+        const height = bodyContainerRef.current.clientHeight
+        setContainerHeight(height)
+      }
+    }
+    
+    updateHeight()
+    window.addEventListener('resize', updateHeight)
+    return () => window.removeEventListener('resize', updateHeight)
+  }, [])
   
   // Refs for scroll synchronization
   const headerScrollRef = useRef(null)
@@ -208,7 +224,6 @@ const VirtualScheduler = ({
   }, [visibleRows, rowHeightsMap])
   
   // Virtual scrolling calculations
-  const containerHeight = 600
   const totalHeight = rowPositions.length > 0 ? rowPositions[rowPositions.length - 1].top + rowPositions[rowPositions.length - 1].height : 0
   
   // Find visible items based on scroll position
@@ -628,7 +643,7 @@ const VirtualScheduler = ({
       </div>
       
       {/* Virtual Body Container */}
-      <div className="flex-1 flex">
+      <div ref={bodyContainerRef} className="flex-1 flex overflow-hidden">
         {/* Resource Column */}
         <div className="w-64 min-w-64 border-r border-gray-200 bg-white sticky left-0 z-20">
           <div 
@@ -636,7 +651,7 @@ const VirtualScheduler = ({
             style={{ height: containerHeight }}
             onScroll={handleScroll}
           >
-            <div style={{ height: totalHeight, position: 'relative' }}>
+            <div style={{ height: totalHeight + 40, position: 'relative' }}>
               {visibleItems.map((row) => {
                 return (
                   <div
@@ -693,7 +708,7 @@ const VirtualScheduler = ({
               style={{ height: containerHeight }}
               onScroll={handleScroll}
             >
-              <div style={{ height: totalHeight, position: 'relative' }}>
+              <div style={{ height: totalHeight + 40, position: 'relative' }}>
                 {visibleItems.map((row) => (
                   <div
                     key={row.id}
