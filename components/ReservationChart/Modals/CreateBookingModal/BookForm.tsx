@@ -33,11 +33,11 @@ const BookForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
   }
 
   const handleSelectAccount = (account: any) => {
-    handleChange('account', account.label)
+    handleChange('account', account.value)
   }
 
   const handleSelectTax = (tax: any) => {
-    handleChange('tax', tax.label)
+    handleChange('tax', tax.value)
   }
 
   const handleSelectNationality = (nationality: any) => {

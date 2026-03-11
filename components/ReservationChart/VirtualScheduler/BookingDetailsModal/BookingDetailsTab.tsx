@@ -62,12 +62,12 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose }: BookingDetails
         >
           View Details
         </a>
-        <button 
+        {/* <button 
             onClick={()=>{}}
             className="ml-3 px-4 py-2 border text-red-500 rounded-md hover:bg-gray-100 transition cursor-pointer"
           >
             Update Booking
-          </button>
+          </button> */}
         {booking?.booking_details?.booking_type === 'temp_reserve' && (
           <button 
             onClick={()=>{}}

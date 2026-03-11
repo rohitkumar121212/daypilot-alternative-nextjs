@@ -210,6 +210,7 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
       send_instant_mail: formData.sendInstantMail ? 'yes' : 'no'
     }
 
+    console.log('Prepared payload for booking creation:', payload)
     try {
       const isDevelopment = process.env.NODE_ENV === 'development'
       const url = isDevelopment
