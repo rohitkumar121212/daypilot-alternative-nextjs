@@ -27,8 +27,8 @@ const CreateTaskTab = ({ bookingDetails, reservationConstants }: CreateTaskTabPr
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isLoading, setIsLoading] = useState(false)
 
-  console.log('CreateTaskTab reservationConstants:', reservationConstants)
   const handleCreateTask = async () => {
     const newErrors: Record<string, string> = {}
 
@@ -42,40 +42,24 @@ const CreateTaskTab = ({ bookingDetails, reservationConstants }: CreateTaskTabPr
 
     if (Object.keys(newErrors).length > 0) return
 
-    // const payload = {
-    //   curr_apartment_case2: formData.apartmentName || '',
-    //   title: formData.taskTitle,
-    //   source: formData.source,
-    //   priority: formData.priority,
-    //   due_date: formData.dueDate,
-    //   // assigned_to: formData.assignedTo,
-    //   name: formData.sourceName,
-    //   email: formData.sourceEmail,
-    //   phone: formData.sourcePhone,
-    //   images: formData.image?.name || '',
-    //   description: formData.description,
-    //   booking: bookingDetails?.booking_key || '',
-    //   prop: bookingDetails?.apartment_id || '',
-    //   guest: bookingDetails?.guest_key || '',
-    //   save: "Create Task"
-    // }
-    const payload = {
-      curr_apartment_case2: '450DH',
-      title: 'test',
-      source: 'External',
-      priority: 'low',
-      due_date: '2026-03-11',
-      // assigned_to: formData.assignedTo,
-      name: '',
-      email: '',
-      phone: '',
-      images: '',
-      description: formData.description,
-      booking: '5675156698562560',
-      prop: '6155469875838976',
-      guest: '6099323868676096',
-      save: "Create Task"
-    }
+    setIsLoading(true)
+
+    const formPayload = new FormData()
+    formPayload.append('curr_apartment_case2', formData.apartmentName || '')
+    formPayload.append('title', formData.taskTitle)
+    formPayload.append('source', formData.source)
+    formPayload.append('priority', formData.priority)
+    formPayload.append('due_date', formData.dueDate)
+    formPayload.append('name', formData.sourceName)
+    formPayload.append('email', formData.sourceEmail)
+    formPayload.append('phone', formData.sourcePhone)
+    formPayload.append('description', formData.description)
+    formPayload.append('booking', bookingDetails?.booking_key || '')
+    formPayload.append('prop', bookingDetails?.apartment_id || '')
+    formPayload.append('guest', bookingDetails?.guest_key || '')
+    formPayload.append('save', 'Create Task')
+    formPayload.append('response_version', 'v1')
+    if (formData.image) formPayload.append('images', formData.image)
     
     try {
       const isDevelopment = process.env.NODE_ENV === 'development'
@@ -85,25 +69,41 @@ const CreateTaskTab = ({ bookingDetails, reservationConstants }: CreateTaskTabPr
       
       const response = await fetch(url, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
+        body: formPayload,
         credentials: 'include',
       })
 
       const data = await response.json()
       console.log('Task created successfully:', data)
       
+      // if (data.success) {
+      //   alert('Task created successfully!')
+      // } else {
+      //   alert(data.error || 'Failed to create task')
+      // }
       if (data.success) {
-        alert('Task created successfully!')
-        // Reset form or close modal
+        const bookingId = data.data?.reservation_id
+        if (bookingId) {
+          window.location.href = `/aperfect-pms/booking/${bookingId}/view-details`
+        } else {
+          // onConfirm({
+          //   ...(booking || {}),
+          //   resourceId: modalData.resourceId,
+          //   startDate: modalData.startDate,
+          //   endDate: modalData.endDate,
+          //   text: formData.bookingName,
+          //   ...formData
+          // })
+          // onClose()
+        }
       } else {
-        alert(data.error || 'Failed to create task')
+        alert(data.error || 'Failed to create booking')
       }
     } catch (error) {
       console.error('Failed to create task:', error)
       alert('Failed to create task')
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -114,7 +114,15 @@ const CreateTaskTab = ({ bookingDetails, reservationConstants }: CreateTaskTabPr
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 relative">
+      {isLoading && (
+        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-10 rounded-lg">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-gray-700 font-medium">Creating task...</p>
+          </div>
+        </div>
+      )}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <FloatingInput 
           label="Apartment Name" 
