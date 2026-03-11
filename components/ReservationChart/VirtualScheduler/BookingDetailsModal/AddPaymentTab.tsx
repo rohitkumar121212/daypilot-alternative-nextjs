@@ -21,6 +21,7 @@ const AddPaymentTab = ({ bookingId, onClose, reservationConstants, bookingDetail
     referenceNo: '',
     receipt: null as File | null,
     notes: '',
+    response_version: 'v1',
     acceptedBy: bookingDetails?.booked_by || ''
   })
 
@@ -56,58 +57,47 @@ const AddPaymentTab = ({ bookingId, onClose, reservationConstants, bookingDetail
     //   console.error('Failed to add payment:', error)
     //   // TODO: Show error message
     // }
-    const payload = {
-          enq_id_payment: bookingDetails?.booking_key || '', // TODO: Replace with actual booking ID
-          amount: formData.amount,
-          mode: formData.paymentMethod,
-          refernce: formData.referenceNo,
-          accepted_by: formData.acceptedBy,
-          notes: formData.notes,
-          receipt_img: formData.receipt, // Handle file upload separately if needed
-          // receipt_img: formData.receipt // Handle file upload separately if needed
-          payment_method: "Add Payment"
-         }
+    const formPayload = new FormData()
+    formPayload.append('enq_id_payment', bookingDetails?.booking_key || '')
+    formPayload.append('amount', formData.amount)
+    formPayload.append('mode', formData.paymentMethod)
+    formPayload.append('refernce', formData.referenceNo)
+    formPayload.append('accepted_by', formData.acceptedBy)
+    formPayload.append('notes', formData.notes)
+    formPayload.append('payment_method', 'Add Payment')
+    formPayload.append('response_version', 'v1')
+    if (formData.receipt) formPayload.append('receipt_img', formData.receipt)
     
-        // try {
-        //   const response = await createAddPayment(payload)
-        //   console.log('Payment added successfully:', response.data)
-        //   // TODO: Show success message and reset form
-        // } catch (error) {
-        //   console.error('Failed to add payment:', error)
-        //   // TODO: Show error message
-        // }
-        try {
-          const isDevelopment = process.env.NODE_ENV === 'development'
-          const url = isDevelopment
-            ? '/api/proxy/add-payment'
-            : 'https://aperfectstay.ai/api/aperfect-pms/add-new-booking-payment'
-          
-          const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-            credentials: 'include',
-          })
+    try {
+      const isDevelopment = process.env.NODE_ENV === 'development'
+      const url = isDevelopment
+        ? '/api/proxy/add-payment'
+        : 'https://aperfectstay.ai/api/aperfect-pms/add-new-booking-payment'
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formPayload,
+        credentials: 'include',
+      })
 
-          const data = await response.json()
-          console.log('Payment added successfully:', data)
-          
-          if (data.success) {
-            alert('Payment added successfully!')
-            // Reset form or close modal
-          } else {
-            alert(data.error || 'Failed to add payment')
-          }
-        } catch (error) {
-          console.error('Failed to add payment:', error)
-          alert('Failed to add payment')
-        }
+      const data = await response.json()
+      console.log('Payment added successfully:', data)
+      
+      if (data.success) {
+        alert('Payment added successfully!')
+        onClose?.()
+      } else {
+        alert(data.error || 'Failed to add payment')
       }
+    } catch (error) {
+      console.error('Failed to add payment:', error)
+      alert('Failed to add payment')
+    }
+  }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
+      console.log('Selected file:', e.target.files[0])
       setFormData({ ...formData, receipt: e.target.files[0] })
     }
   }
