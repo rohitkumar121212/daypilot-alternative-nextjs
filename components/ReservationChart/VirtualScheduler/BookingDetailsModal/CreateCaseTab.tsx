@@ -8,13 +8,11 @@ import { REASON_LIST_FOR_CASE_TAB, SUB_REASON_LIST_FOR_CASE_TAB, ORIGIN_LIST_FOR
 import { createTask } from '@/apiData/services/pms/bookings'
 
 interface CreateCaseTabProps {
-  apartmentName?: string
-  bookingId?: string
-  propertyId?: string
-  guestId?: string
+  reservationConstants: any,
+  bookingDetails?: any
 }
 
-const CreateCaseTab = ({ apartmentName = 'Apartment 101', bookingId = '', propertyId = '', guestId = '', reservationConstants, bookingDetails }: CreateCaseTabProps) => {
+const CreateCaseTab = ({ reservationConstants, bookingDetails }: CreateCaseTabProps) => {
   const [formData, setFormData] = useState({
 
     caseTitle: '',
@@ -25,7 +23,7 @@ const CreateCaseTab = ({ apartmentName = 'Apartment 101', bookingId = '', proper
     priority: '',
     assignTo: '',
     image: null as File | null,
-    description: ''
+    description: '',
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -38,29 +36,31 @@ const CreateCaseTab = ({ apartmentName = 'Apartment 101', bookingId = '', proper
     if (!formData.subReason) newErrors.subReason = 'Sub reason is required'
     if (!formData.origin) newErrors.origin = 'Origin is required'
     if (!formData.priority) newErrors.priority = 'Priority is required'
-    if (!formData.assignTo) newErrors.assignTo = 'Assign case to is required'
+    // if (!formData.assignTo) newErrors.assignTo = 'Assign case to is required'
     if (!formData.description.trim()) newErrors.description = 'Description is required'
 
     setErrors(newErrors)
 
     if (Object.keys(newErrors).length > 0) return
 
-    const payload = {
-      curr_apartment_case2: apartmentName,
-      title: formData.caseTitle,
-      source: formData.origin,
-      priority: formData.priority,
-      due_date: new Date().toISOString().split('T')[0],
-      name: formData.assignTo,
-      phone: '',
-      email: '',
-      booking: bookingId,
-      prop: propertyId,
-      guest: guestId,
-      account: '',
-      description: formData.description,
-      save: 'Create Task'
-    }
+    const formPayload = new FormData()
+    formPayload.append('response_version', 'v1')
+    formPayload.append('SelectedIssueType1', 'guest_and_booking')
+    formPayload.append('curr_apartment_case2', bookingDetails?.apartment || '')
+    formPayload.append('title', formData.caseTitle)
+    formPayload.append('reason', formData.reason)
+    formPayload.append('sub_reason', formData.subReason)
+    formPayload.append('origin', formData.origin)
+    formPayload.append('priority', formData.priority)
+    formPayload.append('booking', bookingDetails?.booking_key || '')
+    formPayload.append('prop', bookingDetails?.apartment_id || '')
+    formPayload.append('guest', bookingDetails?.guest_key || '')
+    formPayload.append('account', '')
+    // formPayload.append('user_id_unassigned', '557982301238062')
+    formPayload.append('description', formData.description)
+    // formPayload.append('save', 'Create Task')
+    if (formData.image) formPayload.append('images', formData.image)
+    console.log('Form payload:', Object.fromEntries(formPayload.entries()))
     try {
       const isDevelopment = process.env.NODE_ENV === 'development'
       const url = isDevelopment
@@ -69,10 +69,7 @@ const CreateCaseTab = ({ apartmentName = 'Apartment 101', bookingId = '', proper
       
       const response = await fetch(url, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
+        body: formPayload,
         credentials: 'include',
       })
 
@@ -181,7 +178,7 @@ const CreateCaseTab = ({ apartmentName = 'Apartment 101', bookingId = '', proper
             if (errors.assignTo) setErrors({ ...errors, assignTo: '' })
           }}
           error={errors.assignTo}
-          required
+          // required
         />
         <FloatingInput 
           label="Attach Image" 
