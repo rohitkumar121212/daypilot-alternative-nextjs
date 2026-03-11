@@ -34,10 +34,12 @@ const BookForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
 
   const handleSelectAccount = (account: any) => {
     handleChange('account', account.value)
+    handleChange('accountLabel', account.label)
   }
 
   const handleSelectTax = (tax: any) => {
     handleChange('tax', tax.value)
+    handleChange('taxLabel', tax.label)
   }
 
   const handleSelectNationality = (nationality: any) => {
@@ -144,8 +146,8 @@ const BookForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
       {accountOptions.length > 0 && (
         <FloatingAutocomplete
           label="Account"
-          value={formData.account || ''}
-          onChange={(value) => handleChange('account', value)}
+          value={formData.accountLabel || ''}
+          onChange={(value) => handleChange('accountLabel', value)}
           onSelect={handleSelectAccount}
           suggestions={accountOptions}
           filterKey="label"
@@ -167,8 +169,8 @@ const BookForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
 
       {taxOptions.length > 0 && (<FloatingAutocomplete
         label="Select Tax"
-        value={formData.tax || ''}
-        onChange={(value) => handleChange('tax', value)}
+        value={formData.taxLabel || ''}
+        onChange={(value) => handleChange('taxLabel', value)}
         onSelect={handleSelectTax}
         suggestions={taxOptions}
         filterKey="label"

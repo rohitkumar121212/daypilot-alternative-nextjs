@@ -43,7 +43,9 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
     checkOut: '',
     totalPrice: '',
     account: '',
+    accountLabel: '',
     tax: '',
+    taxLabel: '',
     idNumber: '',
     nationality: '',
     commission: '',
@@ -110,7 +112,9 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
         checkOut: booking.endDate || '',
         totalPrice: booking.totalPrice || '',
         account: booking.account || '',
+        accountLabel: booking.accountLabel || '',
         tax: booking.tax || '',
+        taxLabel: booking.taxLabel || '',
         idNumber: booking.idNumber || '',
         nationality: booking.nationality || '',
         commission: booking.commission || '',
@@ -135,7 +139,9 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
         checkOut: modalData?.endDate || '',
         totalPrice: '',
         account: '',
+        accountLabel: '',
         tax: '',
+        taxLabel: '',
         idNumber: '',
         nationality: '',
         commission: '',
@@ -152,7 +158,7 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
   
   if (!isOpen || !modalData || !resource) return null
   
-  const dayCount = daysBetween(modalData.startDate, modalData.endDate)
+  const dayCount = daysBetween(formData.checkIn || modalData.startDate, formData.checkOut || modalData.endDate)
   
   const handleConfirm = async () => {
     const newErrors = {}
@@ -183,8 +189,8 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
 
     const payload = {
       prop_abbr_id: resource?.id,
-      new_start_date: modalData.startDate,
-      new_end_date: modalData.endDate,
+      new_start_date: formData.checkIn || modalData.startDate,
+      new_end_date: formData.checkOut || modalData.endDate,
       response_version: "v1",
       duration: `${dayCount} Nights`,
       adult_count: (formData.adults || 1).toString(),
