@@ -1,6 +1,7 @@
 import FloatingInput from '@/components/common/FloatingInput'
 import { formatDateTime } from '@/utils/formatDateTime'
 import BookingNotes from '@/components/common/StringToHtml'
+import dayjs from 'dayjs'
 
 interface BookingDetailsTabProps {
   booking: any
@@ -8,7 +9,9 @@ interface BookingDetailsTabProps {
   onClose?: () => void
 }
 
+
 const BookingDetailsTab = ({ booking, onCancelBooking, onClose }: BookingDetailsTabProps) => {
+  const isTodayStart = dayjs(booking?.booking_details?.start).isSame(dayjs(), "day")
   return (
     <div className="space-y-6">
       {/* Booking Details Section */}
@@ -68,6 +71,14 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose }: BookingDetails
           >
             Update Booking
           </button> */}
+        {isTodayStart && (
+          <button
+            onClick={() => {}}
+            className="ml-3 px-4 py-2 border text-red-500 rounded-md hover:bg-gray-100 transition cursor-pointer"
+          >
+            Marked As Checked In
+          </button>
+        )}
         {booking?.booking_details?.booking_type === 'temp_reserve' && (
           <button 
             onClick={()=>{}}

@@ -83,11 +83,11 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
   
   // Define tabs based on booking type
   const allTabs = [
-    { id: 'details', label: 'Booking Details', types: ['reserve', 'temp_reserve', 'do_not_reserve'] },
-    { id: 'case', label: 'Create New Case', types: ['reserve', 'do_not_reserve'] },
-    { id: 'task', label: 'Create New Task', types: ['reserve', 'do_not_reserve'] },
-    { id: 'payment', label: 'Add Payment', types: ['reserve'] },
-    { id: 'share', label: 'Share Payment Link', types: ['reserve'] }
+    { id: 'details', label: 'Booking Details', types: ['reserve', 'temp_reserve', 'do_not_reserve', 'old_reserve'] },
+    { id: 'case', label: 'Create New Case', types: ['reserve', 'do_not_reserve', 'old_reserve'] },
+    { id: 'task', label: 'Create New Task', types: ['reserve', 'do_not_reserve', 'old_reserve'] },
+    { id: 'payment', label: 'Add Payment', types: ['reserve', 'old_reserve'] },
+    { id: 'share', label: 'Share Payment Link', types: ['reserve', 'old_reserve'] }
   ]
   
   const tabs = allTabs.filter(tab => tab.types.includes(bookingType))
@@ -127,7 +127,6 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
               {formatBookingType(booking?.booking_details?.booking_type)}
             </span>
           </h2>
-          {console.log('assignToUsers:', assignToUsers )}
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
