@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+
 import Tabs from '@/components/common/Tabs'
 import BookingDetailsTab from './BookingDetailsModal/BookingDetailsTab'
 import CreateCaseTab from './BookingDetailsModal/CreateCaseTab'
@@ -7,48 +8,21 @@ import AddPaymentTab from './BookingDetailsModal/AddPaymentTab'
 import SharePaymentLinkTab from './BookingDetailsModal/SharePaymentLinkTab'
 
 import {formatBookingType} from '@/utils/common'
-import { proxyFetch } from '@/utils/proxyFetch'
 import { apiFetch } from '@/utils/apiRequest'
 
-const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details', onCancelBooking }) => {
+interface BookingDetailsModalProps {
+  isOpen: boolean
+  booking: any
+  onClose: () => void
+  initialTab?: string
+  onCancelBooking?: (booking: any) => void
+}
+
+const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details', onCancelBooking }: BookingDetailsModalProps) => {
   const [activeTab, setActiveTab] = useState(initialTab)
   const [reservationConstants, setReservationConstants] = useState(null)
   const [assignToUsers, setAssignToUsers] = useState([])
-  console.log("booking in BookingDetailsModal:", booking)
-  
-  // useEffect(() => {
-  //   if (isOpen) {
-  //     setActiveTab(initialTab)
-      
-  //     Promise.all([
-  //       proxyFetch('/v1/cases/users'),
-  //       fetch('https://aperfectstay.ai/aps-api/v1/constants/reservation', {
-  //         credentials: 'include'
-  //       }).then(res => res.json()),
-  //     ])
-  //     .then(([reservationConstantsData]) => {
-  //       setReservationConstants(reservationConstantsData?.data)
-  //     })
-  //     .catch(err => console.error('Failed to fetch reservation constants:', err))
-  //     // Fetch reservation constants
-  //     fetch('https://aperfectstay.ai/aps-api/v1/constants/reservation', {
-  //       credentials: 'include'
-  //     })
-  //       .then(res => res.json())
-  //       .then(data => setReservationConstants(data?.data))
-  //       .catch(err => console.error('Failed to fetch reservation constants:', err))
-  //   }
-  // }, [isOpen, initialTab])
-  
-  // const fetchAssignToUsers = async () => {
-    
-  //   try {
-  //     const data = await proxyFetch('/v1/cases/users')
-  //     setAssignToUsers(data?.data || [])
-  //   } catch (err) {
-  //     console.error('Failed to fetch assign to users:', err)
-  //   }
-  // }
+
   useEffect(() => {
     if (!isOpen) return
 
@@ -64,7 +38,7 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
         // if needed later
         // setUsers(usersData?.data)
         console.log('Assign to users data:', assignToUsersData)
-        const ModifiedAssignToUser=assignToUsersData?.data?.map((user) => ({
+        const ModifiedAssignToUser=assignToUsersData?.data?.map((user: any) => ({
           value: user.id,
           label: `${user.name} (${user.email})`
         }))
@@ -101,7 +75,7 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
       case 'task':
         return <CreateTaskTab reservationConstants={reservationConstants} bookingDetails={booking?.booking_details} />
       case 'payment':
-        return <AddPaymentTab bookingId={booking?.booking_id} onClose={onClose} acceptedBy={booking?.booking_details?.booked_by} reservationConstants={reservationConstants} bookingDetails={booking?.booking_details}/>
+        return <AddPaymentTab bookingId={booking?.booking_id} onClose={onClose} reservationConstants={reservationConstants} bookingDetails={booking?.booking_details}/>
       case 'share':
         return <SharePaymentLinkTab 
                   totalAmount={Number(booking?.booking_details?.price)} 
