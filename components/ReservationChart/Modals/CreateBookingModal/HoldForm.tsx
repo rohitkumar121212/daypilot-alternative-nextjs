@@ -29,7 +29,8 @@ const HoldForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
   }
 
   const handleSelectAccount = (account: any) => {
-    handleChange('account', account.label)
+    handleChange('account', account.value)
+    handleChange('accountLabel', account.label)
   }
 
   return (
@@ -119,8 +120,8 @@ const HoldForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
       {accountOptions.length > 0 && (
         <FloatingAutocomplete
           label="Account"
-          value={formData.account || ''}
-          onChange={(value) => handleChange('account', value)}
+          value={formData.accountLabel || ''}
+          onChange={(value) => handleChange('accountLabel', value)}
           onSelect={handleSelectAccount}
           suggestions={accountOptions}
           filterKey="label"
