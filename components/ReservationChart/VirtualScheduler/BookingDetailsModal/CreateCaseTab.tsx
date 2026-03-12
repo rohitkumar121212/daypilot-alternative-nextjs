@@ -9,10 +9,11 @@ import { createTask } from '@/apiData/services/pms/bookings'
 
 interface CreateCaseTabProps {
   reservationConstants: any,
-  bookingDetails?: any
+  bookingDetails?: any,
+  assignToUsers?: any[]
 }
 
-const CreateCaseTab = ({ reservationConstants, bookingDetails }: CreateCaseTabProps) => {
+const CreateCaseTab = ({ reservationConstants, bookingDetails, assignToUsers }: CreateCaseTabProps) => {
   const [formData, setFormData] = useState({
 
     caseTitle: '',
@@ -56,6 +57,7 @@ const CreateCaseTab = ({ reservationConstants, bookingDetails }: CreateCaseTabPr
     formPayload.append('prop', bookingDetails?.apartment_id || '')
     formPayload.append('guest', bookingDetails?.guest_key || '')
     formPayload.append('account', '')
+    formPayload.append('user_id_unassigned', formData.assignTo || '')
     // formPayload.append('user_id_unassigned', '557982301238062')
     formPayload.append('description', formData.description)
     // formPayload.append('save', 'Create Task')
@@ -171,7 +173,7 @@ const CreateCaseTab = ({ reservationConstants, bookingDetails }: CreateCaseTabPr
         />
         <FloatingDropdown 
           label="Assign Case To" 
-          options={ASSIGN_CASE_TO_LIST}
+          options={assignToUsers}
           value={formData.assignTo}
           onChange={(value) => {
             setFormData({ ...formData, assignTo: value })

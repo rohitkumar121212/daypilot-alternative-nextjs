@@ -31,7 +31,7 @@ const FloatingDropdown = ({
   const buttonRef = useRef<HTMLDivElement>(null)
 
   const hasValue = value !== ''
-  const selectedOption = options.find(opt => opt.value === value)
+  const selectedOption = options?.find(opt => opt.value === value)
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

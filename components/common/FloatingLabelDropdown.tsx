@@ -35,7 +35,7 @@ const FloatingLabelDropdown = ({
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 })
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const selectedOption = options.find(opt => opt.value === value)
+  const selectedOption = options?.find(opt => opt.value === value)
   const hasValue = value !== ''
 
   useEffect(() => {

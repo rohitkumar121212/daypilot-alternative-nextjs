@@ -1,17 +1,10 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
-import { proxyFetch } from '@/utils/proxyFetch'
+import { useUser } from '@/contexts/UserContext'
 
 const Header = () => {
-  const [user, setUser] = useState<any>(null)
-  
-  useEffect(() => {
-    proxyFetch('/aps-api/v1/users/details/private')
-      .then(data => setUser(data?.data?.user_details || "Unknown User"))
-      .catch(err => console.error('Failed to fetch user:', err))
-  }, [])
+  const { user, isLoading, error } = useUser()
   const baseDomain="https://aperfectstay.ai"
   
   const menuItems = [

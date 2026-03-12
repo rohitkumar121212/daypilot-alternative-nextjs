@@ -7,26 +7,76 @@ import AddPaymentTab from './BookingDetailsModal/AddPaymentTab'
 import SharePaymentLinkTab from './BookingDetailsModal/SharePaymentLinkTab'
 
 import {formatBookingType} from '@/utils/common'
+import { proxyFetch } from '@/utils/proxyFetch'
+import { apiFetch } from '@/utils/apiRequest'
 
 const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details', onCancelBooking }) => {
   const [activeTab, setActiveTab] = useState(initialTab)
   const [reservationConstants, setReservationConstants] = useState(null)
+  const [assignToUsers, setAssignToUsers] = useState([])
   console.log("booking in BookingDetailsModal:", booking)
   
-  useEffect(() => {
-    if (isOpen) {
-      setActiveTab(initialTab)
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     setActiveTab(initialTab)
       
-      // Fetch reservation constants
+  //     Promise.all([
+  //       proxyFetch('/v1/cases/users'),
+  //       fetch('https://aperfectstay.ai/aps-api/v1/constants/reservation', {
+  //         credentials: 'include'
+  //       }).then(res => res.json()),
+  //     ])
+  //     .then(([reservationConstantsData]) => {
+  //       setReservationConstants(reservationConstantsData?.data)
+  //     })
+  //     .catch(err => console.error('Failed to fetch reservation constants:', err))
+  //     // Fetch reservation constants
+  //     fetch('https://aperfectstay.ai/aps-api/v1/constants/reservation', {
+  //       credentials: 'include'
+  //     })
+  //       .then(res => res.json())
+  //       .then(data => setReservationConstants(data?.data))
+  //       .catch(err => console.error('Failed to fetch reservation constants:', err))
+  //   }
+  // }, [isOpen, initialTab])
+  
+  // const fetchAssignToUsers = async () => {
+    
+  //   try {
+  //     const data = await proxyFetch('/v1/cases/users')
+  //     setAssignToUsers(data?.data || [])
+  //   } catch (err) {
+  //     console.error('Failed to fetch assign to users:', err)
+  //   }
+  // }
+  useEffect(() => {
+    if (!isOpen) return
+
+    setActiveTab(initialTab)
+
+    Promise.all([
+      apiFetch('/aps-api/v1/cases/users'),
       fetch('https://aperfectstay.ai/aps-api/v1/constants/reservation', {
         credentials: 'include'
+      }).then(res => res.json())
+    ])
+      .then(([assignToUsersData, reservationConstantsData]) => {
+        // if needed later
+        // setUsers(usersData?.data)
+        console.log('Assign to users data:', assignToUsersData)
+        const ModifiedAssignToUser=assignToUsersData?.data?.map((user) => ({
+          value: user.id,
+          label: `${user.name} (${user.email})`
+        }))
+        setAssignToUsers(ModifiedAssignToUser || [])
+        setReservationConstants(reservationConstantsData?.data)
       })
-        .then(res => res.json())
-        .then(data => setReservationConstants(data?.data))
-        .catch(err => console.error('Failed to fetch reservation constants:', err))
-    }
+      .catch(err => {
+        console.error('Failed to fetch modal data:', err)
+      })
+
   }, [isOpen, initialTab])
-  
+
   if (!isOpen || !booking) return null
 
   const bookingType = booking?.booking_details?.booking_type
@@ -47,7 +97,7 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
       case 'details':
         return <BookingDetailsTab booking={booking} onCancelBooking={onCancelBooking} onClose={onClose} />
       case 'case':
-        return <CreateCaseTab reservationConstants={reservationConstants} bookingDetails={booking?.booking_details}/>
+        return <CreateCaseTab reservationConstants={reservationConstants} bookingDetails={booking?.booking_details} assignToUsers={assignToUsers} />
       case 'task':
         return <CreateTaskTab reservationConstants={reservationConstants} bookingDetails={booking?.booking_details} />
       case 'payment':
@@ -77,6 +127,7 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
               {formatBookingType(booking?.booking_details?.booking_type)}
             </span>
           </h2>
+          {console.log('assignToUsers:', assignToUsers )}
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

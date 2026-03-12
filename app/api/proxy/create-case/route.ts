@@ -8,7 +8,6 @@ export async function POST(request: NextRequest) {
   const isDevelopment = process.env.NODE_ENV === 'development'
   
   const headers: HeadersInit = {
-    'Content-Type': 'application/json',
   }
 
   if (isDevelopment) {

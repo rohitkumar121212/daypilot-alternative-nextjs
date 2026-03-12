@@ -7,6 +7,8 @@ import StartDateFilter from './StartDateFilter';
 import DaysFilter from './DaysFilter';
 import AbbreviationsModal from '../Modals/Abbreviation/AbbreviationModal';
 import PropertiesLegendsModal from '../Modals/PropertiesLegends/PropertiesLegendsModal';
+import { useUser } from "@/contexts/UserContext"
+
 interface FilterContainerProps {
   onSearchChange: (searchTerm: string) => void;
   onBookingIdChange: (bookingId: string) => void;
@@ -18,11 +20,27 @@ interface FilterContainerProps {
 const FilterContainer = ({ onSearchChange, onBookingIdChange, onDateChange, onDaysChange, bookings }: FilterContainerProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [colorsModalOpen, setColorsModalOpen] = useState(false);
+  const { user } = useUser()
 
   return (
     <>
       <div className="bg-white px-4 py-3 border-b border-gray-200">
         <div className="flex items-center gap-4">
+          {(user?.email==='stay@thesqua.re' || user?.email==='apsdemo2023@gmail.com') && (
+            <div className='flex flex-row gap-2 text-sm'>
+              <a href="https://aperfectstay.ai/aps-redis-memorystore" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                Cache |
+              </a>
+              <a href="" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                STAAH Logs |
+            </a>
+            <a href="" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+              STAAH Reservation Logs |
+            </a>
+            <a href="https://aperfectstay.ai/aperfect-pms/refresh-booking-window-cache" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+              Refresh Window
+            </a>
+          </div>)}
           <SearchApartmentFilter onSearchChange={onSearchChange} />
           <BookingIdFilter onBookingIdChange={onBookingIdChange} bookings={bookings} />
           <StartDateFilter onDateChange={onDateChange} />
