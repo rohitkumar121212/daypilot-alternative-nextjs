@@ -18,3 +18,9 @@ export const formatBookingType = (type: string) => {
 
   return bookingTypeMap[type] || type
 }
+
+export const getUserInfoImageUrl = (url?: string) => {
+  if (!url) return null
+  if (url.startsWith("//")) return `https:${url}`
+  return url
+}

@@ -1,10 +1,11 @@
 import Image from "next/image"
-
+import { getUserInfoImageUrl } from "../../utils/common"
 interface HeaderUserInfoProps {
   user: any
 }
 const HeaderUserInfo = ({user}:HeaderUserInfoProps) => {
     const baseDomain="https://aperfectstay.ai"
+    const logoUrl = getUserInfoImageUrl(user?.company_logo_details?.url)
     const userMenuItems = [
     { label: 'Switch Account', url: `${baseDomain}/collaboration_access` },
     { label: 'Edit Accout Picture', url: `${baseDomain}/aperfect10/account/picture` },
@@ -18,7 +19,7 @@ const HeaderUserInfo = ({user}:HeaderUserInfoProps) => {
             <div className="w-10 h-10 rounded-full overflow-hidden">
                 {user?.company_logo_details?.url ? (
                     <Image
-                        src={`https:${user.company_logo_details.url}`}
+                        src={logoUrl || "https://aperfectstay.ai/static/images/user.png"}
                         alt="Company Logo"
                         width={40}
                         height={40}
