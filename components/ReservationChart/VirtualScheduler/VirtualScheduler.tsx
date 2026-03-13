@@ -34,6 +34,10 @@ const SkipCheckInModal = dynamic(() => import('@/components/ReservationChart/Vir
   ssr: false,
   loading: () => null
 })
+const CheckInModal = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/BookingDetailsModal/CheckInModal'), {
+  ssr: false,
+  loading: () => null
+})
 const CancelCheckInModal = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/CancelCheckInModal'), {
   ssr: false,
   loading: () => null
@@ -120,6 +124,10 @@ const VirtualScheduler = ({
   // Skip check-in state
   const [skipCheckInModalOpen, setSkipCheckInModalOpen] = useState(false)
   const [bookingToSkip, setBookingToSkip] = useState(null)
+  
+  // Check-in state
+  const [checkInModalOpen, setCheckInModalOpen] = useState(false)
+  const [bookingToCheckIn, setBookingToCheckIn] = useState(null)
   
   // Cancel check-in state
   const [cancelCheckInModalOpen, setCancelCheckInModalOpen] = useState(false)
@@ -529,6 +537,13 @@ const VirtualScheduler = ({
     setBookingToSkip(null)
   }, [])
   
+  // Handle check-in
+  const handleCheckIn = useCallback((checkInData) => {
+    console.log('Check-in confirmed:', checkInData)
+    setCheckInModalOpen(false)
+    setBookingToCheckIn(null)
+  }, [])
+  
   // Handle cancel check-in
   const handleCancelCheckIn = useCallback((cancelData) => {
     console.log('Cancel check-in confirmed:', cancelData)
@@ -767,6 +782,10 @@ const VirtualScheduler = ({
               setCancelCheckInModalOpen(true)
               setDetailsModalOpen(false)
             }}
+            onOpenCheckInModal={(booking) => {
+              setBookingToCheckIn(booking)
+              setCheckInModalOpen(true)
+            }}
           />
         </Suspense>
       )}
@@ -830,6 +849,20 @@ const VirtualScheduler = ({
             onClose={() => {
               setSkipCheckInModalOpen(false)
               setBookingToSkip(null)
+            }}
+          />
+        </Suspense>
+      )}
+      
+      {checkInModalOpen && (
+        <Suspense fallback={null}>
+          <CheckInModal
+            isOpen={checkInModalOpen}
+            booking={bookingToCheckIn}
+            onCheckIn={handleCheckIn}
+            onClose={() => {
+              setCheckInModalOpen(false)
+              setBookingToCheckIn(null)
             }}
           />
         </Suspense>

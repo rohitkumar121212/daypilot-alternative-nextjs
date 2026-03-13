@@ -16,9 +16,10 @@ interface BookingDetailsModalProps {
   onClose: () => void
   initialTab?: string
   onCancelBooking?: (booking: any) => void
+  onOpenCheckInModal?: (booking: any) => void
 }
 
-const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details', onCancelBooking }: BookingDetailsModalProps) => {
+const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details', onCancelBooking, onOpenCheckInModal }: BookingDetailsModalProps) => {
   const [activeTab, setActiveTab] = useState(initialTab)
   const [reservationConstants, setReservationConstants] = useState(null)
   const [assignToUsers, setAssignToUsers] = useState([])
@@ -69,7 +70,12 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
   const renderTabContent = () => {
     switch (activeTab) {
       case 'details':
-        return <BookingDetailsTab booking={booking} onCancelBooking={onCancelBooking} onClose={onClose} />
+        return <BookingDetailsTab 
+          booking={booking} 
+          onCancelBooking={onCancelBooking} 
+          onClose={onClose} 
+          onOpenCheckInModal={onOpenCheckInModal}
+        />
       case 'case':
         return <CreateCaseTab reservationConstants={reservationConstants} bookingDetails={booking?.booking_details} assignToUsers={assignToUsers} />
       case 'task':

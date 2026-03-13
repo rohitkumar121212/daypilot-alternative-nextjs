@@ -2,15 +2,18 @@ import FloatingInput from '@/components/common/FloatingInput'
 import { formatDateTime } from '@/utils/formatDateTime'
 import BookingNotes from '@/components/common/StringToHtml'
 import dayjs from 'dayjs'
+import { useState } from 'react'
+import CheckInModal from './CheckInModal'
 
 interface BookingDetailsTabProps {
   booking: any
   onCancelBooking?: (booking: any) => void
   onClose?: () => void
+  onOpenCheckInModal?: (booking: any) => void
 }
 
 
-const BookingDetailsTab = ({ booking, onCancelBooking, onClose }: BookingDetailsTabProps) => {
+const BookingDetailsTab = ({ booking, onCancelBooking, onClose, onOpenCheckInModal }: BookingDetailsTabProps) => {
   const isTodayStart = dayjs(booking?.booking_details?.start).isSame(dayjs(), "day")
   return (
     <div className="space-y-6">
@@ -73,7 +76,10 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose }: BookingDetails
           </button> */}
         {isTodayStart && (
           <button
-            onClick={() => {}}
+            onClick={() => {
+              onClose?.()
+              onOpenCheckInModal?.(booking)
+            }}
             className="ml-3 px-4 py-2 border text-red-500 rounded-md hover:bg-gray-100 transition cursor-pointer"
           >
             Marked As Checked In
