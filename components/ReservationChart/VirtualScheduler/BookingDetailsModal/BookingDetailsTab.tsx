@@ -15,6 +15,8 @@ interface BookingDetailsTabProps {
 
 const BookingDetailsTab = ({ booking, onCancelBooking, onClose, onOpenCheckInModal }: BookingDetailsTabProps) => {
   const isTodayStart = dayjs(booking?.booking_details?.start).isSame(dayjs(), "day")
+  const isTempReserve = booking?.booking_details?.booking_type === 'temp_reserve' ? true : false
+  const isDoNotReserve = booking?.booking_details?.booking_type === 'do_not_reserve' ? true : false
   return (
     <div className="space-y-6">
       {/* Booking Details Section */}
@@ -68,13 +70,13 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose, onOpenCheckInMod
         >
           View Details
         </a>
-        {/* <button 
+        {/* {(<button 
             onClick={()=>{}}
             className="ml-3 px-4 py-2 border text-red-500 rounded-md hover:bg-gray-100 transition cursor-pointer"
           >
-            Update Booking
-          </button> */}
-        {isTodayStart && (
+            Convert to Booking
+          </button>)} */}
+        {isTodayStart && (!isTempReserve && !isDoNotReserve ) &&(
           <button
             onClick={() => {
               onClose?.()
@@ -85,7 +87,7 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose, onOpenCheckInMod
             Marked As Checked In
           </button>
         )}
-        {booking?.booking_details?.booking_type === 'temp_reserve' && (
+        {isTempReserve && (
           <button 
             onClick={()=>{}}
             className="ml-3 px-4 py-2 border text-red-500 rounded-md hover:bg-gray-100 transition cursor-pointer"

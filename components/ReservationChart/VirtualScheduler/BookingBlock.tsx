@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 import { getDateIndex } from '@/utils/dateUtils'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
+import { useUser } from '@/hooks/useUser'
 
 const BookingBlock = ({ 
   booking, 
@@ -15,6 +16,12 @@ const BookingBlock = ({
   subRowHeight,
   isOverbooked = false
 }) => {
+  const allowedSalesChannels = [
+  'Corporate Agent',
+  'Relocation / TMC',
+  'Relocation TMC'
+]
+  const { isSquareUser } = useUser()
   const displayEndDate = dayjs(booking.endDate).subtract(1, 'day').format('YYYY-MM-DD')
   
   const startIndex = getDateIndex(booking.startDate, dates)
@@ -95,6 +102,7 @@ const BookingBlock = ({
   const shouldShowIcon = booking.Lead_Source_icon === "true" && bubbleData.Lead_Source
   const showOnLeft = bubbleData.is_left === "true" || bubbleData.is_left === true
   
+  const showNoCallIcon = isSquareUser && booking?.sales_channel && allowedSalesChannels.includes(booking.sales_channel)
   const topPosition = subRowHeight ? (rowIndex * subRowHeight) + 1 : 1
   const blockHeight = subRowHeight ? subRowHeight - 2 : 50
   
@@ -118,6 +126,16 @@ const BookingBlock = ({
           onMouseDown={handleMouseDown}
           onContextMenu={handleContextMenu}
         >
+          {showNoCallIcon && (
+            <img
+              src="https://images.thesqua.re/APS/no-call.png"
+              alt="No Call"
+              className="w-4 h-4"
+            />
+          )}
+          {isSquareUser && showOnLeft && (
+            <img src={bubbleData.Lead_Source} alt="Lead Source" className="w-4 h-4 mx-1" />
+          )}
           {shouldShowIcon && showOnLeft && (
             <img src={bubbleData.Lead_Source} alt="Lead Source" className="w-4 h-4 mx-1" />
           )}

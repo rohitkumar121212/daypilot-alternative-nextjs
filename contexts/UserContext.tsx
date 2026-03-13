@@ -29,6 +29,7 @@ interface UserProviderProps {
 
 export const UserProvider = ({ children }: UserProviderProps) => {
   const [user, setUser] = useState<User | null>(null)
+  const [isSquareUser, setIsSquareUser] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -40,6 +41,11 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       const data = await proxyFetch('/aps-api/v1/users/details/private')
       console.log('Fetched user data:', data?.data)
       setUser(data?.data?.user_details || null)
+      if(data?.data?.user_details?.email==='stay@thesqua.re' || data?.data?.user_details?.email==='apsdemo2023@gmail.com'){
+        setIsSquareUser(true)
+      } else {
+        setIsSquareUser(false)
+      }
 
     } catch (err) {
       console.error('Failed to fetch user:', err)
@@ -67,6 +73,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
  const value = useMemo(
   () => ({
     user,
+    isSquareUser,
     isLoading,
     error,
     refreshUser,
