@@ -130,7 +130,7 @@ const BookingBlock = ({
             <img
               src="https://images.thesqua.re/APS/no-call.png"
               alt="No Call"
-              className="w-4 h-4"
+              className="w-8 h-8"
             />
           )}
           {isSquareUser && showOnLeft && (
