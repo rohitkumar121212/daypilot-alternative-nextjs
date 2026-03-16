@@ -212,14 +212,14 @@ const CreateTaskTab = ({ bookingDetails, reservationConstants }: CreateTaskTabPr
         }}
         error={errors.description}
       />
-      <div className="flex gap-2">
+      <div className="flex gap-3">
         <button 
           onClick={handleCreateTask}
-          className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+          className="btn btn-primary-with-bg"
         >
           Create Task
         </button>
-        <button className="border border-gray-300 text-red-500 px-4 py-2 rounded-md hover:bg-gray-50">Close</button>
+        <button className="btn btn-primary">Close</button>
       </div>
     </div>
   )

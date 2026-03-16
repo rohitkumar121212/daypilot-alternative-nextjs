@@ -61,12 +61,13 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose, onOpenCheckInMod
         <BookingNotes booking={booking} />
       </div> */}
       {/* CTA */}
-      <div className='border-t border-gray-300 pt-4'>
+      <div className='border-t border-gray-300 pt-4 flex flex-wrap gap-3'>
         <a
           href={`https://aperfectstay.ai/aperfect-pms/booking/${booking?.booking_details?.booking_key}/view-details`}
           target="_blank"
           rel="noopener noreferrer"
-          className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition cursor-pointer inline-block"
+          // className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition cursor-pointer inline-block"
+          className='btn btn-primary-with-bg'
         >
           View Details
         </a>
@@ -82,7 +83,7 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose, onOpenCheckInMod
               onClose?.()
               onOpenCheckInModal?.(booking)
             }}
-            className="ml-3 px-4 py-2 border text-red-500 rounded-md hover:bg-gray-100 transition cursor-pointer"
+            className="btn btn-primary"
           >
             Marked As Checked In
           </button>
@@ -90,14 +91,14 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose, onOpenCheckInMod
         {isTempReserve && (
           <button 
             onClick={()=>{}}
-            className="ml-3 px-4 py-2 border text-red-500 rounded-md hover:bg-gray-100 transition cursor-pointer"
+            className="btn btn-primary"
           >
             Convert to Booking
           </button>
         )}
         <button 
           onClick={() => onCancelBooking?.(booking)}
-          className="ml-3 px-4 py-2 border text-red-500 rounded-md hover:bg-gray-100 transition cursor-pointer"
+          className="btn btn-primary"
         >
           Cancel Booking
         </button>
@@ -107,7 +108,7 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose, onOpenCheckInMod
         
         <button 
           onClick={() => onClose?.()}
-          className="ml-3 px-4 py-2 border text-red-500 rounded-md hover:bg-gray-100 transition cursor-pointer"
+          className="btn btn-primary"
         >
           Close
         </button>

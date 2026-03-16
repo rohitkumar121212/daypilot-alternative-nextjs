@@ -226,14 +226,14 @@ const CreateCaseTab = ({ reservationConstants, bookingDetails, assignToUsers }: 
         }}
         error={errors.description}
       />
-      <div className="flex gap-2">
+      <div className="flex gap-3">
         <button 
           onClick={handleCreateCase}
-          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+          className="btn btn-primary-with-bg"
         >
           Create Case
         </button>
-        <button className="border border-gray-300 text-red-500 px-4 py-2 rounded hover:bg-gray-50">Close</button>
+        <button className="btn btn-primary">Close</button>
       </div>
     </div>
   )
