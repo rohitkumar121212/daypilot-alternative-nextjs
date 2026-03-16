@@ -1,102 +1,3 @@
-// 'use client'
-
-// import { useState } from 'react'
-
-// interface CheckInModalProps {
-//   isOpen: boolean
-//   onClose: () => void
-//   booking: any
-//   onCheckIn?: (data: any) => void
-// }
-
-// const CheckInModal = ({ isOpen, onClose, booking, onCheckIn }: CheckInModalProps) => {
-//   const [isLoading, setIsLoading] = useState(false)
-
-//   if (!isOpen) return null
-
-//   const handleCheckIn = async () => {
-//     setIsLoading(true)
-//     // Add your check-in logic here
-//     console.log('Checking in booking:', booking)
-    
-//     // Simulate API call
-//     setTimeout(() => {
-//       setIsLoading(false)
-//       onCheckIn?.(booking)
-//       onClose()
-//     }, 1000)
-//   }
-
-//   const handleBackdropClick = (e: React.MouseEvent) => {
-//     if (e.target === e.currentTarget) {
-//       onClose()
-//     }
-//   }
-
-//   return (
-//     <div
-//       className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-//       onClick={handleBackdropClick}
-//     >
-//       <div
-//         className="bg-white rounded-lg shadow-2xl w-full max-w-md relative"
-//         onClick={(e) => e.stopPropagation()}
-//       >
-//         {/* Loading Overlay */}
-//         {isLoading && (
-//           <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-10 rounded-lg">
-//             <div className="flex flex-col items-center gap-3">
-//               <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-//               <p className="text-gray-700 font-medium">Processing check-in...</p>
-//             </div>
-//           </div>
-//         )}
-
-//         {/* Header */}
-//         <div className="px-6 py-4 border-b border-gray-200">
-//           <h2 className="text-xl font-semibold text-gray-900">
-//             Check-In Confirmation
-//           </h2>
-//         </div>
-
-//         {/* Content */}
-//         <div className="px-6 py-4">
-//           <p className="text-gray-700 mb-4">
-//             Are you sure you want to mark this booking as checked in?
-//           </p>
-          
-//           <div className="bg-gray-50 p-4 rounded-lg mb-4">
-//             <h3 className="font-medium text-gray-900 mb-2">Booking Details:</h3>
-//             <p className="text-sm text-gray-600">Guest: {booking?.booking_details?.name}</p>
-//             <p className="text-sm text-gray-600">Room: {booking?.apartment}</p>
-//             <p className="text-sm text-gray-600">Check-in: {booking?.booking_details?.start}</p>
-//           </div>
-//         </div>
-
-//         {/* Footer */}
-//         <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
-//           <button
-//             onClick={onClose}
-//             className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
-//             disabled={isLoading}
-//           >
-//             Cancel
-//           </button>
-//           <button
-//             onClick={handleCheckIn}
-//             className="px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600 transition-colors"
-//             disabled={isLoading}
-//           >
-//             Confirm Check-In
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
-
-// export default CheckInModal
-
 'use client'
 
 import { useState } from 'react'
@@ -123,12 +24,52 @@ const CheckInModal = ({ isOpen, onClose, booking, onCheckIn }: CheckInModalProps
       action: 'checkin',
     }
 
+
     console.log('Checking in booking:', payload)
-    setTimeout(() => {
+
+     try {
+      const isDevelopment = process.env.NODE_ENV === 'development'
+      const url = isDevelopment
+        ? '/api/proxy/pms-mark-guest-as-inhouse'
+        : 'https://aperfectstay.ai/api/pms-mark-guest-as-inhouse'
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+        credentials: 'include',
+      })
+
+      const data = await response.json()
+      console.log('Guest Marked as Inhouse successfully:', data)
+      
+      if (data.success) {
+        const bookingId = data.data?.reservation_id
+        console.log('Redirecting to booking details page for booking ID:', bookingId)
+        if (bookingId) {
+          window.location.href = `/aperfect-pms/booking/${bookingId}/view-details`
+        } else {
+          // onConfirm({
+          //   ...(booking || {}),
+          //   resourceId: modalData.resourceId,
+          //   startDate: modalData.startDate,
+          //   endDate: modalData.endDate,
+          //   text: formData.bookingName,
+          //   ...formData
+          // })
+          onClose()
+        }
+      } else {
+        alert(data.error || 'Failed to create booking')
+      }
+    } catch (error) {
+      console.error('Failed to create booking:', error)
+      // TODO: Show error message to user
+    } finally {
       setIsLoading(false)
-      // onCheckIn?.(booking)
-      // onClose()
-    }, 1000)
+    }
   }
 
   const handleBackdropClick = (e: React.MouseEvent) => {
@@ -215,10 +156,10 @@ const CheckInModal = ({ isOpen, onClose, booking, onCheckIn }: CheckInModalProps
           <button
             onClick={handleSave}
             disabled={isLoading || checked === false}
-            className={`px-6 py-2 rounded-md text-white transition
+            className={`btn
               ${isLoading || !checked
                 ? "bg-gray-300 cursor-not-allowed"
-                : "bg-red-500 hover:bg-red-600 cursor-pointer"
+                : "btn-primary-with-bg"
               }`}
           >
             SAVE
@@ -226,7 +167,7 @@ const CheckInModal = ({ isOpen, onClose, booking, onCheckIn }: CheckInModalProps
 
           <button
             onClick={onClose}
-            className="border px-6 py-2 rounded-md text-gray-700 hover:bg-gray-100"
+            className="btn btn-primary"
           >
             CLOSE
           </button>
