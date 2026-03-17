@@ -14,6 +14,7 @@ const ReservationChart = ()=>{
   const [availability, setAvailability] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [bookingIdFilter, setBookingIdFilter] = useState('')
+  const [enquiryIdFilter, setEnquiryIdFilter] = useState('')
   const [startDate, setStartDate] = useState(dayjs().format('YYYY-MM-DD'))
   const [daysToShow, setDaysToShow] = useState(30)
 
@@ -36,7 +37,7 @@ const ReservationChart = ()=>{
   // }, [])
 
   /* =========================
-     Filter resources by search term and booking ID
+     Filter resources by search term, booking ID, and enquiry ID
   ========================= */
   const filteredResources = useMemo(() => {
     let resourcesResult = resources;
@@ -51,6 +52,27 @@ const ReservationChart = ()=>{
       const matchingApartmentIds = new Set(matchingBookings.map(booking => booking.resourceId));
       
       resourcesResult = resources.map(parent => {
+        const matchingChildren = (parent.children || []).filter(child => 
+          matchingApartmentIds.has(child.id)
+        );
+        
+        if (matchingChildren.length > 0) {
+          return { ...parent, children: matchingChildren };
+        }
+        
+        return null;
+      }).filter(Boolean);
+    }
+    
+    // Filter by enquiry ID - show only apartments that have bookings with the enquiry ID
+    if (enquiryIdFilter.trim()) {
+      const matchingBookings = bookings.filter(booking => 
+        booking.booking_details?.enq_app_id?.toString().includes(enquiryIdFilter)
+      );
+      
+      const matchingApartmentIds = new Set(matchingBookings.map(booking => booking.resourceId));
+      
+      resourcesResult = resourcesResult.map(parent => {
         const matchingChildren = (parent.children || []).filter(child => 
           matchingApartmentIds.has(child.id)
         );
@@ -82,7 +104,7 @@ const ReservationChart = ()=>{
     }
     
     return resourcesResult;
-  }, [resources, searchTerm, bookingIdFilter, bookings]);
+  }, [resources, searchTerm, bookingIdFilter, enquiryIdFilter, bookings]);
 
   /* =========================
      Create booking (local)
@@ -196,6 +218,7 @@ const ReservationChart = ()=>{
             <FilterContainer 
               onSearchChange={setSearchTerm}
               onBookingIdChange={setBookingIdFilter}
+              onEnquiryIdChange={setEnquiryIdFilter}
               onDateChange={setStartDate}
               onDaysChange={setDaysToShow}
               bookings={bookings}

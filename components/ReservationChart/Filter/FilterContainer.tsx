@@ -9,17 +9,19 @@ import AbbreviationsModal from '../Modals/Abbreviation/AbbreviationModal';
 import PropertiesLegendsModal from '../Modals/PropertiesLegends/PropertiesLegendsModal';
 import { useUser } from "@/contexts/UserContext"
 import CollaboratorFilter from './CollaboratorFilter';
+import EnquiryIdFilter from './EnquiryIdFilter';
 
 interface FilterContainerProps {
   onSearchChange: (searchTerm: string) => void;
   onBookingIdChange: (bookingId: string) => void;
   onDateChange: (date: string) => void;
   onDaysChange: (days: number) => void;
+  onEnquiryIdChange: (enquiryId: string) => void;
   bookings: any[];
   collaborators: any[]
 }
 
-const FilterContainer = ({ onSearchChange, onBookingIdChange, onDateChange, onDaysChange, bookings, collaborators }: FilterContainerProps) => {
+const FilterContainer = ({ onSearchChange, onBookingIdChange, onDateChange, onDaysChange, onEnquiryIdChange, bookings, collaborators }: FilterContainerProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [colorsModalOpen, setColorsModalOpen] = useState(false);
   const { user } = useUser()
@@ -44,9 +46,9 @@ const FilterContainer = ({ onSearchChange, onBookingIdChange, onDateChange, onDa
             </a>
           </div>)}
           <CollaboratorFilter collaborators={collaborators} />
-          {console.log('Collaborators in FilterContainer:', collaborators)}
           <SearchApartmentFilter onSearchChange={onSearchChange} />
           <BookingIdFilter onBookingIdChange={onBookingIdChange} bookings={bookings} />
+          <EnquiryIdFilter onEnquiryIdChange={onEnquiryIdChange} bookings={bookings} />
           <StartDateFilter onDateChange={onDateChange} />
           <DaysFilter onDaysChange={onDaysChange} />
           <AbbreviationsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
