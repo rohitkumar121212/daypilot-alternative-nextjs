@@ -8,6 +8,7 @@ import DaysFilter from './DaysFilter';
 import AbbreviationsModal from '../Modals/Abbreviation/AbbreviationModal';
 import PropertiesLegendsModal from '../Modals/PropertiesLegends/PropertiesLegendsModal';
 import { useUser } from "@/contexts/UserContext"
+import CollaboratorFilter from './CollaboratorFilter';
 
 interface FilterContainerProps {
   onSearchChange: (searchTerm: string) => void;
@@ -15,9 +16,10 @@ interface FilterContainerProps {
   onDateChange: (date: string) => void;
   onDaysChange: (days: number) => void;
   bookings: any[];
+  collaborators: any[]
 }
 
-const FilterContainer = ({ onSearchChange, onBookingIdChange, onDateChange, onDaysChange, bookings }: FilterContainerProps) => {
+const FilterContainer = ({ onSearchChange, onBookingIdChange, onDateChange, onDaysChange, bookings, collaborators }: FilterContainerProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [colorsModalOpen, setColorsModalOpen] = useState(false);
   const { user } = useUser()
@@ -26,7 +28,7 @@ const FilterContainer = ({ onSearchChange, onBookingIdChange, onDateChange, onDa
     <>
       <div className="bg-white px-4 py-3 border-b border-gray-200">
         <div className="flex items-center gap-4">
-          {(user?.email==='stay@thesqua.re' || user?.email==='apsdemo2023@gmail.com') && (
+          {(user?.email==='stay@thesqua.re') && (
             <div className='flex flex-row gap-2 text-sm'>
               <a href="https://aperfectstay.ai/aps-redis-memorystore" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
                 Cache |
@@ -41,6 +43,8 @@ const FilterContainer = ({ onSearchChange, onBookingIdChange, onDateChange, onDa
               Refresh Window
             </a>
           </div>)}
+          <CollaboratorFilter collaborators={collaborators} />
+          {console.log('Collaborators in FilterContainer:', collaborators)}
           <SearchApartmentFilter onSearchChange={onSearchChange} />
           <BookingIdFilter onBookingIdChange={onBookingIdChange} bookings={bookings} />
           <StartDateFilter onDateChange={onDateChange} />

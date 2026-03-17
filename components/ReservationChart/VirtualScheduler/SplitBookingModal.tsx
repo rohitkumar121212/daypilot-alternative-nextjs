@@ -2,11 +2,16 @@ import { useState, useEffect } from 'react'
 import dayjs from 'dayjs'
 import { FloatingInput } from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
+import { apiFetch } from '@/utils/apiRequest'
+import { useUser } from '@/hooks/useUser'
 
 const SplitBookingModal = ({ isOpen, booking, resources, onSplit, onClose }) => {
   const [splitStartDate, setSplitStartDate] = useState('')
   const [splitEndDate, setSplitEndDate] = useState('')
   const [newApartment, setNewApartment] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+
+  const { user } = useUser()
 
   // Set default dates when modal opens
   useEffect(() => {
@@ -21,6 +26,31 @@ const SplitBookingModal = ({ isOpen, booking, resources, onSplit, onClose }) => 
 
   const minDate = dayjs(booking.startDate).add(1, 'day').format('YYYY-MM-DD')
 
+  const getAvailableApartments = async() => {
+    const payload = {
+      user_id: user?.id,
+      response_version: 'v1',
+    }
+    // Dummy API call
+    try {
+      const apartmentInfoUrl = `https://aperfectstay.ai/api/aperfectstay/own-stock-apartments/pms`
+      const apartmentResponse = await apiFetch(apartmentInfoUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+        credentials: 'include',
+      })
+      const apartmentData = await apartmentResponse.json()
+      console.log('Apartment data fetched successfully:', apartmentData)
+    } catch (error) {
+      console.error('Failed to fetch apartment data:', error)
+    }
+  }
+  useEffect(() => {
+    getAvailableApartments()
+  }, [])
   const handleSplit = async () => {
     if (!splitStartDate || !splitEndDate || !newApartment) {
       alert('Please fill all required fields')
@@ -35,22 +65,59 @@ const SplitBookingModal = ({ isOpen, booking, resources, onSplit, onClose }) => 
     }
 
     // Dummy API call
-    try {
-      console.log('Split booking payload:', payload)
-      // await fetch('/api/split-booking', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(payload)
-      // })
+    //  try {
+    //   const apartmentInfoUrl = `https://aperfectstay.ai/api/aperfectstay/own-stock-apartments/pms`
+    //   const apartmentResponse = await apiFetch(apartmentInfoUrl, {
+    //     method: 'GET',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     credentials: 'include',
+    //   })
+    //   const apartmentData = await apartmentResponse.json()
+    //   console.log('Apartment data fetched successfully:', apartmentData)
+    //   // const isDevelopment = process.env.NODE_ENV === 'development'
+    //   // const url = isDevelopment
+    //   //   ? '/api/proxy/pms-mark-guest-as-inhouse'
+    //   //   : 'https://aperfectstay.ai/api/aperfectstay/own-stock-apartments/pms'
       
-      onSplit({
-        originalBooking: booking,
-        splitDate: splitStartDate,
-        newApartmentId: newApartment
-      })
-    } catch (error) {
-      console.error('Split booking failed:', error)
-    }
+    //   // const response = await fetch(url, {
+    //   //   method: 'POST',
+    //   //   headers: {
+    //   //     'Content-Type': 'application/json',
+    //   //   },
+    //   //   body: JSON.stringify(payload),
+    //   //   credentials: 'include',
+    //   // })
+
+    //   const data = await response.json()
+    //   console.log('Guest Marked as Inhouse successfully:', data)
+      
+    //   if (data.success) {
+    //     const bookingId = data.data?.reservation_id
+    //     console.log('Redirecting to booking details page for booking ID:', bookingId)
+    //     if (bookingId) {
+    //       window.location.href = `/aperfect-pms/booking/${bookingId}/view-details`
+    //     } else {
+    //       // onConfirm({
+    //       //   ...(booking || {}),
+    //       //   resourceId: modalData.resourceId,
+    //       //   startDate: modalData.startDate,
+    //       //   endDate: modalData.endDate,
+    //       //   text: formData.bookingName,
+    //       //   ...formData
+    //       // })
+    //       onClose()
+    //     }
+    //   } else {
+    //     alert(data.error || 'Failed to create booking')
+    //   }
+    // } catch (error) {
+    //   console.error('Failed to create booking:', error)
+    //   // TODO: Show error message to user
+    // } finally {
+    //   setIsLoading(false)
+    // }
   }
 
 
