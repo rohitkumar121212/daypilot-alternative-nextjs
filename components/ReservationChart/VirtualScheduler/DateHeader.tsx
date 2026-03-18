@@ -9,15 +9,7 @@ import { formatDateHeader } from '@/utils/dateUtils'
  */
 const DateHeader = ({ date, cellWidth = 100, totalAvailability = null }) => {
   const formatted = formatDateHeader(date)
-  
-  // const availabilityRatio =
-  // totalAvailability && totalAvailability.total > 0
-  //   ? totalAvailability.available / totalAvailability.total
-  //   : 0
-  
-  // const availabilityPercentage = Math.round(availabilityRatio * 100)
 
-  // const isMoreThan50 = availabilityRatio > 0.5
   const occupancyRatio =
   totalAvailability && totalAvailability.total > 0
     ? (totalAvailability.available) / totalAvailability.total
@@ -44,21 +36,6 @@ const DateHeader = ({ date, cellWidth = 100, totalAvailability = null }) => {
       {/* <div className={`text-lg font-semibold ${formatted.isToday ? 'text-blue-700' : 'text-gray-900'}`}>
         {formatted.dayNumber}
       </div> */}
-      
-      {/* {totalAvailability && (
-        <div className={`text-xs font-semibold mt-1 bg-gray-500 rounded-lg w-full text-center text-white p-2`}>
-          {totalAvailability.available}/{totalAvailability.total}
-        </div>
-      )} */}
-      {/* {totalAvailability && (
-        <div
-          className={`text-xs font-semibold mt-1 rounded-lg w-full text-center text-white p-2 ${
-            isHighOccupancy ? 'bg-green-500' : 'bg-red-500'
-          }`}
-        >
-          {totalAvailability.available}/{totalAvailability.total}
-        </div>
-      )} */}
       {totalAvailability && (
         <div className="relative group w-full">
           <div
