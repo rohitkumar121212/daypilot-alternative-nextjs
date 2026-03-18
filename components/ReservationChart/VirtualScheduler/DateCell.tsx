@@ -27,6 +27,22 @@ const DateCell = memo(({
     onMouseEnter?.(date, resourceId, e)
   }
   
+  // Calculate occupancy percentage and determine color
+  const getOccupancyInfo = () => {
+    if (!availability || availability.total === 0) {
+      return { occupiedCount: 0, totalCount: 0, percentage: 0, color: 'text-gray-500' }
+    }
+    
+    const occupiedCount = availability.available
+    const totalCount = availability.total
+    const percentage = Math.round((occupiedCount / totalCount) * 100)
+    const color = percentage > 50 ? 'text-green-700' : 'text-red-700'
+    
+    return { occupiedCount, totalCount, percentage, color }
+  }
+  
+  const occupancyInfo = getOccupancyInfo()
+  
   return (
     <div
       className={`border-r border-b border-gray-200 bg-white select-none relative flex items-center justify-center ${
@@ -41,10 +57,11 @@ const DateCell = memo(({
       data-resource-id={resourceId}
       onMouseDown={handleMouseDown}
       onMouseEnter={handleMouseEnter}
+      title={availability ? `Occupancy: ${occupancyInfo.percentage}% )` : ''}
     >
       {availability !== null && availability !== undefined && (
-        <div className={`text-xs font-semibold ${availability.available > 0 ? 'text-green-700' : 'text-red-700'}`}>
-          {availability.available}/{availability.total}
+        <div className={`text-xs font-semibold ${occupancyInfo.color}`}>
+          {occupancyInfo.occupiedCount}/{occupancyInfo.totalCount}
         </div>
       )}
     </div>

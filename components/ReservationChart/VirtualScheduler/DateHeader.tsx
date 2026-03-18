@@ -48,7 +48,7 @@ const DateHeader = ({ date, cellWidth = 100, totalAvailability = null }) => {
 
           {/* Tooltip */}
           <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block bg-white text-gray-900 text-xs px-2 py-1 rounded whitespace-nowrap">
-            {occupancyPercentage}% occupied
+            {`Occupancy: ${occupancyPercentage}%`}
           </div>
         </div>
       )}
