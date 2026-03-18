@@ -45,10 +45,11 @@ const FilterContainer = ({ onSearchChange, onBookingIdChange, onDateChange, onDa
               Refresh Window
             </a>
           </div>)}
-          <CollaboratorFilter collaborators={collaborators} />
+          {console.log("collaborators in the filterContainer: ", collaborators)}
+          {collaborators && collaborators?.length>0 ?<CollaboratorFilter collaborators={collaborators} /> : null}
           <SearchApartmentFilter onSearchChange={onSearchChange} />
-          <BookingIdFilter onBookingIdChange={onBookingIdChange} bookings={bookings} />
-          <EnquiryIdFilter onEnquiryIdChange={onEnquiryIdChange} bookings={bookings} />
+          {/* <BookingIdFilter onBookingIdChange={onBookingIdChange} bookings={bookings} />
+          <EnquiryIdFilter onEnquiryIdChange={onEnquiryIdChange} bookings={bookings} /> */}
           <StartDateFilter onDateChange={onDateChange} />
           <DaysFilter onDaysChange={onDaysChange} />
           <AbbreviationsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
