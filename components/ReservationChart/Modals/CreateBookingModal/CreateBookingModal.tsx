@@ -391,7 +391,7 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
           <div className="mt-6 flex justify-start gap-3">
             <button
               onClick={handleConfirm}
-              className="px-6 py-2 text-white bg-red-500 rounded-md hover:bg-red-700 transition-colors"
+              className="btn btn-primary-with-bg"
             >
               Save
             </button>
