@@ -9,6 +9,7 @@ const SplitBookingModal = ({ isOpen, booking, resources, onSplit, onClose }) => 
   const [splitStartDate, setSplitStartDate] = useState('')
   const [splitEndDate, setSplitEndDate] = useState('')
   const [newApartment, setNewApartment] = useState('')
+  const [newApartmentOptions, setNewApartmentOptions] = useState([])
   const [isLoading, setIsLoading] = useState(false)
 
   const { user } = useUser()
@@ -42,8 +43,13 @@ const SplitBookingModal = ({ isOpen, booking, resources, onSplit, onClose }) => 
         body: JSON.stringify(payload),
         credentials: 'include',
       })
-      const apartmentData = await apartmentResponse.json()
-      console.log('Apartment data fetched successfully:', apartmentData)
+      const apartmentData = apartmentResponse?.data
+      const updatedApartmentData = apartmentData?.apartment_abbr?.map((parent) => ({
+        label: parent,
+        value: parent
+      }))
+      setNewApartmentOptions(updatedApartmentData)
+      console.log('Updated Apartment data with available_for_split filter:', updatedApartmentData)
     } catch (error) {
       console.error('Failed to fetch apartment data:', error)
     }
@@ -61,9 +67,43 @@ const SplitBookingModal = ({ isOpen, booking, resources, onSplit, onClose }) => 
       booking_id: booking.id,
       split_start: splitStartDate,
       split_end: splitEndDate,
-      split_apartment: newApartment
+      split_apartment: newApartment,
+      response_version: 'v1',
     }
+    console.log('Splitting booking with payload:', payload)
 
+    try{
+      const isDevelopment = process.env.NODE_ENV === 'development'
+      const url = isDevelopment
+        ? '/api/proxy/split-booking'
+        : 'https://aperfectstay.ai/api/pms-enqire-split-booking'
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+        credentials: 'include',
+      })
+
+      const data = await response.json()
+      console.log('Guest Marked as Inhouse successfully:', data)
+      
+      if (data.success) {
+        const bookingId = data.data?.reservation_id
+        console.log('Redirecting to booking details page for booking ID:', bookingId)
+        // if (bookingId) {
+        //   window.location.href = `/aperfect-pms/booking/${bookingId}/view-details`
+        // } else {
+        //   onClose()
+        // }
+      } else {
+        alert(data.error || 'Failed to create booking')
+      }
+    } catch (error) {
+      console.error('Failed to split booking:', error)
+    }
     // Dummy API call
     //  try {
     //   const apartmentInfoUrl = `https://aperfectstay.ai/api/aperfectstay/own-stock-apartments/pms`
@@ -160,23 +200,24 @@ const SplitBookingModal = ({ isOpen, booking, resources, onSplit, onClose }) => 
           />
           <FloatingDropdown 
             label="Select New Apartment" 
-            options={apartments}
+            options={newApartmentOptions}
             value={newApartment}
             onChange={(value) => setNewApartment(value)}
             required
           />
         </div>
+        {console.log('New Apartment:', newApartment)}
         
         <div className="flex gap-3">
           <button 
             onClick={handleSplit}
-            className="flex-1 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            className="btn btn-primary-with-bg flex-1"
           >
             Split Booking
           </button>
           <button 
             onClick={onClose}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 text-red-700"
+            className="btn btn-primary flex-1"
           >
             Close
           </button>
