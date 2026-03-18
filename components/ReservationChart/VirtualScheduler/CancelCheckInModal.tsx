@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import dayjs from 'dayjs'
 import FloatingInput from '@/components/common/FloatingInput'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
+import { apiFetch } from '@/utils/apiRequest'
 
 const CancelCheckInModal = ({ isOpen, booking, resources, onCancel, onClose }) => {
   const [isChecked, setIsChecked] = useState(false)
@@ -18,32 +19,53 @@ const CancelCheckInModal = ({ isOpen, booking, resources, onCancel, onClose }) =
   if (!isOpen || !booking) return null
 
   // Find resource name from resources
-  const getResourceName = () => {
-    for (const parent of resources || []) {
-      const child = (parent.children || []).find(c => c.id === booking.resourceId)
-      if (child) return child.name
-    }
-    return 'Unknown'
-  }
+  // const getResourceName = () => {
+  //   for (const parent of resources || []) {
+  //     const child = (parent.children || []).find(c => c.id === booking.resourceId)
+  //     if (child) return child.name
+  //   }
+  //   return 'Unknown'
+  // }
 
   const handleCancel = async () => {
     const payload = {
       booking_id: booking?.booking_details?.booking_key,
-      action: 'cancel_checkin',
+      response_version: 'v1',
+      // action: 'cancel_checkin',
       cancel_this_reason: reason.trim()
     }
 
-    try {
-      console.log('Cancel check-in payload:', payload)
-      // await fetch('/api/aperfect-pms/cancel-checkin', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(payload)
-      // })
+    try{
+      const isDevelopment = process.env.NODE_ENV === 'development'
+      const url = isDevelopment
+        ? '/api/proxy/cancel-checkin'
+        : 'https://aperfectstay.ai/api/aperfect-pms/cancel-checkin '
       
-      onCancel(payload)
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+        credentials: 'include',
+      })
+
+      const data = await response.json()
+      console.log('Cancel booking successfully:', data)
+      
+      if (data.success) {
+        const bookingId = data.data?.reservation_id
+        console.log('Cancel booking successfully for booking ID:', bookingId)
+        // if (bookingId) {
+        //   window.location.href = `/aperfect-pms/booking/${bookingId}/view-details`
+        // } else {
+        //   onClose()
+        // }
+      } else {
+        alert(data.error || 'Failed to create booking')
+      }
     } catch (error) {
-      console.error('Cancel check-in failed:', error)
+      console.error('Failed to split booking:', error)
     }
   }
 
@@ -93,7 +115,7 @@ const CancelCheckInModal = ({ isOpen, booking, resources, onCancel, onClose }) =
         <div className="flex gap-3">
           <button 
             onClick={handleCancel}
-            className="flex-1 px-4 py-2 rounded bg-red-500 text-white hover:bg-red-600"
+            className="flex-1 btn btn-primary-with-bg"
           >
             Cancel Check-in
           </button>

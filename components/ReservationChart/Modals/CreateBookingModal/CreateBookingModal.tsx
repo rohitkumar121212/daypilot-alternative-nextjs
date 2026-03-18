@@ -194,7 +194,7 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
       response_version: "v1",
       duration: `${dayCount} Nights`,
       adult_count: (formData.adults || 1).toString(),
-      child_count: formData.children || '0',
+      child_count: (formData.children || '0').toString(),
       room_count: '1',
       title: formData.title || '',
       rate: formData.totalPrice || '',
