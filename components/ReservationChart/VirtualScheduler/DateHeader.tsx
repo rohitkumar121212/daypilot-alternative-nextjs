@@ -10,6 +10,24 @@ import { formatDateHeader } from '@/utils/dateUtils'
 const DateHeader = ({ date, cellWidth = 100, totalAvailability = null }) => {
   const formatted = formatDateHeader(date)
   
+  // const availabilityRatio =
+  // totalAvailability && totalAvailability.total > 0
+  //   ? totalAvailability.available / totalAvailability.total
+  //   : 0
+  
+  // const availabilityPercentage = Math.round(availabilityRatio * 100)
+
+  // const isMoreThan50 = availabilityRatio > 0.5
+  const occupancyRatio =
+  totalAvailability && totalAvailability.total > 0
+    ? (totalAvailability.available) / totalAvailability.total
+    : 0
+
+  const occupancyPercentage = Math.round(occupancyRatio * 100)
+
+  // More occupancy = GOOD → green
+  // Less occupancy = BAD → red
+  const isHighOccupancy = occupancyRatio > 0.5
   return (
     <div
       className={`flex flex-col items-center justify-center p-2 border-r border-b border-gray-200 bg-gray-50 ${
@@ -27,16 +45,37 @@ const DateHeader = ({ date, cellWidth = 100, totalAvailability = null }) => {
         {formatted.dayNumber}
       </div> */}
       
-      {totalAvailability && (
-        <>
-          {/* <div className={`text-xs font-semibold mt-1 ${totalAvailability.available > 0 ? 'text-green-700' : 'text-red-700'}`}>
-          {totalAvailability.available}/{totalAvailability.total}
-        </div> */}
+      {/* {totalAvailability && (
         <div className={`text-xs font-semibold mt-1 bg-gray-500 rounded-lg w-full text-center text-white p-2`}>
           {totalAvailability.available}/{totalAvailability.total}
         </div>
-        </>
+      )} */}
+      {/* {totalAvailability && (
+        <div
+          className={`text-xs font-semibold mt-1 rounded-lg w-full text-center text-white p-2 ${
+            isHighOccupancy ? 'bg-green-500' : 'bg-red-500'
+          }`}
+        >
+          {totalAvailability.available}/{totalAvailability.total}
+        </div>
+      )} */}
+      {totalAvailability && (
+        <div className="relative group w-full">
+          <div
+            className={`text-xs font-semibold mt-1 rounded-lg text-center text-white p-2 ${
+              isHighOccupancy ? 'bg-green-500' : 'bg-red-500'
+            }`}
+          >
+            {totalAvailability.available}/{totalAvailability.total}
+          </div>
+
+          {/* Tooltip */}
+          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block bg-white text-gray-900 text-xs px-2 py-1 rounded whitespace-nowrap">
+            {occupancyPercentage}% occupied
+          </div>
+        </div>
       )}
+      
     </div>
   )
 }

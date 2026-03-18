@@ -89,9 +89,9 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --primary-btn-bg: oklch(72.3% 0.219 149.579);
-  --primary-btn-bg-border: oklch(72.3% 0.219 149.579);
-  --primary-btn-bg-hover: oklch(64.8% 0.2 131.684);
+  --primary-btn-bg: oklch(70.4% 0.14 182.503);
+  --primary-btn-bg-border: oklch(70.4% 0.14 182.503);
+  --primary-btn-bg-hover: oklch(60% 0.118 184.704);
   --primary-btn-text: oklch(72.3% 0.219 149.579);
 }
 
@@ -146,6 +146,6 @@
     @apply bg-primary-btn-bg border border-primary-btn-bg-border text-white hover:bg-primary-btn-bg-hover;
   }
   .btn-primary {
-    @apply text-primary-btn-text hover:bg-gray-50 border ;
+    @apply text-gray-700 hover:bg-gray-50 border ;
   }
 }
