@@ -71,14 +71,14 @@ const ViewDetailsPage = () => {
 
 
         {/* Stat Cards: Check-in / Check-out / Nights / Rate */}
-        <BookingStatCards
+        {/* <BookingStatCards
           checkIn={BOOKING.checkIn}
           checkInTime={BOOKING.checkInTime}
           checkOut={BOOKING.checkOut}
           checkOutTime={BOOKING.checkOutTime}
           totalNights={BOOKING.totalNights}
           ratePerNight={BOOKING.ratePerNight}
-        />
+        /> */}
 
         {/* Tabs: Overview / Payments / Guest / Support */}
         <BookingTabs activeTab={activeTab} onTabChange={setActiveTab} />
