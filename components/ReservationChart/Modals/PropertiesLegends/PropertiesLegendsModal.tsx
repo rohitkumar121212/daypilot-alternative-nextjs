@@ -108,13 +108,15 @@ export default function PropertiesLegendsModal({ isOpen, onClose }) {
 
         {/* Footer */}
         <div className="flex justify-between items-center border-t px-8 py-5">
-          <button className="rounded-xl bg-red-600 px-6 py-2 text-sm font-medium text-white transition hover:bg-red-700">
+          {/* <button className="btn btn-primary-with-bg">
             Change Color Preferences
-          </button>
+          </button> */}
+          <a href="https://aperfectstay.ai/aperfect-pms/settings#codes" target="_blank" rel="noopener noreferrer" className="btn btn-primary-with-bg">Change Color Preferences
+          </a>
 
           <button
             onClick={onClose}
-            className="rounded-xl border px-5 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+            className="btn btn-primary"
           >
             Close
           </button>
