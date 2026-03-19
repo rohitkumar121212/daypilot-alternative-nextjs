@@ -149,6 +149,7 @@ const ResourceRow = memo(({
           selection={selection}
           dates={dates}
           cellWidth={cellWidth}
+          rowHeight={actualRowHeight}
         />
       )}
     </div>

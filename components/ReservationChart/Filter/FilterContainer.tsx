@@ -55,7 +55,7 @@ const FilterContainer = ({ onSearchChange, onBookingIdChange, onDateChange, onDa
               Refresh Window
             </a>
           </div>)}
-          {collaborators && collaborators?.length>1 ?<CollaboratorFilter collaborators={collaborators} currentUserId={currentUserId} onRefreshData={refreshData}/> : null}
+          {/* {collaborators && collaborators?.length>1 ?<CollaboratorFilter collaborators={collaborators} currentUserId={currentUserId} onRefreshData={refreshData}/> : null} */}
           <SearchApartmentFilter onSearchChange={onSearchChange} />
           {/* <BookingIdFilter onBookingIdChange={onBookingIdChange} bookings={bookings} />
           <EnquiryIdFilter onEnquiryIdChange={onEnquiryIdChange} bookings={bookings} /> */}

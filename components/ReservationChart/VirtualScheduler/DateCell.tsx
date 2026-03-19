@@ -46,7 +46,7 @@ const DateCell = memo(({
   return (
     <div
       className={`border-r border-b border-gray-200 bg-white select-none relative flex items-center justify-center ${
-        isParentRow ? 'cursor-default' : 'cursor-crosshair'
+        isParentRow ? 'cursor-default' : 'cursor-pointer'
       } ${
         isSelected ? 'bg-blue-100 ring-1 ring-blue-300' : 
         isDropTarget ? 'bg-green-100 ring-2 ring-green-400' :
