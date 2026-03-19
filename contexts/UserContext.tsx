@@ -44,7 +44,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 
       const data = await proxyFetch('/aps-api/v1/users/details/private')
       console.log('Fetched user data:', data?.data)
-      setUser(data?.data?.user_details || null)
+      setUser(data?.data || null)
       if(data?.data?.user_details?.email==='stay@thesqua.re' || data?.data?.user_details?.email==='apsdemo2023@gmail.com'){
         setIsSquareUser(true)
       } else {

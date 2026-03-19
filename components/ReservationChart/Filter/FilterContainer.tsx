@@ -25,7 +25,7 @@ const FilterContainer = ({ onSearchChange, onBookingIdChange, onDateChange, onDa
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [colorsModalOpen, setColorsModalOpen] = useState(false);
   const { user } = useUser()
-
+  const currentUserId =  user?.admin_details?.id
   return (
     <>
       <div className="bg-white px-4 py-3 border-b border-gray-200">
@@ -45,7 +45,7 @@ const FilterContainer = ({ onSearchChange, onBookingIdChange, onDateChange, onDa
               Refresh Window
             </a>
           </div>)}
-          {collaborators && collaborators?.length>1 ?<CollaboratorFilter collaborators={collaborators} /> : null}
+          {collaborators && collaborators?.length>1 ?<CollaboratorFilter collaborators={collaborators} currentUserId={currentUserId}/> : null}
           <SearchApartmentFilter onSearchChange={onSearchChange} />
           {/* <BookingIdFilter onBookingIdChange={onBookingIdChange} bookings={bookings} />
           <EnquiryIdFilter onEnquiryIdChange={onEnquiryIdChange} bookings={bookings} /> */}
