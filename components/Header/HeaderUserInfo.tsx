@@ -5,7 +5,7 @@ interface HeaderUserInfoProps {
 }
 const HeaderUserInfo = ({user}:HeaderUserInfoProps) => {
     const baseDomain="https://aperfectstay.ai"
-    const logoUrl = getUserInfoImageUrl(user?.company_logo_details?.url)
+    const logoUrl = getUserInfoImageUrl(user?.admin_details?.company_logo_details?.url)
     const userMenuItems = [
     { label: 'Switch Account', url: `${baseDomain}/collaboration_access` },
     { label: 'Edit Accout Picture', url: `${baseDomain}/aperfect10/account/picture` },
@@ -17,7 +17,8 @@ const HeaderUserInfo = ({user}:HeaderUserInfoProps) => {
     return (
         <div className="shrink-0 flex items-center gap-3 relative group cursor-pointer">
             <div className="w-10 h-10 rounded-full overflow-hidden">
-                {user?.company_logo_details?.url ? (
+                
+                {user?.admin_details?.company_logo_details?.url ? (
                     <Image
                         src={logoUrl || "https://aperfectstay.ai/static/images/user.png"}
                         alt="Company Logo"
@@ -36,8 +37,8 @@ const HeaderUserInfo = ({user}:HeaderUserInfoProps) => {
                 )}
             </div>
             <div className="text-right">
-            <div className="text-sm font-medium text-gray-900">{`Hi ${user?.name? user?.name : "User Name"}`}</div>
-            <div className="text-xs text-gray-500">{user?.email || "user@example.com"}</div>
+            <div className="text-sm font-medium text-gray-900">{`Hi ${user?.admin_details?.name? user?.admin_details?.name : "User Name"}`}</div>
+            <div className="text-xs text-gray-500">{user?.admin_details?.email || "user@example.com"}</div>
             </div>
                 
             {/* User Dropdown Menu */}

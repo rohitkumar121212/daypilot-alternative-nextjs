@@ -33,7 +33,7 @@ const CollaboratorFilter = ({ collaborators, currentUserId, onRefreshData }: Col
       
       console.log('Changing collaborator to:', collaborator.name)
       const payload = {
-        content_type: collaborator.id,
+        content_type: (collaborator.id).toString(),
         response_version: 'v1'
       }
       
