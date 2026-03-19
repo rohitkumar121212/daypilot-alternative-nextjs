@@ -3,9 +3,11 @@
 import { useEffect } from "react";
 import { X } from "lucide-react";
 import Image from 'next/image';
-
+import { useUser } from "@/contexts/UserContext";
 
 export default function PropertiesLegendsModal({ isOpen, onClose }) {
+  const {user} = useUser()
+  console.log("User in PropertiesLegendsModal:", user?.admin_details?.pms_settings?.pms_color_codes)
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === "Escape") onClose();
