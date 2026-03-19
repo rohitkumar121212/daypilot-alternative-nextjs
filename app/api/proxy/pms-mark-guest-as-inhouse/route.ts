@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ data: data.data,success: true, message: data.message}, { status: 200 })
     }
 
-    return NextResponse.json({ error: 'API request failed', status: response.status, response: text.substring(0, 500) }, { status: response.status })
+    return NextResponse.json({ status: response.status, response: data.message, error: data.error }, { status: response.status })
   } catch (error) {
     console.error('Proxy error:', error)
     return NextResponse.json({ error: 'Failed to create reservation', details: String(error) }, { status: 500 })

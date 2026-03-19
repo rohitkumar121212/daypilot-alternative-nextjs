@@ -4,7 +4,7 @@ import FloatingInput from '@/components/common/FloatingInput'
 
 const SkipCheckInModal = ({ isOpen, booking, resources, onSkip, onClose }) => {
   const [isChecked, setIsChecked] = useState(false)
-  
+  const [isLoading, setIsLoading] = useState(false)
 
   if (!isOpen || !booking) return null
   console.log("booking in skip modal:", booking)
@@ -23,20 +23,43 @@ const SkipCheckInModal = ({ isOpen, booking, resources, onSkip, onClose }) => {
     
     const payload = {
       booking_id: booking.id,
-      action: 'skip_checkin'
+      action: 'skip_checkin',
+      response_version: 'v1'
     }
 
-    try {
-      console.log('Skip check-in payload:', payload)
-      // await fetch('/api/pms-mark-guest-as-inhouse', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(payload)
-      // })
+     try {
+      const isDevelopment = process.env.NODE_ENV === 'development'
+      const url = isDevelopment
+        ? '/api/proxy/pms-mark-guest-as-inhouse'
+        : 'https://aperfectstay.ai/api/pms-mark-guest-as-inhouse'
       
-      onSkip(payload)
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+        credentials: 'include',
+      })
+
+      const data = await response.json()
+      console.log('Skip Check-in successfully:', data)
+      
+      if (data.success) {
+        const bookingId = data.data?.reservation_id
+        if (bookingId) {
+          window.location.href = `/aperfect-pms/booking/${bookingId}/view-details`
+        } else {
+          onClose()
+        }
+      } else {
+        alert(data.error || 'Failed to Skip Check-in')
+      }
     } catch (error) {
-      console.error('Skip check-in failed:', error)
+      console.error('Failed to Skip Check-in:', error)
+      // TODO: Show error message to user
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -101,7 +124,7 @@ const SkipCheckInModal = ({ isOpen, booking, resources, onSkip, onClose }) => {
             disabled={!isChecked}
             className={`flex-1 px-4 py-2 rounded ${
               isChecked 
-                ? 'bg-red-500 text-white hover:bg-red-600' 
+                ? 'flex-1 btn btn-primary-with-bg' 
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}
           >
@@ -109,7 +132,7 @@ const SkipCheckInModal = ({ isOpen, booking, resources, onSkip, onClose }) => {
           </button>
           <button 
             onClick={onClose}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 text-red-700"
+            className="flex-1 btn btn-primary"
           >
             Cancel
           </button>

@@ -121,7 +121,7 @@ const CancelCheckInModal = ({ isOpen, booking, resources, onCancel, onClose }) =
           </button>
           <button 
             onClick={onClose}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 text-red-700"
+            className="flex-1 btn btn-primary"
           >
             Close
           </button>
