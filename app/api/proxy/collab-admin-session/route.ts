@@ -1,0 +1,46 @@
+import { NextRequest, NextResponse } from 'next/server'
+
+// UPDATE THESE WITH FRESH VALUES FROM PRODUCTION
+const DEV_SESSION = process.env.DEV_SESSION || ''
+const DEV_TOKEN = process.env.DEV_TOKEN || ''
+
+export async function POST(request: NextRequest) {
+  const isDevelopment = process.env.NODE_ENV === 'development'
+  
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+  }
+
+  if (isDevelopment) {
+    headers['Cookie'] = `session=${DEV_SESSION}`
+    headers['Authorization'] = `Bearer ${DEV_TOKEN}`
+  }
+
+  try {
+
+    const responseData = await request.json()
+    
+    console.log('Sending payload for Collab Admin Session api:', JSON.stringify(responseData, null, 2))
+    
+    const response = await fetch('https://aperfectstay.ai/collab_admin_session/', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(responseData),
+    })
+
+    // const text = await response.text()
+    const data = await response.json()
+    console.log('proxy for https://aperfectstay.ai/collab_admin_session successfully:', data)
+    // console.log('Response status:', response.status)
+    // console.log('Response body:', text)
+
+    if (data.success === true) {
+      return NextResponse.json({ data: data.data,success: true, message: data.message}, { status: 200 })
+    }
+
+    return NextResponse.json({ status: response.status, response: data.message, error: data.error }, { status: response.status })
+  } catch (error) {
+    console.error('Proxy error:', error)
+    return NextResponse.json({ error: 'Failed in url https://aperfectstay.ai/collab_admin_session', details: String(error) }, { status: 500 })
+  }
+}

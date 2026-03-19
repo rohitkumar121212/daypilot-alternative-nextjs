@@ -32,18 +32,43 @@ const CollaboratorFilter = ({ collaborators, currentUserId, onRefreshData }: Col
       if (!collaborator) return
       
       console.log('Changing collaborator to:', collaborator.name)
+      const payload = {
+        content_type: collaborator.id,
+        response_version: 'v1'
+      }
       
-      // Make dummy API call (replace with your actual endpoint)
-      // const response = await apiFetch('/api/collaborator/change', {
-      //   method: 'POST',
-      //   body: JSON.stringify({ 
-      //     collaboratorId: collaborator.id,
-      //     collaboratorName: collaborator.name 
-      //   })
-      // })
-      
-      // console.log('Collaborator change API response:', response)
-      
+      try{
+        const isDevelopment = process.env.NODE_ENV === 'development'
+        const url = isDevelopment
+          ? '/api/proxy/collab-admin-session'
+          : 'https://aperfectstay.ai/collab_admin_session/'
+        
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+          credentials: 'include',
+        })
+
+        const data = await response.json()
+        console.log('Collaborator admin session updated successfully:', data)
+        
+        if (data.success) {
+          const bookingId = data.data?.reservation_id
+          // console.log('Cancel booking successfully for booking ID:', bookingId)
+          // if (bookingId) {
+          //   window.location.href = `/aperfect-pms/booking/${bookingId}/view-details`
+          // } else {
+          //   onClose()
+          // }
+        } else {
+          alert(data.error || 'Failed to update collaborator admin session')
+        }
+      } catch (error) {
+        console.error('Failed to update collaborator admin session:', error)
+      }
       // Update local state
       setSelectedCollaborator(collaborator)
       
