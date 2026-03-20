@@ -671,10 +671,10 @@ const VirtualScheduler = ({
                 return (
                   <div
                     key={row.id}
-                    className={`absolute w-full border-b border-gray-200 bg-white flex items-center hover:bg-gray-50 ${
+                    className={`absolute w-full border-b border-gray-200 flex items-center hover:bg-gray-50 ${
                       row.type === 'parent' 
-                        ? 'font-semibold bg-gray-50' 
-                        : 'pl-8 text-gray-700'
+                        ? 'font-semibold bg-gray-100' 
+                        : 'pl-8 text-gray-700 bg-white'
                     }`}
                     style={{ 
                       height: row.height,

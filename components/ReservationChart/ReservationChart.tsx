@@ -305,17 +305,17 @@ const ReservationChart = ()=>{
                 />
                 <div className="h-[82vh]">
                     <VirtualScheduler
-                    resources={filteredResources}
-                    bookings={bookings}
-                    availability={availability}
-                    onBookingCreate={handleBookingCreate}
-                    onBookingUpdate={handleBookingUpdate}
-                    onResourcesChange={setResources}
-                    startDate={startDate}
-                    daysToShow={daysToShow}
-                    cellWidth={100}
-                    rowHeight={40}
-                    />
+                      resources={filteredResources}
+                      bookings={bookings}
+                      availability={availability}
+                      onBookingCreate={handleBookingCreate}
+                      onBookingUpdate={handleBookingUpdate}
+                      onResourcesChange={setResources}
+                      startDate={startDate}
+                      daysToShow={daysToShow}
+                      cellWidth={100}
+                      rowHeight={40}
+                      />
                 </div>
                 </div>
              </div>

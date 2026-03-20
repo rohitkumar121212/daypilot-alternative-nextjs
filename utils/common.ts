@@ -1,11 +1,3 @@
-// export const formatBookingType = (type:string) => {
-//   if (!type) return ""
-
-//   return type
-//     .split("_")
-//     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-//     .join(" ")
-// }
 export const formatBookingType = (type: string) => {
   if (!type) return ""
 
@@ -23,4 +15,14 @@ export const getUserInfoImageUrl = (url?: string) => {
   if (!url) return null
   if (url.startsWith("//")) return `https:${url}`
   return url
+}
+
+type Titles = Record<string, string>
+export const getTitleOptions = (titles?: Titles | null) => {
+  if (!titles) return []
+
+  return Object.values(titles).map((title) => ({
+    value: title,
+    label: title,
+  }))
 }

@@ -6,13 +6,12 @@ interface BlockFormProps {
   formData: any
   handleChange: (field: string, value: string) => void
   dayCount: number
-  setFormData: (data: any) => void
   errors?: any
   setErrors?: (errors: any) => void
   constants?: any
 }
 
-const BlockForm = ({ formData, handleChange, dayCount, setFormData, errors = {}, setErrors, constants }: BlockFormProps) => {
+const BlockForm = ({ formData, handleChange, dayCount, errors = {}, setErrors, constants }: BlockFormProps) => {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -46,7 +45,7 @@ const BlockForm = ({ formData, handleChange, dayCount, setFormData, errors = {},
           options={constants?.dnrTypes}
           value={formData.dnrReason}
           onChange={(value) => {
-            setFormData({ ...formData, dnrReason: value })
+            handleChange('dnrReason', value)
             if (errors.dnrReason && setErrors) setErrors({ ...errors, dnrReason: '' })
           }}
           error={errors.dnrReason}
@@ -60,7 +59,7 @@ const BlockForm = ({ formData, handleChange, dayCount, setFormData, errors = {},
           value={formData.dnrNotes}
           required={true}
           onChange={(e) => {
-            setFormData({ ...formData, dnrNotes: e.target.value })
+            handleChange('dnrNotes', e.target.value)
             if (errors.dnrNotes && setErrors) setErrors({ ...errors, dnrNotes: '' })
           }}
           error={errors.dnrNotes}

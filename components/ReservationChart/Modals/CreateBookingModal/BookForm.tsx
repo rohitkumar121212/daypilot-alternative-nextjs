@@ -3,6 +3,7 @@ import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
 import FloatingAutocomplete from '@/components/common/FloatingAutocomplete'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
+import { getTitleOptions } from '@/utils/common'
 
 interface BookFormProps {
   formData: any
@@ -15,15 +16,13 @@ interface BookFormProps {
 
 const BookForm = ({ formData, handleChange, dayCount, constants, errors = {}, setErrors }: BookFormProps) => {
   // Convert API constants to dropdown format
-  const titleOptions = constants?.titles 
-    ? Object.values(constants.titles).map((title: string) => ({ value: title, label: title }))
-    : []
-  
+  const titleOptions = getTitleOptions(constants?.titles)
   const nationalityOptions = constants?.nationalities || []
   const adultOptions = constants?.adultCountList || []
   const childrenOptions = constants?.childrenCountList || []
   const accountOptions = constants?.accounts || []
   const taxOptions = constants?.taxSets || []
+
   const handleSelectGuest = (guest: any) => {
     handleChange('guestName', guest.guest_name)
     handleChange('email', guest.guest_email !== 'None' && guest.guest_email !== '' ? guest.guest_email : '')
@@ -42,12 +41,6 @@ const BookForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
 
   const handleSelectNationality = (nationality: any) => {
     handleChange('nationality', nationality.label)
-  }
-
-  const getGuestSecondaryDisplay = (guest: any) => {
-    const email = guest.guest_email !== 'None' && guest.guest_email !== '' ? guest.guest_email : ''
-    const phone = guest.guest_contact !== 'None' && guest.guest_contact !== '' ? guest.guest_contact : ''
-    return email && phone ? `${email} • ${phone}` : email || phone
   }
 
   return (

@@ -23,12 +23,20 @@ import InstantMailCheckbox from './components/InstantMailCheckbox'
  * @param {Function} props.onConfirm - Handler to confirm booking creation/update
  */
 
+interface CreateBookingModalProps {
+  isOpen: boolean
+  selection: any
+  booking: any
+  resource: any
+  onClose: () => void
+  onConfirm: () => void
+}
 
-const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onConfirm }) => {
+const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onConfirm }: CreateBookingModalProps) => {
   // Custom hooks for clean separation of concerns
   const { constants, isLoadingData } = useBookingModalData(isOpen)
   const modalData = booking || selection
-  const { formData, errors, setFormData, setErrors, handleChange, validateForm } = useBookingForm(isOpen, booking, modalData)
+  const { formData, errors, setErrors, handleChange, validateForm } = useBookingForm(isOpen, booking, modalData)
   const { submitBooking, isSubmitting } = useBookingSubmission()
   const { handleBackdropClick } = useModalState(onClose)
   
@@ -71,7 +79,7 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
               formData={formData} 
               handleChange={handleChange} 
               dayCount={dayCount} 
-              setFormData={setFormData}
+              // setFormData={setFormData}
               constants={constants}
               errors={errors}
               setErrors={setErrors}
@@ -82,7 +90,7 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
               formData={formData} 
               handleChange={handleChange} 
               dayCount={dayCount} 
-              setFormData={setFormData}
+              // setFormData={setFormData}
               constants={constants}
               errors={errors}
               setErrors={setErrors}
@@ -93,7 +101,6 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
               formData={formData} 
               handleChange={handleChange} 
               dayCount={dayCount} 
-              setFormData={setFormData}
               constants={constants}
               errors={errors}
               setErrors={setErrors}

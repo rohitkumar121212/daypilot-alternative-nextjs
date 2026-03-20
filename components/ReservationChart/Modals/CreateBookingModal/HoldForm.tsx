@@ -3,6 +3,7 @@ import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
 import FloatingAutocomplete from '@/components/common/FloatingAutocomplete'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
+import { getTitleOptions } from '@/utils/common'
 
 interface HoldFormProps {
   formData: any
@@ -14,13 +15,17 @@ interface HoldFormProps {
 }
 
 const HoldForm = ({ formData, handleChange, dayCount, constants, errors = {}, setErrors }: HoldFormProps) => {
-  const titleOptions = constants?.titles 
-    ? Object.values(constants.titles).map((title: string) => ({ value: title, label: title }))
-    : []
   
+  // const titleOptions = constants?.titles 
+  //   ? Object.values(constants.titles).map((title: string) => ({ value: title, label: title }))
+  //   : []
+
+  const titleOptions = getTitleOptions(constants?.titles)
+
   const adultOptions = constants?.adultCountList || []
   const childrenOptions = constants?.childrenCountList || []
   const accountOptions = constants?.accounts || []
+
   const handleSelectGuest = (guest: any) => {
     handleChange('guestName', guest.guest_name)
     handleChange('email', guest.guest_email !== 'None' && guest.guest_email !== '' ? guest.guest_email : '')
