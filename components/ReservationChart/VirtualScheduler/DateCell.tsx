@@ -4,6 +4,19 @@ import { memo } from 'react'
  * DateCell - Individual date cell in the scheduler grid
  * Memoized to prevent unnecessary re-renders
  */
+interface DateCellProps {
+  date: string
+  resourceId: string
+  cellWidth?: number
+  cellHeight?: number
+  isSelected?: boolean
+  isDropTarget?: boolean
+  availability?: { available: number; total: number } | null
+  isParentRow?: boolean
+  onMouseDown?: (date: string, resourceId: string, e: React.MouseEvent) => void
+  onMouseEnter?: (date: string, resourceId: string, e: React.MouseEvent) => void
+}
+
 const DateCell = memo(({
   date,
   resourceId,
@@ -15,7 +28,7 @@ const DateCell = memo(({
   isParentRow = false,
   onMouseDown,
   onMouseEnter
-}) => {
+}: DateCellProps) => {
   const handleMouseDown = (e) => {
     if (isParentRow) return // Don't allow interaction on parent rows
     e.preventDefault()

@@ -8,7 +8,7 @@ import { apiFetch } from '@/utils/apiRequest';
 import { proxyFetch } from '@/utils/proxyFetch';
 import { DataRefreshProvider } from '@/contexts/DataRefreshContext';
 
-const ReservationChart = ()=>{
+const ReservationChart = ({ className = '', style = {} }: { className?: string; style?: React.CSSProperties }) => {
   const [resources, setResources] = useState([])
   const [bookings, setBookings] = useState([])
   const [collaborators, setCollaborators] = useState([])
@@ -277,7 +277,7 @@ const ReservationChart = ()=>{
   }, [loadDataFunction])
     return (
         <DataRefreshProvider onRefresh={handleRefreshData} isRefreshing={isLoading}>
-            <div className="flex-1 overflow-hidden flex flex-col relative">
+            <div className={`w-full h-full overflow-hidden flex flex-col relative ${className}`} style={style}>
                 {isLoading && (
                   <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg shadow-2xl p-8 flex flex-col items-center gap-4">
@@ -286,15 +286,8 @@ const ReservationChart = ()=>{
                     </div>
                   </div>
                 )}
-                <div className="flex-1 border-b-2 border-gray-300">
-                {/* <div className="bg-blue-50 px-4 py-2 border-b border-gray-200">
-                    <h2 className="text-lg font-semibold text-blue-800">SimpleVirtualScheduler (Custom Implementation)</h2>
-                    <p className="text-sm text-blue-600">Manual virtualization without external dependencies</p>
-                </div> */}
-                {/* <div>
-                  <button className='p-2 bg-red-500 rounded-lg text-white mt-2 ml-4' onClick={() => window.location.href = 'https://aperfectstay.ai/aperfect-pms'}>Go back to APS</button>
-                </div> */}
-                <FilterContainer 
+                <div className="flex-1 min-h-0 border-b-2 border-gray-300 flex flex-col">
+                <FilterContainer
                   onSearchChange={setSearchTerm}
                   onBookingIdChange={setBookingIdFilter}
                   onEnquiryIdChange={setEnquiryIdFilter}
@@ -303,7 +296,7 @@ const ReservationChart = ()=>{
                   bookings={bookings}
                   collaborators={collaborators}
                 />
-                <div className="h-[82vh]">
+                <div className="flex-1 min-h-0">
                     <VirtualScheduler
                       resources={filteredResources}
                       bookings={bookings}
