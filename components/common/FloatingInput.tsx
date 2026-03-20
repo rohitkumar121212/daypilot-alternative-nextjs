@@ -24,7 +24,9 @@ export function FloatingInput({
   const [isFocused, setIsFocused] = useState(false)
 
   const hasValue = value && value.length > 0
-  const active = isFocused || hasValue || type === 'file' || type === 'date' || type === 'time' || type === 'datetime-local'
+  const specialTypes = ['file', 'date', 'time', 'datetime-local']
+  const active = isFocused || hasValue || specialTypes.includes(type)
+  // const active = isFocused || hasValue || type === 'file' || type === 'date' || type === 'time' || type === 'datetime-local'
 
   return (
     <div className="relative w-full">
