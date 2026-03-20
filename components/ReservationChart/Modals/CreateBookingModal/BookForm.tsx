@@ -1,5 +1,3 @@
-import React from 'react'
-import { ACCOUNT_LIST, TAXSET_LIST } from '@/constants/constant'
 import guestsData from '@/mocks/data/guests-data.json'
 import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'

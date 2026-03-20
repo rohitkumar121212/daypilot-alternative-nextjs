@@ -4,7 +4,6 @@ import { useState } from 'react'
 import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
-import { SOURCE_LIST_FOR_CREATE_TASK, PRIORITY_LIST_FOR_CREATE_TASK } from '@/constants/constant'
 
 interface CreateTaskTabProps {
   bookingDetails?: any,

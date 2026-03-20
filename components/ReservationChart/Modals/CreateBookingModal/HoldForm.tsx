@@ -1,4 +1,3 @@
-import { TITLES, ACCOUNT_LIST } from '@/constants/constant'
 import guestsData from '@/mocks/data/guests-data.json'
 import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
