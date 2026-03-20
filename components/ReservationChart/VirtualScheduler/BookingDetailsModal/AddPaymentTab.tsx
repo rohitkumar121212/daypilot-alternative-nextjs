@@ -4,8 +4,6 @@ import { useState } from 'react'
 import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
-import { PAYMENT_METHODS_LIST } from '@/constants/constant'
-import { createAddPayment } from '@/apiData/services/pms/bookings'
 
 interface AddPaymentTabProps {
   bookingId: Number | string | null
@@ -39,24 +37,7 @@ const AddPaymentTab = ({ bookingId, onClose, reservationConstants, bookingDetail
     setErrors(newErrors)
 
     if (Object.keys(newErrors).length > 0) return
-
-    // const payload = new FormData()
-    // payload.append('amount', formData.amount)
-    // payload.append('mode', formData.paymentMethod)
-    // payload.append('refernce', formData.referenceNo)
-    // payload.append('accepted_by', formData.acceptedBy)
-    // payload.append('notes', formData.notes)
-    // payload.append('enq_id_payment', bookingId?.toString() || '') // TODO: Replace with actual booking ID
-    // if (formData.receipt) payload.append('receipt_img', formData.receipt)
-
-    // try {
-    //   const response = await addNewBookingPayment(payload)
-    //   console.log('Payment added successfully:', response.data)
-    //   // TODO: Show success message and reset form
-    // } catch (error) {
-    //   console.error('Failed to add payment:', error)
-    //   // TODO: Show error message
-    // }
+    
     const formPayload = new FormData()
     formPayload.append('enq_id_payment', bookingDetails?.booking_key || '')
     formPayload.append('amount', formData.amount)

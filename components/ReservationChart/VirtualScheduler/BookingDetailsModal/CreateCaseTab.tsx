@@ -4,8 +4,6 @@ import { useState } from 'react'
 import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
-import { REASON_LIST_FOR_CASE_TAB, SUB_REASON_LIST_FOR_CASE_TAB, ORIGIN_LIST_FOR_CASE_TAB, ASSIGN_CASE_TO_LIST } from '@/constants/constant'
-import { createTask } from '@/apiData/services/pms/bookings'
 
 interface CreateCaseTabProps {
   reservationConstants: any,
@@ -88,15 +86,6 @@ const CreateCaseTab = ({ reservationConstants, bookingDetails, assignToUsers }: 
       console.error('Failed to create case:', error)
       alert('Failed to create case')
     }
-
-    // try {
-    //   const response = await createTask(payload)
-    //   console.log('Task created successfully:', response.data)
-    //   // TODO: Show success message and reset form
-    // } catch (error) {
-    //   console.error('Failed to create task:', error)
-    //   // TODO: Show error message
-    // }
   }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
