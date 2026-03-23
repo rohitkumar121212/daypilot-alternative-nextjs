@@ -296,7 +296,7 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
                   bookings={bookings}
                   collaborators={collaborators}
                 />
-                <div className="flex-1 min-h-0">
+                <div className="flex-1 min-h-0 h-[400px] w-[95%] mx-auto border border-gray-300 rounded-lg shadow-md mt-2">
                     <VirtualScheduler
                       resources={filteredResources}
                       bookings={bookings}
