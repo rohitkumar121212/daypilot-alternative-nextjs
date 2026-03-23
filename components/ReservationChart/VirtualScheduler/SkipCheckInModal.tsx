@@ -1,10 +1,20 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import dayjs from 'dayjs'
 import FloatingInput from '@/components/common/FloatingInput'
+import { useDataRefresh } from '@/contexts/DataRefreshContext'
 
 const SkipCheckInModal = ({ isOpen, booking, resources, onSkip, onClose }) => {
   const [isChecked, setIsChecked] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const { refreshData } = useDataRefresh()
+
+  // Reset state when modal opens/closes
+  useEffect(() => {
+    if (!isOpen) {
+      setIsChecked(false)
+      setIsLoading(false)
+    }
+  }, [isOpen])
 
   if (!isOpen || !booking) return null
   console.log("booking in skip modal:", booking)
@@ -19,7 +29,9 @@ const SkipCheckInModal = ({ isOpen, booking, resources, onSkip, onClose }) => {
   }
 
   const handleSkip = async () => {
-    if (!isChecked) return
+    if (!isChecked || isLoading) return
+    
+    setIsLoading(true)
     
     const payload = {
       booking_id: booking.id,
@@ -27,7 +39,7 @@ const SkipCheckInModal = ({ isOpen, booking, resources, onSkip, onClose }) => {
       response_version: 'v1'
     }
 
-     try {
+    try {
       const isDevelopment = process.env.NODE_ENV === 'development'
       const url = isDevelopment
         ? '/api/proxy/pms-mark-guest-as-inhouse'
@@ -43,21 +55,21 @@ const SkipCheckInModal = ({ isOpen, booking, resources, onSkip, onClose }) => {
       })
 
       const data = await response.json()
-      console.log('Skip Check-in successfully:', data)
+      console.log('Skip Check-in response:', data)
       
       if (data.success) {
         const bookingId = data.data?.reservation_id
-        if (bookingId) {
-          window.location.href = `/aperfect-pms/booking/${bookingId}/view-details`
-        } else {
-          onClose()
-        }
+        console.log('Skip Check-in successful for booking ID:', bookingId)
+        
+        // ✅ Success: Refresh data and close modal
+        await refreshData()
+        onClose()
       } else {
         alert(data.error || 'Failed to Skip Check-in')
       }
     } catch (error) {
       console.error('Failed to Skip Check-in:', error)
-      // TODO: Show error message to user
+      alert('An error occurred while skipping check-in. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -121,18 +133,28 @@ const SkipCheckInModal = ({ isOpen, booking, resources, onSkip, onClose }) => {
         <div className="flex gap-3">
           <button 
             onClick={handleSkip}
-            disabled={!isChecked}
-            className={`flex-1 px-4 py-2 rounded ${
-              isChecked 
-                ? 'flex-1 btn btn-primary-with-bg' 
+            disabled={!isChecked || isLoading}
+            className={`flex-1 px-4 py-2 rounded flex items-center justify-center gap-2 ${
+              isChecked && !isLoading
+                ? 'btn btn-primary-with-bg' 
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}
           >
-            Skip Check-in
+            {isLoading ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Skipping...
+              </>
+            ) : (
+              'Skip Check-in'
+            )}
           </button>
           <button 
             onClick={onClose}
-            className="flex-1 btn btn-primary"
+            disabled={isLoading}
+            className={`flex-1 btn btn-primary ${
+              isLoading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
             Cancel
           </button>

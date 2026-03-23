@@ -4,15 +4,18 @@ import { FloatingInput } from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
 import { apiFetch } from '@/utils/apiRequest'
 import { useUser } from '@/hooks/useUser'
+import { useDataRefresh } from '@/contexts/DataRefreshContext'
 
 const SplitBookingModal = ({ isOpen, booking, resources, onSplit, onClose }) => {
   const [splitStartDate, setSplitStartDate] = useState('')
   const [splitEndDate, setSplitEndDate] = useState('')
   const [newApartment, setNewApartment] = useState('')
   const [newApartmentOptions, setNewApartmentOptions] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false) // 🔄 Main action loading
+  const [isLoadingApartments, setIsLoadingApartments] = useState(false) // 🔄 Apartment fetching loading
 
   const { user } = useUser()
+  const { refreshData } = useDataRefresh()
 
   // Set default dates when modal opens
   useEffect(() => {
@@ -20,6 +23,9 @@ const SplitBookingModal = ({ isOpen, booking, resources, onSplit, onClose }) => 
       const defaultStartDate = dayjs(booking.startDate).add(1, 'day').format('YYYY-MM-DD')
       setSplitStartDate(defaultStartDate)
       setSplitEndDate(booking.endDate)
+      setNewApartment('') // Reset apartment selection
+      setIsLoading(false) // Reset loading states
+      setIsLoadingApartments(false)
     }
   }, [isOpen, booking])
 
@@ -28,11 +34,13 @@ const SplitBookingModal = ({ isOpen, booking, resources, onSplit, onClose }) => 
   const minDate = dayjs(booking.startDate).add(1, 'day').format('YYYY-MM-DD')
 
   const getAvailableApartments = async() => {
+    setIsLoadingApartments(true) // 🔄 Start apartment loading
+    
     const payload = {
-      user_id: user?.id,
+      user_id: user?.admin_details?.id,
       response_version: 'v1',
     }
-    // Dummy API call
+    
     try {
       const apartmentInfoUrl = `https://aperfectstay.ai/api/aperfectstay/own-stock-apartments/pms`
       const apartmentResponse = await apiFetch(apartmentInfoUrl, {
@@ -48,20 +56,27 @@ const SplitBookingModal = ({ isOpen, booking, resources, onSplit, onClose }) => 
         label: parent,
         value: parent
       }))
-      setNewApartmentOptions(updatedApartmentData)
+      setNewApartmentOptions(updatedApartmentData || [])
       console.log('Updated Apartment data with available_for_split filter:', updatedApartmentData)
     } catch (error) {
       console.error('Failed to fetch apartment data:', error)
+      setNewApartmentOptions([])
+    } finally {
+      setIsLoadingApartments(false) // 🔄 Stop apartment loading
     }
   }
   useEffect(() => {
     getAvailableApartments()
   }, [])
   const handleSplit = async () => {
-    if (!splitStartDate || !splitEndDate || !newApartment) {
-      alert('Please fill all required fields')
+    if (!splitStartDate || !splitEndDate || !newApartment || isLoading) {
+      if (!splitStartDate || !splitEndDate || !newApartment) {
+        alert('Please fill all required fields')
+      }
       return
     }
+
+    setIsLoading(true) // 🔄 Start split loading
 
     const payload = {
       booking_id: booking.id,
@@ -72,7 +87,7 @@ const SplitBookingModal = ({ isOpen, booking, resources, onSplit, onClose }) => 
     }
     console.log('Splitting booking with payload:', payload)
 
-    try{
+    try {
       const isDevelopment = process.env.NODE_ENV === 'development'
       const url = isDevelopment
         ? '/api/proxy/split-booking'
@@ -88,76 +103,24 @@ const SplitBookingModal = ({ isOpen, booking, resources, onSplit, onClose }) => 
       })
 
       const data = await response.json()
-      console.log('Guest Marked as Inhouse successfully:', data)
+      console.log('Split booking response:', data)
       
       if (data.success) {
         const bookingId = data.data?.reservation_id
-        console.log('Redirecting to booking details page for booking ID:', bookingId)
-        // if (bookingId) {
-        //   window.location.href = `/aperfect-pms/booking/${bookingId}/view-details`
-        // } else {
-        //   onClose()
-        // }
+        console.log('Split booking successful for booking ID:', bookingId)
+        
+        // ✅ Success: Refresh data and close modal
+        await refreshData()
+        onClose()
       } else {
-        alert(data.error || 'Failed to create booking')
+        alert(data.error || 'Failed to split booking')
       }
     } catch (error) {
       console.error('Failed to split booking:', error)
+      alert('An error occurred while splitting booking. Please try again.')
+    } finally {
+      setIsLoading(false) // 🔄 Stop split loading
     }
-    // Dummy API call
-    //  try {
-    //   const apartmentInfoUrl = `https://aperfectstay.ai/api/aperfectstay/own-stock-apartments/pms`
-    //   const apartmentResponse = await apiFetch(apartmentInfoUrl, {
-    //     method: 'GET',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     credentials: 'include',
-    //   })
-    //   const apartmentData = await apartmentResponse.json()
-    //   console.log('Apartment data fetched successfully:', apartmentData)
-    //   // const isDevelopment = process.env.NODE_ENV === 'development'
-    //   // const url = isDevelopment
-    //   //   ? '/api/proxy/pms-mark-guest-as-inhouse'
-    //   //   : 'https://aperfectstay.ai/api/aperfectstay/own-stock-apartments/pms'
-      
-    //   // const response = await fetch(url, {
-    //   //   method: 'POST',
-    //   //   headers: {
-    //   //     'Content-Type': 'application/json',
-    //   //   },
-    //   //   body: JSON.stringify(payload),
-    //   //   credentials: 'include',
-    //   // })
-
-    //   const data = await response.json()
-    //   console.log('Guest Marked as Inhouse successfully:', data)
-      
-    //   if (data.success) {
-    //     const bookingId = data.data?.reservation_id
-    //     console.log('Redirecting to booking details page for booking ID:', bookingId)
-    //     if (bookingId) {
-    //       window.location.href = `/aperfect-pms/booking/${bookingId}/view-details`
-    //     } else {
-    //       // onConfirm({
-    //       //   ...(booking || {}),
-    //       //   resourceId: modalData.resourceId,
-    //       //   startDate: modalData.startDate,
-    //       //   endDate: modalData.endDate,
-    //       //   text: formData.bookingName,
-    //       //   ...formData
-    //       // })
-    //       onClose()
-    //     }
-    //   } else {
-    //     alert(data.error || 'Failed to create booking')
-    //   }
-    // } catch (error) {
-    //   console.error('Failed to create booking:', error)
-    //   // TODO: Show error message to user
-    // } finally {
-    //   setIsLoading(false)
-    // }
   }
 
 
@@ -199,10 +162,11 @@ const SplitBookingModal = ({ isOpen, booking, resources, onSplit, onClose }) => 
             onChange={(e) => setSplitEndDate(e.target.value)}
           />
           <FloatingDropdown 
-            label="Select New Apartment" 
+            label={isLoadingApartments ? "Loading apartments..." : "Select New Apartment"}
             options={newApartmentOptions}
             value={newApartment}
             onChange={(value) => setNewApartment(value)}
+            disabled={isLoadingApartments}
             required
           />
         </div>
@@ -211,17 +175,31 @@ const SplitBookingModal = ({ isOpen, booking, resources, onSplit, onClose }) => 
         <div className="flex gap-3">
           <button 
             onClick={handleSplit}
-            className="btn btn-primary-with-bg flex-1"
+            disabled={isLoading || isLoadingApartments || !splitStartDate || !splitEndDate || !newApartment}
+            className={`btn flex-1 flex items-center justify-center gap-2 ${
+              isLoading || isLoadingApartments || !splitStartDate || !splitEndDate || !newApartment
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'btn-primary-with-bg'
+            }`}
           >
-            Split Booking
+            {isLoading ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Splitting...
+              </>
+            ) : (
+              'Split Booking'
+            )}
           </button>
           <button 
             onClick={onClose}
-            className="btn btn-primary flex-1"
+            disabled={isLoading}
+            className={`btn btn-primary flex-1 ${
+              isLoading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
             Close
           </button>
-          
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useDataRefresh } from '@/contexts/DataRefreshContext'
 
 interface CheckInModalProps {
   isOpen: boolean
@@ -12,10 +13,21 @@ interface CheckInModalProps {
 const CheckInModal = ({ isOpen, onClose, booking, onCheckIn }: CheckInModalProps) => {
   const [isLoading, setIsLoading] = useState(false)
   const [checked, setChecked] = useState(false)
+  const { refreshData } = useDataRefresh()
+
+  // Reset state when modal opens/closes
+  useEffect(() => {
+    if (!isOpen) {
+      setChecked(false)
+      setIsLoading(false)
+    }
+  }, [isOpen])
 
   if (!isOpen) return null
 
   const handleSave = async () => {
+    if (isLoading || !checked) return
+    
     setIsLoading(true)
 
     const payload = {
@@ -24,10 +36,9 @@ const CheckInModal = ({ isOpen, onClose, booking, onCheckIn }: CheckInModalProps
       action: 'checkin',
     }
 
-
     console.log('Checking in booking:', payload)
 
-     try {
+    try {
       const isDevelopment = process.env.NODE_ENV === 'development'
       const url = isDevelopment
         ? '/api/proxy/pms-mark-guest-as-inhouse'
@@ -43,30 +54,21 @@ const CheckInModal = ({ isOpen, onClose, booking, onCheckIn }: CheckInModalProps
       })
 
       const data = await response.json()
-      console.log('Guest Marked as Inhouse successfully:', data)
+      console.log('Check-in response:', data)
       
       if (data.success) {
         const bookingId = data.data?.reservation_id
-        console.log('Redirecting to booking details page for booking ID:', bookingId)
-        if (bookingId) {
-          window.location.href = `/aperfect-pms/booking/${bookingId}/view-details`
-        } else {
-          // onConfirm({
-          //   ...(booking || {}),
-          //   resourceId: modalData.resourceId,
-          //   startDate: modalData.startDate,
-          //   endDate: modalData.endDate,
-          //   text: formData.bookingName,
-          //   ...formData
-          // })
-          onClose()
-        }
+        console.log('Check-in successful for booking ID:', bookingId)
+        
+        // ✅ Success: Refresh data and close modal
+        await refreshData()
+        onClose()
       } else {
-        alert(data.error || 'Failed to create booking')
+        alert(data.error || 'Failed to check-in guest')
       }
     } catch (error) {
-      console.error('Failed to create booking:', error)
-      // TODO: Show error message to user
+      console.error('Failed to check-in guest:', error)
+      alert('An error occurred during check-in. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -155,19 +157,29 @@ const CheckInModal = ({ isOpen, onClose, booking, onCheckIn }: CheckInModalProps
         <div className="flex justify-center gap-4 border-t py-4">
           <button
             onClick={handleSave}
-            disabled={isLoading || checked === false}
-            className={`btn
+            disabled={isLoading || !checked}
+            className={`btn flex items-center justify-center gap-2
               ${isLoading || !checked
-                ? "bg-gray-300 cursor-not-allowed"
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                 : "btn-primary-with-bg"
               }`}
           >
-            SAVE
+            {isLoading ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Checking In...
+              </>
+            ) : (
+              'SAVE'
+            )}
           </button>
 
           <button
             onClick={onClose}
-            className="btn btn-primary"
+            disabled={isLoading}
+            className={`btn btn-primary ${
+              isLoading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
             CLOSE
           </button>
