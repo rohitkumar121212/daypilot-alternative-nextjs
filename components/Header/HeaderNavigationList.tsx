@@ -5,6 +5,8 @@ interface HeaderNavigationListProps {
 }
 const HeaderNavigationList = ({ user }: HeaderNavigationListProps) => {
     const baseDomain="https://aperfectstay.ai"
+
+    const isChannexEnabled = user?.admin_details?.channex_enabled
   
     const menuItems = [
         { label: 'aPerfect Housekeeping', url: `${baseDomain}/aperfect10/gsadmin` },
@@ -13,7 +15,7 @@ const HeaderNavigationList = ({ user }: HeaderNavigationListProps) => {
         { label: 'aPerfect HRMS', url: `${baseDomain}/hrcloud/dashboard` },
         { label: 'aPerfect Dashboard', url: `${baseDomain}/select_products` }
     ]
-    const navItems = [
+    const allNavItems = [
         { label: 'Dashboard', hasDropdown: false },
         { label: 'PMS', hasDropdown: false },
         { label: 'Manage Properties', hasDropdown: false },
@@ -35,6 +37,7 @@ const HeaderNavigationList = ({ user }: HeaderNavigationListProps) => {
         { 
         label: 'Channel Manager', 
         hasDropdown: true,
+        showCondition: isChannexEnabled, // 🎯 Conditional display
         dropdownItems: [
             { label: 'Inventory & Rates', url: `${baseDomain}/channel-operations-inventory?active_true=inventory` },
             { label: 'Bookings', url: `${baseDomain}/channel-operations-bookings?active_true=bookings` },
@@ -45,7 +48,6 @@ const HeaderNavigationList = ({ user }: HeaderNavigationListProps) => {
             { label: 'Reviews', url: `${baseDomain}/channel-operations-reviews?active_true=reviews` },
         ]
         },
-        { label: 'APS Channel Manager', hasDropdown: false },
         { 
         label: 'Integrations', 
         hasDropdown: true,
@@ -78,6 +80,12 @@ const HeaderNavigationList = ({ user }: HeaderNavigationListProps) => {
         ]
         }
     ]
+
+    // 🎯 Filter navigation items based on conditions
+    const navItems = allNavItems.filter(item => {
+        // If item has showCondition, check it; otherwise show by default
+        return item.showCondition !== false
+    })
     return (
         <nav className="flex-1 flex justify-center px-4">
             <ul className="flex items-center gap-4 flex-wrap justify-center">
