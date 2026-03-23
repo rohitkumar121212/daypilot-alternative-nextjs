@@ -5,6 +5,8 @@ import DevTokenSetter from "@/components/dev/DevTokenSetter";
 import DevSessionSetter from "@/components/dev/DevSessionSetter";
 import Header from "@/components/Header/Header";
 import { UserProvider } from "@/contexts/UserContext";
+import { ErrorProvider } from "@/contexts/ErrorContext";
+import ErrorModal from "@/components/common/ErrorModal";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,12 +34,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <UserProvider>
-          <DevSessionSetter />
-          <Header />
-          {children}
-          {/* <DevTokenSetter /> */}
-        </UserProvider>
+        <ErrorProvider>
+          <UserProvider>
+            <DevSessionSetter />
+            <Header />
+            {children}
+            <ErrorModal />
+            {/* <DevTokenSetter /> */}
+          </UserProvider>
+        </ErrorProvider>
       </body>
     </html>
   );

@@ -3,16 +3,20 @@ import dayjs from 'dayjs'
 import FloatingInput from '@/components/common/FloatingInput'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
 import { apiFetch } from '@/utils/apiRequest'
+import { useDataRefresh } from '@/contexts/DataRefreshContext'
 
 const CancelCheckInModal = ({ isOpen, booking, resources, onCancel, onClose }) => {
   const [isChecked, setIsChecked] = useState(false)
   const [reason, setReason] = useState('')
+  const [isLoading, setIsLoading] = useState(false) // 🔄 Loading state
+  const { refreshData } = useDataRefresh()
   
   // Reset state when modal opens/closes
   useEffect(() => {
     if (!isOpen) {
       setReason('')
       setIsChecked(false)
+      setIsLoading(false) // 🔄 Reset loading state
     }
   }, [isOpen])
   
@@ -28,14 +32,17 @@ const CancelCheckInModal = ({ isOpen, booking, resources, onCancel, onClose }) =
   // }
 
   const handleCancel = async () => {
+    if (isLoading) return // 🚫 Prevent multiple clicks
+    
+    setIsLoading(true) // 🔄 Start loading
+    
     const payload = {
       booking_id: booking?.booking_details?.booking_key,
       response_version: 'v1',
-      // action: 'cancel_checkin',
       cancel_this_reason: reason.trim()
     }
 
-    try{
+    try {
       const isDevelopment = process.env.NODE_ENV === 'development'
       const url = isDevelopment
         ? '/api/proxy/cancel-checkin'
@@ -51,21 +58,23 @@ const CancelCheckInModal = ({ isOpen, booking, resources, onCancel, onClose }) =
       })
 
       const data = await response.json()
-      console.log('Cancel booking successfully:', data)
+      console.log('Cancel booking response:', data)
       
       if (data.success) {
         const bookingId = data.data?.reservation_id
         console.log('Cancel booking successfully for booking ID:', bookingId)
-        // if (bookingId) {
-        //   window.location.href = `/aperfect-pms/booking/${bookingId}/view-details`
-        // } else {
-        //   onClose()
-        // }
+        
+        // ✅ Success: Refresh data and close modal
+        await refreshData()
+        onClose()
       } else {
-        alert(data.error || 'Failed to create booking')
+        alert(data.error || 'Failed to cancel check-in')
       }
     } catch (error) {
-      console.error('Failed to split booking:', error)
+      console.error('Failed to cancel check-in:', error)
+      alert('An error occurred while canceling check-in. Please try again.')
+    } finally {
+      setIsLoading(false) // 🔄 Stop loading
     }
   }
 
@@ -115,13 +124,26 @@ const CancelCheckInModal = ({ isOpen, booking, resources, onCancel, onClose }) =
         <div className="flex gap-3">
           <button 
             onClick={handleCancel}
-            className="flex-1 btn btn-primary-with-bg"
+            disabled={isLoading || !reason.trim()} // 🚫 Disable when loading or no reason
+            className={`flex-1 btn btn-primary-with-bg flex items-center justify-center gap-2 ${
+              isLoading || !reason.trim() ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
-            Cancel Check-in
+            {isLoading ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Canceling...
+              </>
+            ) : (
+              'Cancel Check-in'
+            )}
           </button>
           <button 
             onClick={onClose}
-            className="flex-1 btn btn-primary"
+            disabled={isLoading} // 🚫 Disable close button during loading
+            className={`flex-1 btn btn-primary ${
+              isLoading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
             Close
           </button>
