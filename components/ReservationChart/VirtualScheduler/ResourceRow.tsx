@@ -7,6 +7,23 @@ import SelectionOverlay from './SelectionOverlay'
  * ResourceRow - Memoized component for better performance
  * Dynamically adjusts height based on overbooking count
  */
+interface ResourceRowProps {
+  resource: any
+  dates: string[]
+  bookings?: any[]
+  selection?: any
+  dragState?: any
+  availabilityData?: Record<string, any>
+  availabilityByParent?: Record<string, any>
+  onCellMouseDown?: (date: string, resourceId: string, e: React.MouseEvent) => void
+  onCellMouseEnter?: (date: string, resourceId: string, e: React.MouseEvent) => void
+  onBookingClick?: (booking: any) => void
+  onBookingRightClick?: (booking: any, position: any) => void
+  onBookingDragStart?: (booking: any, e: React.MouseEvent) => void
+  cellWidth?: number
+  rowHeight?: number
+}
+
 const ResourceRow = memo(({
   resource,
   dates,
@@ -22,7 +39,7 @@ const ResourceRow = memo(({
   onBookingDragStart,
   cellWidth = 100,
   rowHeight = 60
-}) => {
+}: ResourceRowProps) => {
   // Filter bookings for this resource
   const resourceBookings = bookings.filter(b => String(b.resourceId) === String(resource.id))
   

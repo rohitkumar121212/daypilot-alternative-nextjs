@@ -112,7 +112,7 @@ const VirtualScheduler = ({
   const [resourceContextMenu, setResourceContextMenu] = useState({ isOpen: false, position: { x: 0, y: 0 }, resource: null })
   
   // Drag state
-  const [dragState, setDragState] = useState(null)
+  const [dragState, setDragState] = useState<{ draggedBooking: any; startX: number; startY: number; currentX: number; currentY: number } | null>(null)
   
   // Change confirmation state
   const [changeConfirmation, setChangeConfirmation] = useState({ isOpen: false, data: null })
@@ -246,24 +246,6 @@ const VirtualScheduler = ({
     return items
   }, [rowPositions, visibleRows, scrollTop, containerHeight])
   
-  // Handle scroll - sync both sides
-  const handleScroll = useCallback((e) => {
-    const newScrollTop = e.target.scrollTop
-    setScrollTop(newScrollTop)
-    
-    // Sync scroll between resource column and timeline
-    if (e.target.classList.contains('resource-scroll')) {
-      const timelineScroll = document.querySelector('.timeline-scroll')
-      if (timelineScroll && timelineScroll.scrollTop !== newScrollTop) {
-        timelineScroll.scrollTop = newScrollTop
-      }
-    } else if (e.target.classList.contains('timeline-scroll')) {
-      const resourceScroll = document.querySelector('.resource-scroll')
-      if (resourceScroll && resourceScroll.scrollTop !== newScrollTop) {
-        resourceScroll.scrollTop = newScrollTop
-      }
-    }
-  }, [])
   
   // Handle mousedown on a date cell
   const handleCellMouseDown = useCallback((date, resourceId, e) => {
@@ -421,11 +403,11 @@ const VirtualScheduler = ({
     if (!dragState) return
     
     const handleMouseMove = (e) => {
-      setDragState(prev => ({
+      setDragState(prev => prev ? ({
         ...prev,
         currentX: e.clientX,
         currentY: e.clientY
-      }))
+      }) : null)
     }
     
     const handleMouseUp = (e) => {
@@ -621,6 +603,7 @@ const VirtualScheduler = ({
   }, [])
   
   const handleTimelineScroll = useCallback((e) => {
+    setScrollTop(e.target.scrollTop)
     if (isScrollingRef.current) return
     isScrollingRef.current = true
     if (headerScrollRef.current) {
@@ -653,106 +636,88 @@ const VirtualScheduler = ({
                 totalAvailability={totalAvailabilityByDate[date] || null}
               />
             ))}
+            {/* Scrollbar compensation spacer — matches vertical scrollbar width in timeline */}
+            <div style={{ width: 17, minWidth: 17, flexShrink: 0 }} />
           </div>
         </div>
       </div>
       
       {/* Virtual Body Container */}
-      <div ref={bodyContainerRef} className="flex-1 flex overflow-hidden">
-        {/* Resource Column */}
-        <div className="w-64 min-w-64 border-r border-gray-200 bg-white sticky left-0 z-20">
-          <div 
-            className="overflow-y-auto resource-scroll"
-            style={{ height: containerHeight }}
-            onScroll={handleScroll}
-          >
-            <div style={{ height: totalHeight + 40, position: 'relative' }}>
-              {visibleItems.map((row) => {
-                return (
-                  <div
-                    key={row.id}
-                    className={`absolute w-full border-b border-gray-200 flex items-center hover:bg-gray-50 ${
-                      row.type === 'parent' 
-                        ? 'font-semibold bg-gray-100' 
-                        : 'pl-8 text-gray-700 bg-white'
-                    }`}
-                    style={{ 
-                      height: row.height,
-                      top: row.top
+      <div ref={bodyContainerRef} className="flex-1 flex min-h-0">
+        {/* Resource Column — overflow hidden, follows scrollTop via translateY */}
+        <div
+          className="w-64 min-w-64 border-r border-gray-200 bg-white sticky left-0 z-20 overflow-hidden"
+          style={{ height: containerHeight }}
+        >
+          <div style={{ height: totalHeight + 40, position: 'relative', transform: `translateY(-${scrollTop}px)` }}>
+            {visibleItems.map((row) => (
+              <div
+                key={row.id}
+                className={`absolute w-full border-b border-gray-200 flex items-center hover:bg-gray-50 ${
+                  row.type === 'parent'
+                    ? 'font-semibold bg-gray-100'
+                    : 'pl-8 text-gray-700 bg-white'
+                }`}
+                style={{ height: row.height, top: row.top }}
+                {...(row.type === 'child' && { onContextMenu: (e) => handleResourceRightClick(row, e) })}
+              >
+                {row.type === 'parent' && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleToggleExpand(row.id)
                     }}
-                    {...(row.type === 'child' && { onContextMenu: (e) => handleResourceRightClick(row, e) })}
+                    className="mr-2 p-1 hover:bg-gray-200 rounded shrink-0"
                   >
-                    {row.type === 'parent' && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleToggleExpand(row.id)
-                        }}
-                        className="mr-2 p-1 hover:bg-gray-200 rounded flex-shrink-0"
-                      >
-                        <svg
-                          className={`w-4 h-4 text-gray-600 transform ${
-                            row.expanded ? 'rotate-90' : ''
-                          }`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
-                    )}
-                    {row.type === 'child' && <span className="w-6 flex-shrink-0" />}
-                    <span className="flex-1 truncate text-sm">{row.name}</span>
-                  </div>
-                )
-              })}
-            </div>
+                    <svg
+                      className={`w-4 h-4 text-gray-600 transform ${row.expanded ? 'rotate-90' : ''}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                )}
+                {row.type === 'child' && <span className="w-6 shrink-0" />}
+                <span className="flex-1 truncate text-sm">{row.name}</span>
+              </div>
+            ))}
           </div>
         </div>
-        
-        {/* Timeline */}
-        <div 
+
+        {/* Timeline — single scroll source for both H and V */}
+        <div
           ref={timelineScrollRef}
-          className="flex-1 overflow-x-auto hide-scrollbar"
+          className="flex-1 overflow-auto"
+          style={{ height: containerHeight }}
           onScroll={handleTimelineScroll}
         >
-          <div style={{ minWidth: dates.length * cellWidth }}>
-            <div 
-              className="overflow-y-auto timeline-scroll hide-scrollbar"
-              style={{ height: containerHeight }}
-              onScroll={handleScroll}
-            >
-              <div style={{ height: totalHeight + 40, position: 'relative' }}>
-                {visibleItems.map((row) => (
-                  <div
-                    key={row.id}
-                    className="absolute w-full"
-                    style={{ 
-                      height: row.height,
-                      top: row.top
-                    }}
-                  >
-                    <ResourceRow
-                      resource={row}
-                      dates={dates}
-                      bookings={bookings}
-                      selection={selection}
-                      dragState={dragState}
-                      availabilityData={availabilityByResource}
-                      availabilityByParent={availabilityByParent}
-                      onCellMouseDown={handleCellMouseDown}
-                      onCellMouseEnter={handleCellMouseEnter}
-                      onBookingClick={handleBookingClick}
-                      onBookingRightClick={handleBookingRightClick}
-                      onBookingDragStart={handleBookingDragStart}
-                      cellWidth={cellWidth}
-                      rowHeight={rowHeight}
-                    />
-                  </div>
-                ))}
+          <div style={{ minWidth: dates.length * cellWidth, height: totalHeight + 40, position: 'relative' }}>
+            {visibleItems.map((row) => (
+              <div
+                key={row.id}
+                className="absolute w-full"
+                style={{ height: row.height, top: row.top }}
+              >
+                <ResourceRow
+                  resource={row}
+                  dates={dates}
+                  bookings={bookings}
+                  selection={selection}
+                  dragState={dragState}
+                  availabilityData={availabilityByResource}
+                  availabilityByParent={availabilityByParent}
+                  onCellMouseDown={handleCellMouseDown}
+                  onCellMouseEnter={handleCellMouseEnter}
+                  onBookingClick={handleBookingClick}
+                  onBookingRightClick={handleBookingRightClick}
+                  onBookingDragStart={handleBookingDragStart}
+                  cellWidth={cellWidth}
+                  rowHeight={rowHeight}
+                />
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
