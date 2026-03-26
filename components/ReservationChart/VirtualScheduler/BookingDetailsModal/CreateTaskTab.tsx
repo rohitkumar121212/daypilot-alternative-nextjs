@@ -8,9 +8,10 @@ import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
 interface CreateTaskTabProps {
   bookingDetails?: any,
   reservationConstants?: any
+  onClose: ()=> void
 }
 
-const CreateTaskTab = ({ bookingDetails, reservationConstants }: CreateTaskTabProps) => {
+const CreateTaskTab = ({ bookingDetails, reservationConstants, onClose }: CreateTaskTabProps) => {
   const [formData, setFormData] = useState({
     apartmentName: bookingDetails?.apartment || '',
     taskTitle: '',
@@ -218,7 +219,7 @@ const CreateTaskTab = ({ bookingDetails, reservationConstants }: CreateTaskTabPr
         >
           Create Task
         </button>
-        <button className="btn btn-primary">Close</button>
+        <button className="btn btn-primary" onClick={onClose}>Close</button>
       </div>
     </div>
   )

@@ -9,9 +9,10 @@ interface CreateCaseTabProps {
   reservationConstants: any,
   bookingDetails?: any,
   assignToUsers?: any[]
+  onClose: () => void
 }
 
-const CreateCaseTab = ({ reservationConstants, bookingDetails, assignToUsers }: CreateCaseTabProps) => {
+const CreateCaseTab = ({ reservationConstants, bookingDetails, assignToUsers, onClose }: CreateCaseTabProps) => {
   const [formData, setFormData] = useState({
 
     caseTitle: '',
@@ -222,7 +223,7 @@ const CreateCaseTab = ({ reservationConstants, bookingDetails, assignToUsers }: 
         >
           Create Case
         </button>
-        <button className="btn btn-primary">Close</button>
+        <button className="btn btn-primary" onClick={onClose}>Close</button>
       </div>
     </div>
   )

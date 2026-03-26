@@ -77,9 +77,9 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
           onOpenCheckInModal={onOpenCheckInModal}
         />
       case 'case':
-        return <CreateCaseTab reservationConstants={reservationConstants} bookingDetails={booking?.booking_details} assignToUsers={assignToUsers} />
+        return <CreateCaseTab reservationConstants={reservationConstants} bookingDetails={booking?.booking_details} assignToUsers={assignToUsers} onClose={onClose}/>
       case 'task':
-        return <CreateTaskTab reservationConstants={reservationConstants} bookingDetails={booking?.booking_details} />
+        return <CreateTaskTab reservationConstants={reservationConstants} bookingDetails={booking?.booking_details} onClose={onClose}/>
       case 'payment':
         return <AddPaymentTab bookingId={booking?.booking_id} onClose={onClose} reservationConstants={reservationConstants} bookingDetails={booking?.booking_details}/>
       case 'share':
@@ -89,6 +89,7 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
                   bookingId={booking?.booking_id}
                   email={booking?.booking_details?.email} 
                   paidAmount={Number(booking?.booking_details?.paid)}
+                  onClose={onClose}
                 />
       default:
         return null
@@ -108,7 +109,7 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
               {formatBookingType(booking?.booking_details?.booking_type)}
             </span>
           </h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 hover:cursor-pointer">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>

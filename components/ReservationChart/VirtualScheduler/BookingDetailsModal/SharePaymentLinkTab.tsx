@@ -12,6 +12,7 @@ interface SharePaymentLinkTabProps {
   paid?: number
   email?: string
   bookingId?: string | number
+  onClose: () => void
 }
 
 const SharePaymentLinkTab = ({ 
@@ -19,7 +20,8 @@ const SharePaymentLinkTab = ({
   paidAmount,
   paid = 0.000,
   email = 'guest@example.com',
-  bookingId
+  bookingId,
+  onClose
 }: SharePaymentLinkTabProps) => {
   const CURRENCY = '₹'
   console.log("totalAmount, paid, email, bookingId--", totalAmount, paid, email, bookingId)
@@ -131,7 +133,7 @@ const SharePaymentLinkTab = ({
         >
           Send Payment Link
         </button>
-        <button className="btn btn-primary">Close</button>
+        <button className="btn btn-primary" onClick={onClose}>Close</button>
       </div>
     </div>
   )
