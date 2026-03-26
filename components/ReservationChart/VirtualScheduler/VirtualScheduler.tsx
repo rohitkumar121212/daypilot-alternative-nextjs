@@ -65,7 +65,8 @@ const VirtualScheduler = ({
   startDate = null,
   daysToShow = 30,
   cellWidth = 100,
-  rowHeight = 60
+  rowHeight = 60,
+  containerHeight: propContainerHeight = null
 }) => {
   const dates = useMemo(() => generateDateRange(daysToShow, startDate), [daysToShow, startDate])
   
@@ -139,13 +140,36 @@ const VirtualScheduler = ({
   const bodyContainerRef = useRef(null)
   const [containerHeight, setContainerHeight] = useState(600)
   
+  // Convert CSS height to pixels
+  const convertToPixels = useCallback((height) => {
+    if (typeof height === 'number') return height
+    if (typeof height !== 'string') return 600
+    
+    // Create a temporary element to measure the height
+    const tempDiv = document.createElement('div')
+    tempDiv.style.height = height
+    tempDiv.style.position = 'absolute'
+    tempDiv.style.visibility = 'hidden'
+    document.body.appendChild(tempDiv)
+    const pixelHeight = tempDiv.offsetHeight
+    document.body.removeChild(tempDiv)
+    
+    return pixelHeight || 600
+  }, [])
+  
   // Track mouse state
   const mouseDownRef = useRef(false)
   const startDateRef = useRef(null)
   const startResourceIdRef = useRef(null)
   
-  // Measure container height dynamically
+  // Measure container height dynamically (only if no prop provided)
   useEffect(() => {
+    if (propContainerHeight) {
+      const pixelHeight = convertToPixels(propContainerHeight)
+      setContainerHeight(pixelHeight)
+      return
+    }
+    
     const updateHeight = () => {
       if (bodyContainerRef.current) {
         const height = bodyContainerRef.current.clientHeight
@@ -156,7 +180,7 @@ const VirtualScheduler = ({
     updateHeight()
     window.addEventListener('resize', updateHeight)
     return () => window.removeEventListener('resize', updateHeight)
-  }, [])
+  }, [propContainerHeight, convertToPixels])
   
   // Refs for scroll synchronization
   const headerScrollRef = useRef(null)
@@ -722,7 +746,7 @@ const VirtualScheduler = ({
         </div>
       </div>
       
-      {/* Conditionally render modals only when needed */}
+      {/* Conditionally render CreateBookingModal modals only when needed */}
       {modalOpen && (
         <Suspense fallback={null}>
           <CreateBookingModal

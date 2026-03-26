@@ -8,7 +8,15 @@ import { apiFetch } from '@/utils/apiRequest';
 import { proxyFetch } from '@/utils/proxyFetch';
 import { DataRefreshProvider } from '@/contexts/DataRefreshContext';
 
-const ReservationChart = ({ className = '', style = {} }: { className?: string; style?: React.CSSProperties }) => {
+const ReservationChart = ({ 
+  className = '', 
+  style = {}, 
+  height = '68%' 
+}: { 
+  className?: string; 
+  style?: React.CSSProperties;
+  height?: string;
+}) => {
   const [resources, setResources] = useState([])
   const [bookings, setBookings] = useState([])
   const [collaborators, setCollaborators] = useState([])
@@ -296,7 +304,7 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
                   bookings={bookings}
                   collaborators={collaborators}
                 />
-                <div className="flex-1 min-h-0 h-[400px] w-full shadow-md">
+                <div className="flex-1 min-h-0 w-full" style={{ height }}>
                     <VirtualScheduler
                       resources={filteredResources}
                       bookings={bookings}
@@ -308,6 +316,7 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
                       daysToShow={daysToShow}
                       cellWidth={100}
                       rowHeight={40}
+                      containerHeight={height}
                       />
                 </div>
                 </div>
