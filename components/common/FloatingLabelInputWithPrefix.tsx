@@ -25,6 +25,13 @@ const FloatingInputWithPrefix = ({
 }: FloatingInputWithPrefixProps) => {
   const [isFocused, setIsFocused] = useState(false)
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (type === 'number' && parseFloat(e.target.value) < 0) {
+      return
+    }
+    onChange(e)
+  }
+
   const hasValue = value && value.length > 0
   const active = isFocused || hasValue
   const showPrefix = isFocused || hasValue
@@ -39,10 +46,11 @@ const FloatingInputWithPrefix = ({
       <input
         type={type}
         value={value}
-        onChange={onChange}
+        onChange={handleChange}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         readOnly={readOnly}
+        min={type === 'number' ? '0' : undefined}
         className={`peer w-full ${showPrefix ? 'pl-8' : 'pl-4'} p-2 border rounded-md outline-none transition-all
           ${readOnly ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'}
           ${

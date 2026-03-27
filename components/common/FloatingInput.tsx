@@ -23,21 +23,28 @@ export function FloatingInput({
 }: FloatingInputProps) {
   const [isFocused, setIsFocused] = useState(false)
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (type === 'number' && parseFloat(e.target.value) < 0) {
+      return
+    }
+    onChange(e)
+  }
+
   const hasValue = value && value.length > 0
   const specialTypes = ['file', 'date', 'time', 'datetime-local']
   const active = isFocused || hasValue || specialTypes.includes(type)
-  // const active = isFocused || hasValue || type === 'file' || type === 'date' || type === 'time' || type === 'datetime-local'
 
   return (
     <div className="relative w-full">
       <input
         type={type}
         value={type === 'file' ? undefined : value}
-        onChange={onChange}
+        onChange={handleChange}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         readOnly={readOnly}
         placeholder={placeholder}
+        min={type === 'number' ? '0' : undefined}
         className={`peer w-full p-2 px-4 border rounded-md outline-none transition-all
           ${readOnly ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'}
           ${
