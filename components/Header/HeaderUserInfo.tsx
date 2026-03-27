@@ -37,8 +37,8 @@ const HeaderUserInfo = ({user}:HeaderUserInfoProps) => {
                 )}
             </div>
             <div className="text-right">
-            <div className="text-sm font-medium text-gray-900">{`Hi ${user?.admin_details?.name? user?.admin_details?.name : "User Name"}`}</div>
-            <div className="text-xs text-gray-500">{user?.admin_details?.email || "user@example.com"}</div>
+            <div className="text-sm font-medium text-gray-900">{`Hi ${user?.user_details?.name? user?.user_details?.name : "User Name"}`}</div>
+            <div className="text-xs text-gray-500">{user?.user_details?.email || "user@example.com"}</div>
             </div>
                 
             {/* User Dropdown Menu */}

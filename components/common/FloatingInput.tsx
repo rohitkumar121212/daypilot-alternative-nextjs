@@ -24,10 +24,28 @@ export function FloatingInput({
   const [isFocused, setIsFocused] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (type === 'number' && parseFloat(e.target.value) < 0) {
+    let newValue = e.target.value
+    
+    // Prevent negative numbers for number inputs
+    if (type === 'number' && parseFloat(newValue) < 0) {
       return
     }
-    onChange(e)
+    
+    // Trim spaces for text inputs (but not for special types where spaces might be meaningful)
+    if (type === 'text' || type === 'email' || type === 'url') {
+      newValue = newValue.trim()
+    }
+    
+    // Create a new event with trimmed value
+    const trimmedEvent = {
+      ...e,
+      target: {
+        ...e.target,
+        value: newValue
+      }
+    } as React.ChangeEvent<HTMLInputElement>
+    
+    onChange(trimmedEvent)
   }
 
   const hasValue = value && value.length > 0
