@@ -70,7 +70,7 @@ const DateCell = memo(({
       data-resource-id={resourceId}
       onMouseDown={handleMouseDown}
       onMouseEnter={handleMouseEnter}
-      title={availability ? `Occupancy: ${occupancyInfo.percentage}% )` : ''}
+      title={availability ? `O: ${occupancyInfo.percentage}% )` : ''}
     >
       {availability !== null && availability !== undefined && (
         <div className={`text-xs font-semibold ${occupancyInfo.color}`}>
