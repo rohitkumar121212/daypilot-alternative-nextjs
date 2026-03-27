@@ -124,9 +124,9 @@ const CancelCheckInModal = ({ isOpen, booking, resources, onCancel, onClose }) =
         <div className="flex gap-3">
           <button 
             onClick={handleCancel}
-            disabled={isLoading || !reason.trim()} // 🚫 Disable when loading or no reason
-            className={`flex-1 btn btn-primary-with-bg flex items-center justify-center gap-2 ${
-              isLoading || !reason.trim() ? 'opacity-50 cursor-not-allowed' : ''
+            disabled={isLoading} // 🚫 Disable when loading or no reason
+            className={`flex-1 btn bg-red-500 hover:bg-red-600 text-white flex items-center justify-center gap-2 ${
+              isLoading ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
             {isLoading ? (

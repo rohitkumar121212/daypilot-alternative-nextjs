@@ -98,7 +98,7 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose, onOpenCheckInMod
         )}
         <button 
           onClick={() => onCancelBooking?.(booking)}
-          className="btn btn-primary"
+          className="btn text-red-500"
         >
           Cancel Booking
         </button>
