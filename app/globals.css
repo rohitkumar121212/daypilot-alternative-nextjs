@@ -45,6 +45,10 @@
   --color-primary-btn-bg-hover: var(--primary-btn-bg-hover);
   --color-primary-btn-text: var(--primary-btn-text);
   --color-primary-btn-bg-border: var(--primary-btn-bg-border);
+  --color-danger-btn-bg: var(--danger-btn-bg);
+  --color-danger-btn-bg-hover: var(--danger-btn-bg-hover);
+  --color-danger-btn-bg-border: var(--danger-btn-bg-border);
+
 }
 
 .hide-scrollbar {
@@ -92,6 +96,9 @@
   --primary-btn-bg: oklch(70.4% 0.14 182.503);
   --primary-btn-bg-border: oklch(70.4% 0.14 182.503);
   --primary-btn-bg-hover: oklch(60% 0.118 184.704);
+  --danger-btn-bg:oklch(63.7% 0.237 25.331);
+  --danger-btn-bg-border: oklch(63.7% 0.237 25.331);
+  --danger-btn-bg-hover: oklch(57.7% 0.245 27.325);
   --primary-btn-text: oklch(72.3% 0.219 149.579);
 }
 
@@ -144,6 +151,10 @@
   }
   .btn-primary-with-bg {
     @apply bg-primary-btn-bg border border-primary-btn-bg-border text-white hover:bg-primary-btn-bg-hover;
+  }
+  .btn-danger-with-bg{
+    @apply bg-danger-btn-bg border border-danger-btn-bg-border text-white hover:bg-danger-btn-bg-hover;
+
   }
   .btn-primary {
     @apply text-gray-700 hover:bg-gray-50 border ;

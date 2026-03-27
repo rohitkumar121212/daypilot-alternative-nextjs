@@ -58,11 +58,9 @@ const CancelCheckInModal = ({ isOpen, booking, resources, onCancel, onClose }) =
       })
 
       const data = await response.json()
-      console.log('Cancel booking response:', data)
       
       if (data.success) {
         const bookingId = data.data?.reservation_id
-        console.log('Cancel booking successfully for booking ID:', bookingId)
         
         // ✅ Success: Refresh data and close modal
         await refreshData()
@@ -125,7 +123,7 @@ const CancelCheckInModal = ({ isOpen, booking, resources, onCancel, onClose }) =
           <button 
             onClick={handleCancel}
             disabled={isLoading} // 🚫 Disable when loading or no reason
-            className={`flex-1 btn bg-red-500 hover:bg-red-600 text-white flex items-center justify-center gap-2 ${
+            className={`flex-1 btn btn-danger-with-bg ${
               isLoading ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
