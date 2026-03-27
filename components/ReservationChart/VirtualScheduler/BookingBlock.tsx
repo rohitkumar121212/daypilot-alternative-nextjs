@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 import { getDateIndex } from '@/utils/dateUtils'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip'
 import { useUser } from '@/hooks/useUser'
 
 const BookingBlock = ({ 
@@ -107,97 +108,97 @@ const BookingBlock = ({
   const blockHeight = subRowHeight ? subRowHeight - 2 : 50
   
   return (
-    <HoverCard openDelay={100} closeDelay={100}>
-      <HoverCardTrigger asChild>
-        <div
-          className={`absolute top-1 bottom-1 border rounded-xl text-white text-xs flex items-center justify-start font-medium shadow-md z-20 cursor-pointer transition-all ${
-            isDragging ? 'opacity-75 shadow-lg transform scale-105' : 'hover:shadow-lg'
-          }`}
-          style={{
-            left: `${left + dragOffset.x}px`,
-            top: `${topPosition + dragOffset.y}px`,
-            width: `${width}px`,
-            height: `${blockHeight}px`,
-            backgroundColor: isDragging ? `${backgroundColor}99` : backgroundColor,
-            borderColor: borderColor,
-            transform: isDragging ? 'rotate(2deg)' : 'none',
-            pointerEvents: isDragging ? 'none' : 'auto'
-          }}
-          onMouseDown={handleMouseDown}
-          onContextMenu={handleContextMenu}
-        >
-          {showNoCallIcon && (
-            <img
-              src="https://images.thesqua.re/APS/no-call.png"
-              alt="No Call"
-              className="w-8 h-8"
-            />
-          )}
-          {isSquareUser && showOnLeft && (
-            <img src={bubbleData.Lead_Source} alt="Lead Source" className="w-4 h-4 mx-1" />
-          )}
-          {shouldShowIcon && showOnLeft && (
-            <img src={bubbleData.Lead_Source} alt="Lead Source" className="w-4 h-4 mx-1" />
-          )}
-          <span className="truncate px-2">{booking?.text || `Booking ${booking.id}`}</span>
-          {shouldShowIcon && !showOnLeft && (
-            <img src={bubbleData.Lead_Source} alt="Lead Source" className="w-4 h-4 mx-1" />
-          )}
-        </div>
-      </HoverCardTrigger>
-      {!isDragging && (
-        <HoverCardContent side="top" align="center" className="w-80 z-50" sideOffset={5} collisionPadding={20}>
-        <div className="space-y-2">
-          <div className="border-b pb-2">
-            <h3 className="font-semibold text-gray-900 text-sm">{details.name || 'Guest'}</h3>
-            <p className="text-xs text-gray-500">{details.apartment || 'Apartment'}</p>
-          </div>
-          
-          <div className="space-y-1 text-xs">
-            <div className="flex justify-between">
-              <span className="text-gray-600">Check-in:</span>
-              <span className="font-medium text-gray-900">{dayjs(booking.startDate).format('MMM DD, YYYY')}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Check-out:</span>
-              <span className="font-medium text-gray-900">{dayjs(booking.endDate).format('MMM DD, YYYY')}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Nights:</span>
-              <span className="font-medium text-gray-900">{details.days || 0}</span>
-            </div>
-          </div>
-          
-          {details.phone && (
-            <div className="pt-2 border-t">
-              <div className="flex justify-between text-xs">
-                <span className="text-gray-600">Phone:</span>
-                <span className="font-medium text-gray-900">{details.phone}</span>
+          <Tooltip delayDuration={200}>
+            <TooltipTrigger asChild>
+              <div
+                className={`absolute top-1 bottom-1 border rounded-xl text-white text-xs flex items-center justify-start font-medium shadow-md z-20 cursor-pointer transition-all ${
+                  isDragging ? 'opacity-75 shadow-lg transform scale-105' : 'hover:shadow-lg'
+                }`}
+                style={{
+                  left: `${left + dragOffset.x}px`,
+                  top: `${topPosition + dragOffset.y}px`,
+                  width: `${width}px`,
+                  height: `${blockHeight}px`,
+                  backgroundColor: isDragging ? `${backgroundColor}99` : backgroundColor,
+                  borderColor: borderColor,
+                  transform: isDragging ? 'rotate(2deg)' : 'none',
+                  pointerEvents: isDragging ? 'none' : 'auto'
+                }}
+                onMouseDown={handleMouseDown}
+                onContextMenu={handleContextMenu}
+              >
+                {showNoCallIcon && (
+                  <img
+                    src="https://images.thesqua.re/APS/no-call.png"
+                    alt="No Call"
+                    className="w-8 h-8"
+                  />
+                )}
+                {isSquareUser && showOnLeft && (
+                  <img src={bubbleData.Lead_Source} alt="Lead Source" className="w-4 h-4 mx-1" />
+                )}
+                {shouldShowIcon && showOnLeft && (
+                  <img src={bubbleData.Lead_Source} alt="Lead Source" className="w-4 h-4 mx-1" />
+                )}
+                <span className="truncate px-2">{booking?.text || `Booking ${booking.id}`}</span>
+                {shouldShowIcon && !showOnLeft && (
+                  <img src={bubbleData.Lead_Source} alt="Lead Source" className="w-4 h-4 mx-1" />
+                )}
               </div>
-            </div>
-          )}
-          
-          {details.email && (
-            <div className="text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Email:</span>
-                <span className="font-medium text-gray-900 truncate ml-2">{details.email}</span>
-              </div>
-            </div>
-          )}
-          
-          {details.nightly_rate && (
-            <div className="pt-2 border-t">
-              <div className="flex justify-between text-xs">
-                <span className="text-gray-600">Rate/Night:</span>
-                <span className="font-medium text-green-700">{details.nightly_rate} {booking?.selected_currency}</span>
-              </div>
-            </div>
-          )}
-        </div>
-        </HoverCardContent>
-      )}
-    </HoverCard>
+            </TooltipTrigger>
+            {!isDragging && (
+              <TooltipContent side="top" className="w-80 z-50 p-4" sideOffset={5}>
+                <div className="space-y-2">
+                  <div className="border-b pb-2">
+                    <h3 className="font-semibold text-gray-900 text-sm">{details.name || 'Guest'}</h3>
+                    <p className="text-xs text-gray-500">{details.apartment || 'Apartment'}</p>
+                  </div>
+                  
+                  <div className="space-y-1 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Check-in:</span>
+                      <span className="font-medium text-gray-900">{dayjs(booking.startDate).format('MMM DD, YYYY')}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Check-out:</span>
+                      <span className="font-medium text-gray-900">{dayjs(booking.endDate).format('MMM DD, YYYY')}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Nights:</span>
+                      <span className="font-medium text-gray-900">{details.days || 0}</span>
+                    </div>
+                  </div>
+                  
+                  {details.phone && (
+                    <div className="pt-2 border-t">
+                      <div className="flex justify-between text-xs">
+                        <span className="text-gray-600">Phone:</span>
+                        <span className="font-medium text-gray-900">{details.phone}</span>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {details.email && (
+                    <div className="text-xs">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Email:</span>
+                        <span className="font-medium text-gray-900 truncate ml-2">{details.email}</span>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {details.nightly_rate && (
+                    <div className="pt-2 border-t">
+                      <div className="flex justify-between text-xs">
+                        <span className="text-gray-600">Rate/Night:</span>
+                        <span className="font-medium text-green-700">{details.nightly_rate} {booking?.selected_currency}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </TooltipContent>
+            )}
+          </Tooltip>
   )
 }
 

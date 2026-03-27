@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo, useRef, useEffect, Suspense } from 'react'
 import dayjs from 'dayjs'
 import dynamic from 'next/dynamic'
+import { TooltipProvider } from '@/components/ui/tooltip'
 
 import DateHeader from './DateHeader'
 import ResourceRow from './ResourceRow'
@@ -615,7 +616,8 @@ const VirtualScheduler = ({
   }, [])
   
   return (
-    <div className="w-full h-full flex flex-col bg-white select-none">
+    <TooltipProvider>
+      <div className="w-full h-full flex flex-col bg-white select-none">
       {/* Header Row */}
       <div className="flex border-b border-gray-300 bg-gray-50 sticky top-0 z-30 shadow-sm">
         <div className="w-64 min-w-64 border-r border-gray-200 bg-gray-50 sticky left-0 z-40 flex items-center justify-center font-semibold text-gray-700">
@@ -848,6 +850,7 @@ const VirtualScheduler = ({
         </Suspense>
       )}
     </div>
+    </TooltipProvider>
   )
 }
 
