@@ -10,6 +10,7 @@ import BookingTypeSelector from './components/BookingTypeSelector'
 import LoadingOverlay from './components/LoadingOverlay'
 import ActionButtons from './components/ActionButtons'
 import InstantMailCheckbox from './components/InstantMailCheckbox'
+import { useEffect } from 'react'
 
 /**
  * CreateBookingModal - Modal dialog for creating/editing bookings
@@ -40,6 +41,21 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
   const { submitBooking, isSubmitting } = useBookingSubmission()
   const { handleBackdropClick } = useModalState(onClose)
   
+  // Prevent background scrolling when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      // Store original overflow style
+      const originalStyle = window.getComputedStyle(document.body).overflow
+      // Prevent scrolling
+      document.body.style.overflow = 'hidden'
+      
+      // Cleanup function to restore scrolling
+      return () => {
+        document.body.style.overflow = originalStyle
+      }
+    }
+  }, [isOpen])
+  
   if (!isOpen || !modalData || !resource) return null
   
   const dayCount = daysBetween(formData.checkIn || modalData.startDate, formData.checkOut || modalData.endDate)
@@ -52,19 +68,23 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
   
   return (
     <div
-      className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-hidden"
       onClick={handleBackdropClick}
+      onWheel={(e) => e.preventDefault()}
+      onTouchMove={(e) => e.preventDefault()}
     >
       <div
-        className="bg-white rounded-lg shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto relative"
+        className="bg-white rounded-lg shadow-2xl w-full max-w-6xl max-h-[95vh] h-[85vh] overflow-y-auto relative"
         onClick={(e) => e.stopPropagation()}
+        onWheel={(e) => e.stopPropagation()}
+        onTouchMove={(e) => e.stopPropagation()}
       >
         {/* Loading Overlay */}
         <LoadingOverlay isLoading={isLoadingData || isSubmitting} />
         
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-200 sticky top-0 bg-white flex justify-between">
-          <h2 className="text-xl font-semibold text-gray-900">
+        <div className="px-6 py-4 border-b border-gray-200 sticky top-0 bg-white flex justify-between z-10">
+          <h2 className="text-xl font-semibold text-gray-900 bg-white">
             {resource?.name} - Add Reservations
           </h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700 hover:cursor-pointer">
@@ -77,8 +97,6 @@ const CreateBookingModal = ({ isOpen, selection, booking, resource, onClose, onC
         
         {/* Content */}
         <div className="px-6 py-4">
-          
-
           {/* Dynamic Form Based on Booking Type */}
           {formData.bookingType === 'book' && (
             <BookForm 

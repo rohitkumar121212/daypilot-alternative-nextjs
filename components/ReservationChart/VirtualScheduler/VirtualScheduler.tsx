@@ -619,7 +619,7 @@ const VirtualScheduler = ({
       {/* Header Row */}
       <div className="flex border-b border-gray-300 bg-gray-50 sticky top-0 z-30 shadow-sm">
         <div className="w-64 min-w-64 border-r border-gray-200 bg-gray-50 sticky left-0 z-40 flex items-center justify-center font-semibold text-gray-700">
-          Resources
+          Apartments
         </div>
         
         <div 

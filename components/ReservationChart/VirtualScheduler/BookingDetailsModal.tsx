@@ -24,6 +24,21 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
   const [reservationConstants, setReservationConstants] = useState(null)
   const [assignToUsers, setAssignToUsers] = useState([])
 
+  // Prevent background scrolling when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      // Store original overflow style
+      const originalStyle = window.getComputedStyle(document.body).overflow
+      // Prevent scrolling
+      document.body.style.overflow = 'hidden'
+      
+      // Cleanup function to restore scrolling
+      return () => {
+        document.body.style.overflow = originalStyle
+      }
+    }
+  }, [isOpen])
+
   useEffect(() => {
     if (!isOpen) return
 
@@ -97,9 +112,19 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
   }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50" style={{ backgroundColor: 'rgba(0, 0, 0, 0.3)' }} onClick={onClose}>
-      {/* <div className="bg-white rounded-lg shadow-xl w-[92%] md:w-full max-w-4xl max-h-[90vh] min-h-[70vh] flex flex-col" onClick={(e) => e.stopPropagation()}> */}
-      <div className="bg-white rounded-lg shadow-xl w-[92%] md:w-full max-w-4xl h-[87vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+    <div 
+      className="fixed inset-0 flex items-center justify-center z-50 overflow-hidden" 
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.3)' }} 
+      onClick={onClose}
+      onWheel={(e) => e.preventDefault()}
+      onTouchMove={(e) => e.preventDefault()}
+    >
+      <div 
+        className="bg-white rounded-lg shadow-xl w-[92%] md:w-full max-w-4xl h-[87vh] flex flex-col" 
+        onClick={(e) => e.stopPropagation()}
+        onWheel={(e) => e.stopPropagation()}
+        onTouchMove={(e) => e.stopPropagation()}
+      >
         <div className="flex justify-between items-center p-6">
           {/* <h2 className="text-xl font-semibold">{`${booking?.resource} - Reservation Details - ${(formatBookingType(booking?.booking_details?.booking_type))}`}</h2> */}
           <h2 className="text-xl">
