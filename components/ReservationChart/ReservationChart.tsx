@@ -2,7 +2,12 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import dayjs from 'dayjs';
 import VirtualScheduler from './VirtualScheduler/VirtualScheduler';
+import NewVirtualizedContainer from './VirtualScheduler/NewVirtualizedContainer';
 import FilterContainer from './Filter/FilterContainer';
+
+// Toggle this to test the new single-container approach vs the current two-pane approach.
+// Once NewVirtualizedContainer is confirmed working, delete VirtualScheduler and flip this to false.
+const USE_NEW_CONTAINER = true
 import { detectOverbookings } from '@/utils/overbookingUtils';
 import { apiFetch } from '@/utils/apiRequest';
 import { proxyFetch } from '@/utils/proxyFetch';
@@ -312,6 +317,21 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
                   collaborators={collaborators}
                 />
                 <div className="flex-1 min-h-0 h-[400px] w-full shadow-md">
+                  {USE_NEW_CONTAINER ? (
+                    <NewVirtualizedContainer
+                      resources={filteredResources}
+                      bookings={bookings}
+                      bookingsByResourceId={bookingsByResourceId}
+                      availability={availability}
+                      onBookingCreate={handleBookingCreate}
+                      onBookingUpdate={handleBookingUpdate}
+                      onResourcesChange={setResources}
+                      startDate={startDate}
+                      daysToShow={daysToShow}
+                      cellWidth={100}
+                      rowHeight={40}
+                    />
+                  ) : (
                     <VirtualScheduler
                       resources={filteredResources}
                       bookings={bookings}
@@ -324,7 +344,8 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
                       daysToShow={daysToShow}
                       cellWidth={100}
                       rowHeight={40}
-                      />
+                    />
+                  )}
                 </div>
                 </div>
              </div>
