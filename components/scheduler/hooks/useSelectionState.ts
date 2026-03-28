@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import dayjs from 'dayjs'
-import { getDateIndex } from '../utils/dateUtils'
 
 interface UseSelectionStateParams {
   visibleRows: any[]
@@ -73,10 +72,8 @@ export function useSelectionState({
       mouseDownRef.current = false
       setIsSelecting(false)
 
-      const startIndex = getDateIndex(selection.startDate, dates)
-      const endIndex = getDateIndex(selection.endDate, dates)
-      const finalStartDate = startIndex <= endIndex ? selection.startDate : selection.endDate
-      const finalEndDate = startIndex <= endIndex ? selection.endDate : selection.startDate
+      const finalStartDate = selection.startDate <= selection.endDate ? selection.startDate : selection.endDate
+      const finalEndDate = selection.startDate <= selection.endDate ? selection.endDate : selection.startDate
 
       onTimeRangeSelect?.({ ...selection, startDate: finalStartDate, endDate: finalEndDate })
       setSelection(null)
@@ -84,7 +81,7 @@ export function useSelectionState({
 
     window.addEventListener('mouseup', handleMouseUp)
     return () => window.removeEventListener('mouseup', handleMouseUp)
-  }, [isSelecting, selection, dates, onTimeRangeSelect])
+  }, [isSelecting, selection, onTimeRangeSelect])
 
   return { selection, handleCellMouseDown, handleCellMouseEnter }
 }
