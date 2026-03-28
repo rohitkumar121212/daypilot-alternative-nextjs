@@ -10,7 +10,7 @@ import SelectionOverlay from './SelectionOverlay'
 interface ResourceRowProps {
   resource: any
   dates: string[]
-  bookings?: any[]
+  resourceBookings?: any[]
   selection?: any
   dragState?: any
   availabilityData?: Record<string, any>
@@ -27,7 +27,7 @@ interface ResourceRowProps {
 const ResourceRow = memo(({
   resource,
   dates,
-  bookings = [],
+  resourceBookings = [],
   selection,
   dragState,
   availabilityData = {},
@@ -40,13 +40,8 @@ const ResourceRow = memo(({
   cellWidth = 100,
   rowHeight = 60
 }: ResourceRowProps) => {
-  // Filter bookings for this resource
-  const resourceBookings = bookings.filter(b => String(b.resourceId) === String(resource.id))
-  
-  // Sort by start date to determine which goes in main row
-  const sortedBookings = [...resourceBookings].sort((a, b) => 
-    new Date(a.startDate || a.start) - new Date(b.startDate || b.start)
-  )
+  // Already filtered and sorted by ReservationChart via bookingsByResourceId
+  const sortedBookings = resourceBookings
   
   // Separate: first booking stays in row 0, overlapping ones go to additional rows
   const mainRowBookings = []

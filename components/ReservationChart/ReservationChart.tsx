@@ -107,6 +107,21 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
     return resourcesResult;
   }, [resources, searchTerm, bookingIdFilter, enquiryIdFilter, bookings]);
 
+  const bookingsByResourceId = useMemo(() => {
+    const map = new Map<string, any[]>()
+    bookings.forEach(booking => {
+      const id = String(booking.resourceId)
+      if (!map.has(id)) map.set(id, [])
+      map.get(id)!.push(booking)
+    })
+    map.forEach((arr, id) => {
+      map.set(id, [...arr].sort((a, b) =>
+        new Date(a.startDate || a.start).getTime() - new Date(b.startDate || b.start).getTime()
+      ))
+    })
+    return map
+  }, [bookings])
+
   /* =========================
      Create booking (local)
   ========================= */
@@ -300,6 +315,7 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
                     <VirtualScheduler
                       resources={filteredResources}
                       bookings={bookings}
+                      bookingsByResourceId={bookingsByResourceId}
                       availability={availability}
                       onBookingCreate={handleBookingCreate}
                       onBookingUpdate={handleBookingUpdate}

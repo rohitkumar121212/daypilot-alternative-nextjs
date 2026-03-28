@@ -36,7 +36,7 @@ export default function RootLayout({
       >
         <ErrorProvider>
           <UserProvider>
-            <DevSessionSetter />
+            {/* <DevSessionSetter /> */}
             <Header />
             {children}
             <ErrorModal />

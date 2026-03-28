@@ -17,6 +17,12 @@ const value = useMemo(() => ({ user, isSquareUser, isLoading, error, refreshUser
 const value = useMemo(() => ({ ... }), [user, isSquareUser, isLoading, error])
 ```
 
+**✅ DONE** — Changes made:
+- Added `useCallback` import
+- Wrapped `refreshUser` and `logout` in `useCallback([], [])` so they are stable references and safe to include in `useMemo` deps
+- Added `isSquareUser`, `refreshUser`, `logout` to `useMemo` dependency array
+- Removed `console.log('Fetched user data:', ...)` that was logging sensitive user info to the browser console
+
 ### 2. `ReservationChart.tsx` — Booking ID generation is not unique (line 115)
 `handleBookingCreate` assigns `id: bookings.length + 1`. If any booking is deleted, or if two bookings are created rapidly, IDs will collide, causing `BookingBlock` keys to clash and the wrong booking to be updated/removed.
 
@@ -39,6 +45,11 @@ id: crypto.randomUUID()
 `ResourceRow` is wrapped in `React.memo`, but inside it still runs `bookings.filter(...)` and `[...resourceBookings].sort(...)` on every render. Since `bookings` is the full array (potentially hundreds of bookings) and there can be many visible rows, this is **O(rows × bookings)** work per render cycle. Every scroll event causes a re-render of all visible rows.
 
 **Fix:** Pre-compute a `bookingsByResourceId: Map<string, Booking[]>` in `VirtualScheduler` or `ReservationChart` using `useMemo`, then pass only the relevant slice to each `ResourceRow`.
+
+**✅ DONE** — Changes made:
+- `ReservationChart.tsx`: added `bookingsByResourceId` useMemo that builds a `Map<resourceId, sortedBookings[]>` from the full `bookings` array once. Sorting happens here too, so it runs once total instead of once per row per render.
+- `VirtualScheduler.tsx`: accepts `bookingsByResourceId` as a new prop. `rowHeightsMap` now uses `bookingsByResourceId.get(row.id)` instead of filtering `bookings`. `ResourceRow` now receives `resourceBookings={bookingsByResourceId.get(row.id)}` instead of the full `bookings` array.
+- `ResourceRow.tsx`: renamed prop from `bookings` to `resourceBookings`. Removed the `filter` and `sort` entirely — data arrives pre-filtered and pre-sorted.
 
 ### 5. `BookingBlock.tsx` — `getDateIndex` is O(n) on every render (lines 27–28)
 `getDateIndex` does a `findIndex` linear scan of the full `dates` array. With `daysToShow = 30` this is 30 comparisons per call, called twice per booking block per render. As `daysToShow` grows (e.g. 90 days), this scales poorly. With hundreds of bookings visible, this adds up.

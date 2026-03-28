@@ -58,6 +58,7 @@ import { generateDateRange, getDateIndex } from '@/utils/dateUtils'
 const VirtualScheduler = ({
   resources = [],
   bookings = [],
+  bookingsByResourceId = new Map(),
   availability = null,
   onBookingCreate,
   onBookingUpdate,
@@ -193,32 +194,17 @@ const VirtualScheduler = ({
     const heightsMap = new Map()
     visibleRows.forEach(row => {
       if (row.type === 'child') {
-        // Get bookings for this resource sorted by start date
-        const resourceBookings = bookings
-          .filter(b => String(b.resourceId) === String(row.id))
-          .sort((a, b) => new Date(a.startDate || a.start) - new Date(b.startDate || b.start))
-        
-        // Count only overbooked bookings that are NOT the first booking
-        const overbookingCount = resourceBookings.filter((b, index) => 
+        const resourceBookings = bookingsByResourceId.get(String(row.id)) || []
+        const overbookingCount = resourceBookings.filter((b, index) =>
           index > 0 && b.isOverbooked
         ).length
-        
-        // Debug for 445CP
-        // if (row.id === '5011653521309696' || row.name === '445CP') {
-        //   console.log('445CP row:', row.name, 'id:', row.id)
-        //   console.log('445CP ALL bookings:', resourceBookings)
-        //   console.log('445CP overbooking count:', overbookingCount)
-        //   console.log('445CP total rows:', 1 + overbookingCount)
-        // }
-        
-        const totalRows = 1 + overbookingCount
-        heightsMap.set(row.id, rowHeight * totalRows)
+        heightsMap.set(row.id, rowHeight * (1 + overbookingCount))
       } else {
         heightsMap.set(row.id, rowHeight)
       }
     })
     return heightsMap
-  }, [visibleRows, bookings, rowHeight])
+  }, [visibleRows, bookingsByResourceId, rowHeight])
   
   // Calculate cumulative positions for virtual scrolling
   const rowPositions = useMemo(() => {
@@ -703,7 +689,7 @@ const VirtualScheduler = ({
                 <ResourceRow
                   resource={row}
                   dates={dates}
-                  bookings={bookings}
+                  resourceBookings={bookingsByResourceId.get(String(row.id)) || []}
                   selection={selection}
                   dragState={dragState}
                   availabilityData={availabilityByResource}
