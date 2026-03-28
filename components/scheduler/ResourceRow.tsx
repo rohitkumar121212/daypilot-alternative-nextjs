@@ -14,7 +14,6 @@ interface ResourceRowProps {
   resourceBookings?: any[]
   selection?: any
   dragState?: any
-  availabilityData?: Record<string, any>
   availabilityByParent?: Record<string, any>
   onCellMouseDown?: (date: string, resourceId: string, e: React.MouseEvent) => void
   onCellMouseEnter?: (date: string, resourceId: string, e: React.MouseEvent) => void
@@ -32,7 +31,6 @@ const ResourceRow = memo(({
   resourceBookings = [],
   selection,
   dragState,
-  availabilityData = {},
   availabilityByParent = {},
   onCellMouseDown,
   onCellMouseEnter,

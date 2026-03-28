@@ -61,8 +61,7 @@ const FilterContainer = ({ onSearchChange, onBookingIdChange, onDateChange, onDa
           <EnquiryIdFilter onEnquiryIdChange={onEnquiryIdChange} bookings={bookings} /> */}
           <StartDateFilter onDateChange={onDateChange} />
           <DaysFilter onDaysChange={onDaysChange} />
-          <AbbreviationsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-          <button
+            <button
             onClick={() => setIsModalOpen(true)}
             className="p-2 hover:bg-gray-100 rounded-md transition-colors"
           >

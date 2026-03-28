@@ -4,45 +4,54 @@ import dayjs from 'dayjs'
 
 import DateHeader from './DateHeader'
 import SchedulerRow from './SchedulerRow'
-import ModalManager from './ModalManager'
+import ModalManager from '../ReservationChart/Overlays/ModalManager'
 import { generateDateRange } from '@/utils/dateUtils'
 import { useModalState } from '@/hooks/useModalState'
-import { useSelectionState } from '@/hooks/useSelectionState'
-import { useDragState } from '@/hooks/useDragState'
+import { useSelectionState } from './hooks/useSelectionState'
+import { useDragState } from './hooks/useDragState'
 import { useAvailability } from '@/hooks/useAvailability'
 import { useContextMenuState } from '@/hooks/useContextMenuState'
 
 /**
- * NewVirtualizedContainer
+ * Scheduler
  *
- * Drop-in replacement for VirtualScheduler using a single scroll container
- * instead of two synced panes. Key differences vs VirtualScheduler:
+ * Core virtualised scheduler grid. Renders a timeline of resources × dates
+ * with bookings displayed as blocks. Interactions (drag, selection, right-click)
+ * are all optional — pass only the callbacks you need.
  *
- *  - ONE <div overflow-auto> handles both horizontal and vertical scroll
- *  - Resource label column uses CSS `position: sticky; left: 0` — no JS sync
- *  - Date header row uses CSS `position: sticky; top: 0` — no JS sync
- *  - Virtual scrolling uses top/bottom spacer divs instead of absolute positioning
- *    so that CSS sticky works correctly inside the scroll container
- *  - Removes: headerScrollRef, timelineScrollRef, isScrollingRef,
- *             handleHeaderScroll, handleTimelineScroll (~40 lines)
- *
- * Props are identical to VirtualScheduler so ReservationChart can swap between
- * the two components without any other changes.
+ * Single scroll container — ONE <div overflow-auto> handles both horizontal
+ * and vertical scroll:
+ *  - Resource label column uses CSS `position: sticky; left: 0`
+ *  - Date header row uses CSS `position: sticky; top: 0`
+ *  - Row virtualization via TanStack Virtual (vertical axis only)
  */
-const NewVirtualizedContainer = ({
+interface SchedulerProps {
+  resources?: any[]
+  bookingsByResourceId?: Map<string, any[]>
+  availability?: any
+  onBookingCreate?: (bookingData: any) => void
+  onBookingUpdate?: (booking: any) => void
+  onResourcesChange?: (resources: any[]) => void
+  startDate?: string
+  daysToShow?: number
+  cellWidth?: number
+  rowHeight?: number
+  height?: string
+}
+
+const Scheduler = ({
   resources = [],
-  bookings = [],
   bookingsByResourceId = new Map(),
   availability = null,
   onBookingCreate,
   onBookingUpdate,
   onResourcesChange,
-  startDate = null,
+  startDate = undefined,
   daysToShow = 30,
   cellWidth = 100,
   rowHeight = 60,
   height = '100%'
-}) => {
+}: SchedulerProps) => {
 
   // ─── Dates ────────────────────────────────────────────────────────────────
   const dates = useMemo(() => generateDateRange(daysToShow, startDate), [daysToShow, startDate])
@@ -55,7 +64,7 @@ const NewVirtualizedContainer = ({
   }, [dates])
 
   // ─── Availability ─────────────────────────────────────────────────────────
-  const { availabilityByResource, totalAvailabilityByDate, availabilityByParent } = useAvailability(availability)
+  const { totalAvailabilityByDate, availabilityByParent } = useAvailability(availability)
 
   // ─── Drag — move a booking to a new date / resource ───────────────────────
   // RAF throttle is applied inside the hook — mousemove updates are capped at
@@ -229,7 +238,6 @@ const NewVirtualizedContainer = ({
                 bookingsByResourceId={bookingsByResourceId}
                 selection={selection}
                 dragState={dragState}
-                availabilityByResource={availabilityByResource}
                 availabilityByParent={availabilityByParent}
                 cellWidth={cellWidth}
                 rowHeight={rowHeight}
@@ -275,4 +283,4 @@ const NewVirtualizedContainer = ({
   )
 }
 
-export default NewVirtualizedContainer
+export default Scheduler

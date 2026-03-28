@@ -9,7 +9,6 @@ interface SchedulerRowProps {
   bookingsByResourceId: Map<string, any[]>
   selection: any
   dragState: any
-  availabilityByResource: any
   availabilityByParent: any
   cellWidth: number
   rowHeight: number
@@ -39,7 +38,6 @@ const SchedulerRow = memo(({
   bookingsByResourceId,
   selection,
   dragState,
-  availabilityByResource,
   availabilityByParent,
   cellWidth,
   rowHeight,
@@ -108,7 +106,6 @@ const SchedulerRow = memo(({
             resourceBookings={bookingsByResourceId.get(String(row.id)) || []}
             selection={selection}
             dragState={dragState}
-            availabilityData={availabilityByResource}
             availabilityByParent={availabilityByParent}
             onCellMouseDown={onCellMouseDown}
             onCellMouseEnter={onCellMouseEnter}

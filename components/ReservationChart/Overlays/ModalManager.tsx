@@ -5,14 +5,14 @@ import { ActiveModal, SchedulerModalType } from '@/hooks/useModalState'
 // All modals are lazy-loaded — they are never needed on initial render, only
 // after a user interaction. This keeps the initial JS bundle small.
 const CreateBookingModal   = dynamic(() => import('@/components/ReservationChart/Modals/CreateBookingModal/CreateBookingModal'), { ssr: false, loading: () => null })
-const BookingDetailsModal  = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/BookingDetailsModal'), { ssr: false, loading: () => null })
-const BookingContextMenu   = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/BookingContextMenu'), { ssr: false, loading: () => null })
-const ResourceContextMenu  = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/ResourceContextMenu'), { ssr: false, loading: () => null })
-const BookingChangeConfirmModal = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/BookingChangeConfirmModal'), { ssr: false, loading: () => null })
-const SplitBookingModal    = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/SplitBookingModal'), { ssr: false, loading: () => null })
-const SkipCheckInModal     = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/SkipCheckInModal'), { ssr: false, loading: () => null })
-const CheckInModal         = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/BookingDetailsModal/CheckInModal'), { ssr: false, loading: () => null })
-const CancelCheckInModal   = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/CancelCheckInModal'), { ssr: false, loading: () => null })
+const BookingDetailsModal  = dynamic(() => import('@/components/ReservationChart/Overlays/BookingDetailsModal'), { ssr: false, loading: () => null })
+const BookingContextMenu   = dynamic(() => import('@/components/ReservationChart/Overlays/BookingContextMenu'), { ssr: false, loading: () => null })
+const ResourceContextMenu  = dynamic(() => import('@/components/ReservationChart/Overlays/ResourceContextMenu'), { ssr: false, loading: () => null })
+const BookingChangeConfirmModal = dynamic(() => import('@/components/ReservationChart/Overlays/BookingChangeConfirmModal'), { ssr: false, loading: () => null })
+const SplitBookingModal    = dynamic(() => import('@/components/ReservationChart/Overlays/SplitBookingModal'), { ssr: false, loading: () => null })
+const SkipCheckInModal     = dynamic(() => import('@/components/ReservationChart/Overlays/SkipCheckInModal'), { ssr: false, loading: () => null })
+const CheckInModal         = dynamic(() => import('@/components/ReservationChart/Overlays/BookingDetailsModal/CheckInModal'), { ssr: false, loading: () => null })
+const CancelCheckInModal   = dynamic(() => import('@/components/ReservationChart/Overlays/CancelCheckInModal'), { ssr: false, loading: () => null })
 
 interface ContextMenuState {
   isOpen: boolean
@@ -68,7 +68,7 @@ interface ModalManagerProps {
  *
  * Single location for every overlay rendered by the scheduler — modals,
  * context menus, and the drag-confirmation dialog. No state lives here;
- * everything is driven by props from NewVirtualizedContainer's hooks.
+ * everything is driven by props from Scheduler's hooks.
  *
  * Keeping all overlays in one component means:
  *  - The container's render section stays clean (one line instead of ~110)
