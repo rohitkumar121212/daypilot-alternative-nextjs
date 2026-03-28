@@ -92,6 +92,16 @@ The visible rows are found by iterating all `rowPositions` and checking if each 
 ## MEDIUM — Code Quality / Maintainability Issues
 
 ### 11. `ReservationChart.tsx` — Data fetching logic is fully duplicated (lines 133–271)
+
+**✅ DONE** — Changes made:
+- Extracted a single `fetchSchedulerData(isCancelled: () => boolean)` `useCallback` that contains all fetch + normalize + setState logic
+- `useEffect` calls it with `() => cancelled` (a closure getter), sets `setIsLoading(true)` before, cleans up with `cancelled = true`
+- `handleRefreshData` calls it with `() => false` (never cancelled — manual refresh runs to completion)
+- Removed `loadDataFunction` useCallback entirely — replaced by `fetchSchedulerData`
+- Removed `resourcesLoaded` / `bookingsLoaded` state (issue #30) — were set but never read
+- Removed `console.log('ReservationChart: Refreshing data...')` from handleRefreshData
+- Deleted the ~80-line commented-out old fetch block below `export default` (issue #27)
+- Deleted the commented-out mobile landscape `useEffect` block (issue #27)
 The `loadData` function inside the `useEffect` and the `loadDataFunction` in `useCallback` are **nearly identical** (~60 lines duplicated). They fetch the same URLs, process data the same way, and set the same state. The only difference is that `loadDataFunction` sets `isLoading(true)` at the start. This duplication means any bug fix or change must be made in two places.
 
 **Fix:** Extract a single `loadData` async function, call it from both the `useEffect` and the refresh handler.
