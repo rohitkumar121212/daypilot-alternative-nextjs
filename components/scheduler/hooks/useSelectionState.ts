@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import dayjs from 'dayjs'
 
 interface UseSelectionStateParams {
@@ -96,5 +96,19 @@ export function useSelectionState({
     return () => window.removeEventListener('mouseup', handleMouseUp)
   }, [isSelecting, selection, bookingsByResourceId, onTimeRangeSelect])
 
-  return { selection, handleCellMouseDown, handleCellMouseEnter }
+  // ─── Live conflict check — drives the red overlay during drag ────────────────
+  const selectionWithConflict = useMemo(() => {
+    if (!selection) return null
+    const s = selection.startDate <= selection.endDate ? selection.startDate : selection.endDate
+    const e = selection.startDate <= selection.endDate ? selection.endDate : selection.startDate
+    const resourceBookings = bookingsByResourceId?.get(String(selection.resourceId)) || []
+    const hasConflict = resourceBookings.some(booking => {
+      const bookingStart = booking.startDate || booking.start
+      const bookingEnd = booking.endDate || booking.end
+      return bookingStart < e && bookingEnd > s
+    })
+    return { ...selection, hasConflict }
+  }, [selection, bookingsByResourceId])
+
+  return { selection: selectionWithConflict, handleCellMouseDown, handleCellMouseEnter }
 }
