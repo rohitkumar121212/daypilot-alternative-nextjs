@@ -80,7 +80,7 @@ const Scheduler = ({
   const { dragState, handleBookingDragStart } = useDragState({ dateIndexMap, resources, onBookingMove })
 
   // ─── Single scroll container ───────────────────────────────────────────────
-  const scrollContainerRef = useRef(null)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   // ─── Flatten resources into rows ──────────────────────────────────────────
   const visibleRows = useMemo(() => {
@@ -126,6 +126,7 @@ const Scheduler = ({
     visibleRows,
     dates,
     bookingsByResourceId,
+    scrollContainerRef,
     onTimeRangeSelect,
   })
 
