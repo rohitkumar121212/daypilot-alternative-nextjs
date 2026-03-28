@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useRef } from 'react'
+import React, { useCallback, useMemo, useRef } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import dayjs from 'dayjs'
 
@@ -9,6 +9,8 @@ import { generateDateRange } from '@/utils/dateUtils'
 import { useModalState } from '@/hooks/useModalState'
 import { useSelectionState } from '@/hooks/useSelectionState'
 import { useDragState } from '@/hooks/useDragState'
+import { useAvailability } from '@/hooks/useAvailability'
+import { useContextMenuState } from '@/hooks/useContextMenuState'
 
 /**
  * NewVirtualizedContainer
@@ -53,30 +55,7 @@ const NewVirtualizedContainer = ({
   }, [dates])
 
   // ─── Availability ─────────────────────────────────────────────────────────
-  const { availabilityByResource, totalAvailabilityByDate, availabilityByParent } = useMemo(() => {
-    const byResource = {}
-    const byDate = {}
-    const byParent = {}
-
-    if (!availability) return { availabilityByResource: byResource, totalAvailabilityByDate: byDate, availabilityByParent: byParent }
-
-    availability.total_availability?.forEach(item => {
-      const [available, total] = item.availibility.split('/').map(Number)
-      byDate[item.date] = { available, total }
-    })
-
-    availability.building_wise_availability?.forEach(building => {
-      building.date_range?.forEach(dateItem => {
-        const [available, total] = dateItem.availibility.split('/').map(Number)
-        byParent[`${building.building_id}-${dateItem.date}`] = { available, total }
-      })
-    })
-
-    return { availabilityByResource: byResource, totalAvailabilityByDate: byDate, availabilityByParent: byParent }
-  }, [availability])
-
-  const [contextMenu, setContextMenu] = useState({ isOpen: false, position: { x: 0, y: 0 }, booking: null })
-  const [resourceContextMenu, setResourceContextMenu] = useState({ isOpen: false, position: { x: 0, y: 0 }, resource: null })
+  const { availabilityByResource, totalAvailabilityByDate, availabilityByParent } = useAvailability(availability)
 
   // ─── Drag — move a booking to a new date / resource ───────────────────────
   // RAF throttle is applied inside the hook — mousemove updates are capped at
@@ -162,49 +141,17 @@ const NewVirtualizedContainer = ({
     closeModal()
   }, [closeModal])
 
-  // ─── Context menu handlers ─────────────────────────────────────────────────
-  const handleBookingRightClick = useCallback((booking, position) => {
-    setContextMenu({ isOpen: true, position, booking })
-  }, [])
-
-  const handleContextMenuAction = useCallback((action) => {
-    const booking = contextMenu.booking
-    setContextMenu({ isOpen: false, position: { x: 0, y: 0 }, booking: null })
-
-    if (action === 'logs') {
-      window.open(`https://aperfectstay.ai/aperfect-pms/booking/${booking?.id}/logs`, '_blank', 'noopener,noreferrer')
-    } else if (action === 'view') {
-      window.open(`https://aperfectstay.ai/aperfect-pms/booking/${booking?.id}/view-details`, '_blank', 'noopener,noreferrer')
-    } else if (action === 'split') {
-      openModal('split', booking)
-    } else if (action === 'skip') {
-      openModal('skip-check-in', booking)
-    } else if (action === 'cancel-check-in') {
-      openModal('cancel-check-in', booking)
-    } else if (action === 'new-task') {
-      openModal('details', booking, 'task')
-    } else if (action === 'new-case') {
-      openModal('details', booking, 'case')
-    }
-  }, [contextMenu.booking, openModal])
-
-  const handleResourceRightClick = useCallback((resource, e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setResourceContextMenu({ isOpen: true, position: { x: e.clientX, y: e.clientY }, resource })
-  }, [])
-
-  const handleResourceContextMenuAction = useCallback((action) => {
-    setResourceContextMenu({ isOpen: false, position: { x: 0, y: 0 }, resource: null })
-  }, [])
-
-  const handleContextMenuClose = useCallback(() => {
-    setContextMenu({ isOpen: false, position: { x: 0, y: 0 }, booking: null })
-  }, [])
-
-  const handleResourceContextMenuClose = useCallback(() => {
-    setResourceContextMenu({ isOpen: false, position: { x: 0, y: 0 }, resource: null })
-  }, [])
+  // ─── Context menus (booking right-click + resource right-click) ───────────
+  const {
+    contextMenu,
+    resourceContextMenu,
+    handleBookingRightClick,
+    handleContextMenuAction,
+    handleContextMenuClose,
+    handleResourceRightClick,
+    handleResourceContextMenuAction,
+    handleResourceContextMenuClose,
+  } = useContextMenuState({ openModal })
 
   // ─── Split / check-in handlers ────────────────────────────────────────────
   const handleSplitBooking = useCallback((splitData) => {
