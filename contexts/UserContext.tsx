@@ -1,7 +1,7 @@
 'use client'
 
 import { proxyFetch } from '@/utils/proxyFetch'
-import { createContext, useContext, useState, useEffect, ReactNode, useMemo } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode, useMemo } from 'react'
 
 interface User {
   id: string
@@ -43,7 +43,6 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       setError(null)
 
       const data = await proxyFetch('/aps-api/v1/users/details/private')
-      console.log('Fetched user data:', data?.data)
       setUser(data?.data || null)
       if(data?.data?.user_details?.email==='stay@thesqua.re' || data?.data?.user_details?.email==='apsdemo2023@gmail.com'){
         setIsSquareUser(true)
@@ -60,15 +59,14 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     }
   }
 
-  const refreshUser = async () => {
+  const refreshUser = useCallback(async () => {
     await fetchUser()
-  }
+  }, [])
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setUser(null)
     setError(null)
-    // Add any logout logic here (clear tokens, redirect, etc.)
-  }
+  }, [])
 
   useEffect(() => {
     fetchUser()
@@ -83,7 +81,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     refreshUser,
     logout
   }),
-  [user, isLoading, error]
+  [user, isSquareUser, isLoading, error, refreshUser, logout]
 )
 
   return (
