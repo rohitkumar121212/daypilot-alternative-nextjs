@@ -45,7 +45,8 @@ const NewVirtualizedContainer = ({
   startDate = null,
   daysToShow = 30,
   cellWidth = 100,
-  rowHeight = 60
+  rowHeight = 60,
+  height = '100%'
 }) => {
 
   // ─── Dates ────────────────────────────────────────────────────────────────
@@ -106,15 +107,19 @@ const NewVirtualizedContainer = ({
   const startResourceIdRef = useRef(null)
 
   // ─── Single scroll container (replaces two panes + sync) ──────────────────
+  // wrapperRef measures the available viewport height (sized by the parent).
+  // scrollContainerRef gets an explicit pixel height from that measurement so
+  // overflow-auto always clips content correctly — h-full alone can fail in
+  // flex contexts by expanding the element to fit its content, which defeats
+  // virtualization (ResizeObserver would then report the full content height,
+  // containerHeight becomes huge, and every row becomes "visible").
+  const wrapperRef = useRef(null)
   const scrollContainerRef = useRef(null)
   const [scrollTop, setScrollTop] = useState(0)
   const [containerHeight, setContainerHeight] = useState(600)
 
-  // ResizeObserver fires after layout is painted, so clientHeight is accurate.
-  // A plain useEffect + clientHeight on mount can return 0 because the browser
-  // hasn't committed the layout yet when the effect runs synchronously.
   useEffect(() => {
-    const el = scrollContainerRef.current
+    const el = wrapperRef.current
     if (!el) return
 
     const observer = new ResizeObserver(entries => {
@@ -438,15 +443,18 @@ const NewVirtualizedContainer = ({
 
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
-    <div className="w-full h-full bg-white select-none">
+    <div ref={wrapperRef} style={{ width: '100%', height }} className="bg-white select-none">
 
       {/*
         SINGLE scroll container — handles both horizontal and vertical scroll.
         No JS sync needed. CSS sticky handles the frozen header and resource column.
+        Height is set explicitly in pixels (not h-full) so overflow-auto reliably
+        clips the content and virtualization works correctly.
       */}
       <div
         ref={scrollContainerRef}
-        className="w-full h-full overflow-auto"
+        className="w-full overflow-auto"
+        style={{ height: containerHeight }}
         onScroll={handleScroll}
       >
         {/* Inner wrapper sets the total scrollable width */}

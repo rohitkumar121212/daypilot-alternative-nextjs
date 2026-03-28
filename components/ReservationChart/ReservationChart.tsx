@@ -316,7 +316,7 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
                   bookings={bookings}
                   collaborators={collaborators}
                 />
-                <div className="flex-1 min-h-0 h-[400px] w-full shadow-md">
+                <div className="flex-1 min-h-0 w-full shadow-md">
                   {USE_NEW_CONTAINER ? (
                     <NewVirtualizedContainer
                       resources={filteredResources}
@@ -330,6 +330,7 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
                       daysToShow={daysToShow}
                       cellWidth={100}
                       rowHeight={40}
+                      height="80vh"
                     />
                   ) : (
                     <VirtualScheduler
