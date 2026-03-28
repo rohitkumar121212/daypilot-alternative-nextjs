@@ -1,5 +1,5 @@
 import React from 'react'
-import { getDateIndex, daysBetween } from '@/utils/dateUtils'
+import { getDateIndex, daysBetween } from './utils/dateUtils'
 
 // Add CSS animation styles
 const selectionStyles = `

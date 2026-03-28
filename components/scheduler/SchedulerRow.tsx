@@ -19,6 +19,7 @@ interface SchedulerRowProps {
   onBookingClick: (booking: any) => void
   onBookingRightClick: (booking: any, position: any) => void
   onBookingDragStart: (booking: any, e: React.MouseEvent) => void
+  isSquareUser?: boolean
 }
 
 /**
@@ -48,6 +49,7 @@ const SchedulerRow = memo(({
   onBookingClick,
   onBookingRightClick,
   onBookingDragStart,
+  isSquareUser = false,
 }: SchedulerRowProps) => {
   return (
     <div
@@ -114,6 +116,7 @@ const SchedulerRow = memo(({
             onBookingDragStart={onBookingDragStart}
             cellWidth={cellWidth}
             rowHeight={rowHeight}
+            isSquareUser={isSquareUser}
           />
         </div>
 

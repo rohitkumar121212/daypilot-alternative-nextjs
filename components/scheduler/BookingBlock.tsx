@@ -1,8 +1,6 @@
 import { memo, useMemo } from 'react'
 import dayjs from 'dayjs'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
-import { useUser } from '@/hooks/useUser'
-
 // Module-level constant — not recreated on every render
 const ALLOWED_SALES_CHANNELS = ['Corporate Agent', 'Relocation / TMC', 'Relocation TMC']
 
@@ -18,9 +16,9 @@ const BookingBlock = memo(({
   dragOffset = { x: 0, y: 0 },
   rowIndex = 0,
   subRowHeight,
-  isOverbooked = false
+  isOverbooked = false,
+  isSquareUser = false,
 }: any) => {
-  const { isSquareUser } = useUser()
   const displayEndDate = dayjs(booking.endDate).subtract(1, 'day').format('YYYY-MM-DD')
 
   // O(1) map lookup instead of O(n) findIndex

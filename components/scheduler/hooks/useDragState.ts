@@ -9,56 +9,48 @@ interface DragState {
   currentY: number
 }
 
-interface ChangeConfirmation {
-  isOpen: boolean
-  data: any
+export interface BookingMoveData {
+  booking: any
+  newResourceId: string
+  newResourceName: string
+  newStartDate: string
+  newEndDate: string
 }
 
 interface UseDragStateParams {
   dateIndexMap: Map<string, number>
   resources: any[]
-  onBookingUpdate: ((booking: any) => void) | undefined
+  /** Called when the user drops a booking. Consumer decides whether to confirm/apply the change. */
+  onBookingMove?: (moveData: BookingMoveData) => void
 }
 
 interface UseDragStateResult {
-  /** Current drag position — passed down to ResourceRow/BookingBlock for visual ghost */
+  /** Current drag position — passed to BookingBlock for the ghost visual */
   dragState: DragState | null
-  /** Confirmation modal state for the drag-and-drop change */
-  changeConfirmation: ChangeConfirmation
-  /** Call on BookingBlock mousedown to start a drag */
+  /** Attach to BookingBlock mousedown to start a drag */
   handleBookingDragStart: (booking: any, e: React.MouseEvent) => void
-  /** Call when the user confirms the booking move in the modal */
-  handleConfirmChange: () => void
-  /** Call when the user cancels the booking move in the modal */
-  handleCancelChange: () => void
 }
 
 /**
  * useDragState
  *
- * Manages all state and event handling for drag-and-drop booking moves:
+ * Manages drag-and-drop booking moves:
  *  - mousedown on a booking starts the drag
- *  - mousemove on document updates the drag ghost position (RAF-throttled)
- *  - mouseup on document resolves the drop target, computes new dates, and
- *    opens the BookingChangeConfirmModal
- *  - handleConfirmChange / handleCancelChange close the modal and optionally
- *    call onBookingUpdate
+ *  - mousemove updates the ghost position (RAF-throttled to ~60fps)
+ *  - mouseup resolves the drop target and fires onBookingMove with the
+ *    proposed new dates — the consumer decides whether to apply the change
  *
- * RAF throttling: mousemove fires on every pixel of movement (~hundreds/sec).
- * Without throttling, each pixel calls setDragState which re-renders the
- * entire virtualised list. With requestAnimationFrame, updates are capped at
- * the display refresh rate (60fps), which is more than enough for visual
- * feedback and eliminates the jank.
+ * RAF throttling: without it every pixel of mouse movement calls setDragState
+ * which re-renders the entire virtualised list. With RAF, updates are capped
+ * at the display refresh rate, eliminating jank on fast drags.
  */
 export function useDragState({
   dateIndexMap,
   resources,
-  onBookingUpdate,
+  onBookingMove,
 }: UseDragStateParams): UseDragStateResult {
 
   const [dragState, setDragState] = useState<DragState | null>(null)
-  const [changeConfirmation, setChangeConfirmation] = useState<ChangeConfirmation>({ isOpen: false, data: null })
-
   const rafId = useRef<number>(0)
 
   // ─── Start drag ─────────────────────────────────────────────────────────────
@@ -77,9 +69,6 @@ export function useDragState({
     if (!dragState) return
 
     const handleMouseMove = (e: MouseEvent) => {
-      // RAF throttle — at most one setState per animation frame (~60fps).
-      // Without this, every pixel fires a full React re-render of the
-      // virtualised list and all its visible children.
       cancelAnimationFrame(rafId.current)
       rafId.current = requestAnimationFrame(() => {
         setDragState(prev => prev ? { ...prev, currentX: e.clientX, currentY: e.clientY } : null)
@@ -87,7 +76,6 @@ export function useDragState({
     }
 
     const handleMouseUp = (e: MouseEvent) => {
-      // Cancel any pending RAF so we don't update position after drop
       cancelAnimationFrame(rafId.current)
 
       const target = document.elementFromPoint(e.clientX, e.clientY)
@@ -103,23 +91,18 @@ export function useDragState({
           const duration = endIndex - startIndex
           const newEndDate = dayjs(newStartDate).add(duration, 'day').format('YYYY-MM-DD')
 
-          // Find the human-readable resource name for the confirmation modal
           let newResourceName = newResourceId
           for (const parent of resources) {
             const child = (parent.children || []).find((c: any) => c.id === newResourceId)
             if (child) { newResourceName = child.name; break }
           }
 
-          setChangeConfirmation({
-            isOpen: true,
-            data: {
-              booking: { ...dragState.draggedBooking, startDate: newStartDate, endDate: newEndDate, resourceId: newResourceId },
-              newResourceId,
-              newResourceName,
-              newStartDate,
-              newEndDate,
-              user: 'Aperfect Stay',
-            },
+          onBookingMove?.({
+            booking: { ...dragState.draggedBooking, startDate: newStartDate, endDate: newEndDate, resourceId: newResourceId },
+            newResourceId,
+            newResourceName,
+            newStartDate,
+            newEndDate,
           })
         }
       }
@@ -134,24 +117,7 @@ export function useDragState({
       document.removeEventListener('mousemove', handleMouseMove)
       document.removeEventListener('mouseup', handleMouseUp)
     }
-  }, [dragState, dateIndexMap, resources])
+  }, [dragState, dateIndexMap, resources, onBookingMove])
 
-  // ─── Confirm move ────────────────────────────────────────────────────────────
-  const handleConfirmChange = useCallback(() => {
-    if (changeConfirmation.data?.booking) onBookingUpdate?.(changeConfirmation.data.booking)
-    setChangeConfirmation({ isOpen: false, data: null })
-  }, [changeConfirmation.data, onBookingUpdate])
-
-  // ─── Cancel move ─────────────────────────────────────────────────────────────
-  const handleCancelChange = useCallback(() => {
-    setChangeConfirmation({ isOpen: false, data: null })
-  }, [])
-
-  return {
-    dragState,
-    changeConfirmation,
-    handleBookingDragStart,
-    handleConfirmChange,
-    handleCancelChange,
-  }
+  return { dragState, handleBookingDragStart }
 }

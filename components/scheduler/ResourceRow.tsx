@@ -22,6 +22,7 @@ interface ResourceRowProps {
   onBookingDragStart?: (booking: any, e: React.MouseEvent) => void
   cellWidth?: number
   rowHeight?: number
+  isSquareUser?: boolean
 }
 
 const ResourceRow = memo(({
@@ -38,7 +39,8 @@ const ResourceRow = memo(({
   onBookingRightClick,
   onBookingDragStart,
   cellWidth = 100,
-  rowHeight = 60
+  rowHeight = 60,
+  isSquareUser = false,
 }: ResourceRowProps) => {
   // Already filtered and sorted by ReservationChart via bookingsByResourceId
   const sortedBookings = resourceBookings
@@ -130,6 +132,7 @@ const ResourceRow = memo(({
             rowIndex={0}
             subRowHeight={subRowHeight}
             isOverbooked={booking.isOverbooked || false}
+            isSquareUser={isSquareUser}
           />
         )
       })}

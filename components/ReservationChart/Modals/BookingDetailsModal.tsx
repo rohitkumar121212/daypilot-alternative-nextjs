@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 
 import Tabs from '@/components/common/Tabs'
-import BookingDetailsTab from './BookingDetailsModal/BookingDetailsTab'
-import CreateCaseTab from './BookingDetailsModal/CreateCaseTab'
-import CreateTaskTab from './BookingDetailsModal/CreateTaskTab'
-import AddPaymentTab from './BookingDetailsModal/AddPaymentTab'
-import SharePaymentLinkTab from './BookingDetailsModal/SharePaymentLinkTab'
+import BookingDetailsTab from '../Modals/BookingDetailsModal/BookingDetailsTab'
+import CreateCaseTab from '../Modals/BookingDetailsModal/CreateCaseTab'
+import CreateTaskTab from '../Modals/BookingDetailsModal/CreateTaskTab'
+import AddPaymentTab from '../Modals/BookingDetailsModal/AddPaymentTab'
+import SharePaymentLinkTab from '../Modals/BookingDetailsModal/SharePaymentLinkTab'
 
 import {formatBookingType} from '@/utils/common'
 import { apiFetch } from '@/utils/apiRequest'

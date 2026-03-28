@@ -165,12 +165,15 @@ The goal is to make `NewVirtualizedContainer` a standalone, drop-in scheduler co
 
 | # | Change | Status |
 |---|---|---|
-| 2.1 | Change `useSelectionState` to fire `onTimeRangeSelect(selection)` instead of managing `modalOpen` | ⏳ Pending |
-| 2.2 | Change `useDragState` to fire `onBookingMove(booking, newDates)` instead of managing `changeConfirmation` | ⏳ Pending |
-| 2.3 | Remove `useContextMenuState` from scheduler — fire `onBookingRightClick` / `onResourceRightClick` events instead | ⏳ Pending |
-| 2.4 | Remove `useModalState` from scheduler | ⏳ Pending |
-| 2.5 | Remove `ModalManager` from scheduler render — consumer renders its own modals | ⏳ Pending |
-| 2.6 | Move `isSquareUser` / `ALLOWED_SALES_CHANNELS` out of `BookingBlock` — consumer passes as prop | ⏳ Pending |
-| 2.7 | Remove hardcoded `user: 'Aperfect Stay'` from `useDragState` confirmation data | ⏳ Pending |
-| 2.8 | Rename `NewVirtualizedContainer` → `Scheduler` (or `ResourceScheduler`) | ⏳ Pending |
-| 2.9 | Wire up all callbacks in `ReservationChart` — open APS-specific modals in response to scheduler events | ⏳ Pending |
+| 2.1 | Change `useSelectionState` to fire `onTimeRangeSelect(selection)` instead of managing `modalOpen` | ✅ Done |
+| 2.2 | Change `useDragState` to fire `onBookingMove(booking, newDates)` instead of managing `changeConfirmation` | ✅ Done |
+| 2.3 | Remove `useContextMenuState` from scheduler — fire `onBookingRightClick` / `onResourceRightClick` events instead | ✅ Done |
+| 2.4 | Remove `useModalState` from scheduler | ✅ Done |
+| 2.5 | Remove `ModalManager` from scheduler render — consumer renders its own modals | ✅ Done |
+| 2.6 | Move `isSquareUser` out of `BookingBlock` — passed as prop, threaded via `SchedulerRow` → `ResourceRow` | ✅ Done |
+| 2.7 | Remove hardcoded `user: 'Aperfect Stay'` from `useDragState` confirmation data | ✅ Done |
+| 2.8 | Rename `NewVirtualizedContainer` → `Scheduler` | ✅ Done (Phase 1) |
+| 2.9 | Wire up all callbacks in `ReservationChart` — open APS-specific modals in response to scheduler events | ✅ Done |
+| 2.10 | Fix `isSquareUser` missing from `UserContextType` interface | ✅ Done |
+
+**Completed 2026-03-29.**

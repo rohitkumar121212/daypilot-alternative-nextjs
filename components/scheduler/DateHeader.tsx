@@ -1,4 +1,4 @@
-import { formatDateHeader } from '@/utils/dateUtils'
+import { formatDateHeader } from './utils/dateUtils'
 
 /**
  * DateHeader - Displays date information in the timeline header

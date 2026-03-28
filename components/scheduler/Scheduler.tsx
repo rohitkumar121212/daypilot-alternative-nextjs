@@ -1,36 +1,42 @@
 import React, { useCallback, useMemo, useRef } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
-import dayjs from 'dayjs'
 
 import DateHeader from './DateHeader'
 import SchedulerRow from './SchedulerRow'
-import ModalManager from '../ReservationChart/Overlays/ModalManager'
-import { generateDateRange } from '@/utils/dateUtils'
-import { useModalState } from '@/hooks/useModalState'
+import { generateDateRange } from './utils/dateUtils'
 import { useSelectionState } from './hooks/useSelectionState'
 import { useDragState } from './hooks/useDragState'
-import { useAvailability } from '@/hooks/useAvailability'
-import { useContextMenuState } from '@/hooks/useContextMenuState'
+import { useAvailability } from './hooks/useAvailability'
 
 /**
  * Scheduler
  *
- * Core virtualised scheduler grid. Renders a timeline of resources × dates
- * with bookings displayed as blocks. Interactions (drag, selection, right-click)
- * are all optional — pass only the callbacks you need.
+ * Core virtualised grid — renders resources × dates with booking blocks.
+ * All interaction callbacks are optional: the grid renders correctly with
+ * none of them. The consumer decides what happens when the user interacts.
  *
- * Single scroll container — ONE <div overflow-auto> handles both horizontal
- * and vertical scroll:
- *  - Resource label column uses CSS `position: sticky; left: 0`
- *  - Date header row uses CSS `position: sticky; top: 0`
- *  - Row virtualization via TanStack Virtual (vertical axis only)
+ *   onTimeRangeSelect  — user drag-selected a date range (open a create form)
+ *   onBookingClick     — user clicked a booking (open a details modal)
+ *   onBookingMove      — user dropped a booking on a new cell (confirm the move)
+ *   onBookingRightClick — user right-clicked a booking (show a context menu)
+ *   onResourceRightClick — user right-clicked a resource label (show a menu)
+ *
+ * Single scroll container: ONE <div overflow-auto> handles both axes.
+ * Resource labels use `position: sticky; left: 0`.
+ * Date header uses `position: sticky; top: 0`.
+ * Row virtualization via TanStack Virtual (vertical axis only).
  */
 interface SchedulerProps {
   resources?: any[]
   bookingsByResourceId?: Map<string, any[]>
   availability?: any
-  onBookingCreate?: (bookingData: any) => void
-  onBookingUpdate?: (booking: any) => void
+  /** Pass true if the current user is a Square user — shows the no-call icon on eligible bookings */
+  isSquareUser?: boolean
+  onTimeRangeSelect?: (selection: { resourceId: any; startDate: string; endDate: string }) => void
+  onBookingClick?: (booking: any) => void
+  onBookingMove?: (moveData: { booking: any; newResourceId: string; newResourceName: string; newStartDate: string; newEndDate: string }) => void
+  onBookingRightClick?: (booking: any, position: { x: number; y: number }) => void
+  onResourceRightClick?: (resource: any, e: React.MouseEvent) => void
   onResourcesChange?: (resources: any[]) => void
   startDate?: string
   daysToShow?: number
@@ -43,8 +49,12 @@ const Scheduler = ({
   resources = [],
   bookingsByResourceId = new Map(),
   availability = null,
-  onBookingCreate,
-  onBookingUpdate,
+  isSquareUser = false,
+  onTimeRangeSelect,
+  onBookingClick,
+  onBookingMove,
+  onBookingRightClick,
+  onResourceRightClick,
   onResourcesChange,
   startDate = undefined,
   daysToShow = 30,
@@ -67,23 +77,9 @@ const Scheduler = ({
   const { totalAvailabilityByDate, availabilityByParent } = useAvailability(availability)
 
   // ─── Drag — move a booking to a new date / resource ───────────────────────
-  // RAF throttle is applied inside the hook — mousemove updates are capped at
-  // 60fps instead of firing on every pixel.
-  const {
-    dragState,
-    changeConfirmation,
-    handleBookingDragStart,
-    handleConfirmChange,
-    handleCancelChange,
-  } = useDragState({ dateIndexMap, resources, onBookingUpdate })
-
-  // All booking-action modals (details, split, skip-check-in, check-in, cancel-check-in)
-  // are managed as a single activeModal object — one modal open at a time.
-  const { activeModal, openModal, closeModal } = useModalState()
+  const { dragState, handleBookingDragStart } = useDragState({ dateIndexMap, resources, onBookingMove })
 
   // ─── Single scroll container ───────────────────────────────────────────────
-  // TanStack Virtual reads the scroll element directly — no manual scrollTop
-  // tracking, no ResizeObserver, no spacer math needed.
   const scrollContainerRef = useRef(null)
 
   // ─── Flatten resources into rows ──────────────────────────────────────────
@@ -117,12 +113,7 @@ const Scheduler = ({
     return heightsMap
   }, [visibleRows, bookingsByResourceId, rowHeight])
 
-  // ─── TanStack Virtual — vertical row virtualization only ──────────────────
-  // Virtualizes ROW rendering (vertical axis) only.
-  // Date columns are never virtualized — all dates always exist in the DOM so
-  // booking blocks that span many days always render at full width.
-  // overscan: 5 renders 5 extra rows above/below the viewport, eliminating
-  // blank content during fast scrolling (the main failure of DIY virtualization).
+  // ─── TanStack Virtual ─────────────────────────────────────────────────────
   const rowVirtualizer = useVirtualizer({
     count: visibleRows.length,
     getScrollElement: () => scrollContainerRef.current,
@@ -131,46 +122,11 @@ const Scheduler = ({
   })
 
   // ─── Selection — click-drag to create a booking ───────────────────────────
-  const {
-    selection,
-    modalOpen,
-    selectedResource,
-    handleCellMouseDown,
-    handleCellMouseEnter,
-    handleModalClose,
-    handleBookingConfirm,
-  } = useSelectionState({ visibleRows, dates, onBookingCreate })
-
-  // ─── Booking detail handlers ───────────────────────────────────────────────
-  const handleBookingClick = useCallback((booking) => {
-    openModal('details', booking)
-  }, [openModal])
-
-  const handleDetailsModalClose = useCallback(() => {
-    closeModal()
-  }, [closeModal])
-
-  // ─── Context menus (booking right-click + resource right-click) ───────────
-  const {
-    contextMenu,
-    resourceContextMenu,
-    handleBookingRightClick,
-    handleContextMenuAction,
-    handleContextMenuClose,
-    handleResourceRightClick,
-    handleResourceContextMenuAction,
-    handleResourceContextMenuClose,
-  } = useContextMenuState({ openModal })
-
-  // ─── Split / check-in handlers ────────────────────────────────────────────
-  const handleSplitBooking = useCallback((splitData) => {
-    const { originalBooking, splitDate, newApartmentId } = splitData
-    const booking1 = { ...originalBooking, id: Date.now(), startDate: originalBooking.startDate, endDate: splitDate, resourceId: newApartmentId, backColor: '#5BCAC8' }
-    const booking2 = { ...originalBooking, startDate: dayjs(splitDate).add(1, 'day').format('YYYY-MM-DD'), endDate: originalBooking.endDate, backColor: '#5BCAC8' }
-    onBookingUpdate?.(booking2)
-    onBookingCreate?.(booking1)
-    closeModal()
-  }, [onBookingUpdate, onBookingCreate, closeModal])
+  const { selection, handleCellMouseDown, handleCellMouseEnter } = useSelectionState({
+    visibleRows,
+    dates,
+    onTimeRangeSelect,
+  })
 
   // ─── Expand / collapse ────────────────────────────────────────────────────
   const handleToggleExpand = useCallback((parentId) => {
@@ -182,25 +138,14 @@ const Scheduler = ({
 
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
-    /*
-      SINGLE scroll container — handles both horizontal and vertical scroll.
-      height prop controls the component's visible area (e.g. "80vh", "600px").
-      TanStack Virtual reads scrollTop directly from this element via getScrollElement.
-    */
-    <>
     <div
       ref={scrollContainerRef}
       style={{ width: '100%', height, overflow: 'auto' }}
       className="bg-white select-none"
     >
-      {/* Inner wrapper sets the total scrollable width */}
       <div style={{ minWidth: 256 + dates.length * cellWidth }}>
 
-        {/* ── Sticky date header row ──────────────────────────────────────
-            sticky top: stays visible when scrolling vertically.
-            The "Apartments" corner cell is also sticky left so it stays
-            visible when scrolling horizontally.
-        */}
+        {/* ── Sticky date header ──────────────────────────────────────────── */}
         <div className="sticky top-0 z-30 flex bg-gray-50 border-b border-gray-300 shadow-sm">
           <div className="w-64 min-w-64 sticky left-0 z-40 bg-gray-50 border-r border-gray-200 flex items-center justify-center font-semibold text-gray-700">
             Apartments
@@ -217,13 +162,7 @@ const Scheduler = ({
           </div>
         </div>
 
-        {/*
-          TanStack Virtual row container.
-          getTotalSize() sets the container height to the sum of all row heights
-          so the scrollbar reflects the full dataset even though only a subset
-          of rows is rendered. Each virtual row is absolutely positioned via
-          transform: translateY so the browser never has to re-flow the whole list.
-        */}
+        {/* ── Virtualised rows ────────────────────────────────────────────── */}
         <div style={{ height: rowVirtualizer.getTotalSize(), position: 'relative' }}>
           {rowVirtualizer.getVirtualItems().map(virtualRow => {
             const row = visibleRows[virtualRow.index]
@@ -241,12 +180,13 @@ const Scheduler = ({
                 availabilityByParent={availabilityByParent}
                 cellWidth={cellWidth}
                 rowHeight={rowHeight}
-                onResourceRightClick={handleResourceRightClick}
+                isSquareUser={isSquareUser}
+                onResourceRightClick={onResourceRightClick ?? (() => {})}
                 onToggleExpand={handleToggleExpand}
                 onCellMouseDown={handleCellMouseDown}
                 onCellMouseEnter={handleCellMouseEnter}
-                onBookingClick={handleBookingClick}
-                onBookingRightClick={handleBookingRightClick}
+                onBookingClick={onBookingClick ?? (() => {})}
+                onBookingRightClick={onBookingRightClick ?? (() => {})}
                 onBookingDragStart={handleBookingDragStart}
               />
             )
@@ -255,31 +195,6 @@ const Scheduler = ({
 
       </div>
     </div>
-
-      {/* ── All overlays: modals + context menus ────────────────────────── */}
-      <ModalManager
-        createBookingOpen={modalOpen}
-        selection={selection}
-        selectedResource={selectedResource}
-        onCreateBookingClose={handleModalClose}
-        onCreateBookingConfirm={handleBookingConfirm}
-        activeModal={activeModal}
-        openModal={openModal}
-        closeModal={closeModal}
-        onDetailsClose={handleDetailsModalClose}
-        onSplitBooking={handleSplitBooking}
-        contextMenu={contextMenu}
-        onContextMenuClose={handleContextMenuClose}
-        onContextMenuAction={handleContextMenuAction}
-        resourceContextMenu={resourceContextMenu}
-        onResourceContextMenuClose={handleResourceContextMenuClose}
-        onResourceContextMenuAction={handleResourceContextMenuAction}
-        changeConfirmation={changeConfirmation}
-        onConfirmChange={handleConfirmChange}
-        onCancelChange={handleCancelChange}
-        resources={resources}
-      />
-    </>
   )
 }
 

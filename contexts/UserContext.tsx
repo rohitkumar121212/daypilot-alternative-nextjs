@@ -19,6 +19,7 @@ interface User {
 
 interface UserContextType {
   user: User | null
+  isSquareUser: boolean
   isLoading: boolean
   error: string | null
   refreshUser: () => Promise<void>

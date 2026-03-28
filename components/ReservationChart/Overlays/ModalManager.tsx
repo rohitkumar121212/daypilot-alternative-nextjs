@@ -5,13 +5,13 @@ import { ActiveModal, SchedulerModalType } from '@/hooks/useModalState'
 // All modals are lazy-loaded — they are never needed on initial render, only
 // after a user interaction. This keeps the initial JS bundle small.
 const CreateBookingModal   = dynamic(() => import('@/components/ReservationChart/Modals/CreateBookingModal/CreateBookingModal'), { ssr: false, loading: () => null })
-const BookingDetailsModal  = dynamic(() => import('@/components/ReservationChart/Overlays/BookingDetailsModal'), { ssr: false, loading: () => null })
+const BookingDetailsModal  = dynamic(() => import('@/components/ReservationChart/Modals/BookingDetailsModal'), { ssr: false, loading: () => null })
 const BookingContextMenu   = dynamic(() => import('@/components/ReservationChart/Overlays/BookingContextMenu'), { ssr: false, loading: () => null })
 const ResourceContextMenu  = dynamic(() => import('@/components/ReservationChart/Overlays/ResourceContextMenu'), { ssr: false, loading: () => null })
 const BookingChangeConfirmModal = dynamic(() => import('@/components/ReservationChart/Overlays/BookingChangeConfirmModal'), { ssr: false, loading: () => null })
 const SplitBookingModal    = dynamic(() => import('@/components/ReservationChart/Overlays/SplitBookingModal'), { ssr: false, loading: () => null })
 const SkipCheckInModal     = dynamic(() => import('@/components/ReservationChart/Overlays/SkipCheckInModal'), { ssr: false, loading: () => null })
-const CheckInModal         = dynamic(() => import('@/components/ReservationChart/Overlays/BookingDetailsModal/CheckInModal'), { ssr: false, loading: () => null })
+const CheckInModal         = dynamic(() => import('@/components/ReservationChart/Modals/BookingDetailsModal/CheckInModal'), { ssr: false, loading: () => null })
 const CancelCheckInModal   = dynamic(() => import('@/components/ReservationChart/Overlays/CancelCheckInModal'), { ssr: false, loading: () => null })
 
 interface ContextMenuState {
