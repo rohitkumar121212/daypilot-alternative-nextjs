@@ -1,13 +1,17 @@
+import { memo, useMemo } from 'react'
 import dayjs from 'dayjs'
-import { getDateIndex } from '@/utils/dateUtils'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import { useUser } from '@/hooks/useUser'
 
-const BookingBlock = ({ 
-  booking, 
-  dates, 
-  cellWidth = 100, 
-  onBookingClick, 
+// Module-level constant — not recreated on every render
+const ALLOWED_SALES_CHANNELS = ['Corporate Agent', 'Relocation / TMC', 'Relocation TMC']
+
+const BookingBlock = memo(({
+  booking,
+  dates,
+  dateIndexMap,
+  cellWidth = 100,
+  onBookingClick,
   onBookingRightClick,
   onBookingDragStart,
   isDragging = false,
@@ -15,32 +19,38 @@ const BookingBlock = ({
   rowIndex = 0,
   subRowHeight,
   isOverbooked = false
-}) => {
-  const allowedSalesChannels = [
-  'Corporate Agent',
-  'Relocation / TMC',
-  'Relocation TMC'
-]
+}: any) => {
   const { isSquareUser } = useUser()
   const displayEndDate = dayjs(booking.endDate).subtract(1, 'day').format('YYYY-MM-DD')
-  
-  const startIndex = getDateIndex(booking.startDate, dates)
-  const endIndex = getDateIndex(displayEndDate, dates)
-  
+
+  // O(1) map lookup instead of O(n) findIndex
+  const startIndex = dateIndexMap?.get(booking.startDate) ?? -1
+  const endIndex = dateIndexMap?.get(displayEndDate) ?? -1
+
   const bookingStartsBeforeRange = startIndex === -1 && booking.startDate < dates[0]
   const bookingEndsAfterRange = endIndex === -1 && displayEndDate > dates[dates.length - 1]
   const bookingSpansEntireRange = bookingStartsBeforeRange && bookingEndsAfterRange
   const bookingOverlapsRange = startIndex !== -1 || endIndex !== -1 || bookingSpansEntireRange
-  
+
   if (!bookingOverlapsRange) return null
-  
+
   const visibleStartIndex = Math.max(0, startIndex === -1 ? 0 : startIndex)
   const visibleEndIndex = Math.min(dates.length - 1, endIndex === -1 ? dates.length - 1 : endIndex)
-  
+
   const left = visibleStartIndex * cellWidth
   const span = visibleEndIndex - visibleStartIndex + 1
   const width = span * cellWidth
-  
+
+  // Parse once per booking change, not on every render
+  const bubbleData = useMemo(() => {
+    if (!booking.bubbleHtml) return {}
+    try {
+      return JSON.parse(booking.bubbleHtml.replace(/'/g, '"'))
+    } catch {
+      return {}
+    }
+  }, [booking.bubbleHtml])
+
   const handleMouseDown = (e) => {
     if (e.button === 2) return
     e.preventDefault()
@@ -86,23 +96,12 @@ const BookingBlock = ({
   const backgroundColor = isOverbooked ? 'rgb(109, 46, 70)' : (booking.backColor || '#40c970')
   const borderColor = isOverbooked ? 'rgb(109, 46, 70)' : (booking.backColor || '#40c970')
   const details = booking.booking_details || {}
-  
-  let bubbleData = {}
-  try {
-    if (booking.bubbleHtml) {
-      // Convert Python dict string to JSON format
-      const jsonStr = booking.bubbleHtml.replace(/'/g, '"')
-      bubbleData = JSON.parse(jsonStr)
-    }
-  } catch (e) {
-    // If parsing fails, bubbleData remains empty object
-  }
-  
+
   // Determine if we should show Lead_Source icon and its position
   const shouldShowIcon = booking.Lead_Source_icon === "true" && bubbleData.Lead_Source
   const showOnLeft = bubbleData.is_left === "true" || bubbleData.is_left === true
-  
-  const showNoCallIcon = isSquareUser && booking?.sales_channel && allowedSalesChannels.includes(booking.sales_channel)
+
+  const showNoCallIcon = isSquareUser && booking?.sales_channel && ALLOWED_SALES_CHANNELS.includes(booking.sales_channel)
   const topPosition = subRowHeight ? (rowIndex * subRowHeight) + 1 : 1
   const blockHeight = subRowHeight ? subRowHeight - 2 : 50
   
@@ -132,9 +131,6 @@ const BookingBlock = ({
               alt="No Call"
               className="w-8 h-8"
             />
-          )}
-          {isSquareUser && showOnLeft && (
-            <img src={bubbleData.Lead_Source} alt="Lead Source" className="w-4 h-4 mx-1" />
           )}
           {shouldShowIcon && showOnLeft && (
             <img src={bubbleData.Lead_Source} alt="Lead Source" className="w-4 h-4 mx-1" />
@@ -199,7 +195,7 @@ const BookingBlock = ({
       )}
     </HoverCard>
   )
-}
+})
 
 export default BookingBlock
 

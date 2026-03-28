@@ -52,6 +52,12 @@ id: crypto.randomUUID()
 - `ResourceRow.tsx`: renamed prop from `bookings` to `resourceBookings`. Removed the `filter` and `sort` entirely — data arrives pre-filtered and pre-sorted.
 
 ### 5. `BookingBlock.tsx` — `getDateIndex` is O(n) on every render (lines 27–28)
+
+**✅ DONE** — Changes made:
+- Added `dateIndexMap: Map<string, number>` useMemo in `NewVirtualizedContainer` (built once when `dates` changes)
+- Added `dateIndexMap` prop to `ResourceRowProps` interface and destructuring in `ResourceRow`
+- `ResourceRow` passes `dateIndexMap` to every `BookingBlock`
+- `BookingBlock` replaced `getDateIndex(date, dates)` calls with `dateIndexMap?.get(date) ?? -1` — O(1) lookup
 `getDateIndex` does a `findIndex` linear scan of the full `dates` array. With `daysToShow = 30` this is 30 comparisons per call, called twice per booking block per render. As `daysToShow` grows (e.g. 90 days), this scales poorly. With hundreds of bookings visible, this adds up.
 
 **Fix:** Convert `dates` to a `Map<string, number>` (date → index) once in `VirtualScheduler` via `useMemo`, and pass it down instead of the array. O(1) lookup.
@@ -82,9 +88,13 @@ The visible rows are found by iterating all `rowPositions` and checking if each 
 **Fix:** Since `rowPositions` is sorted by `top`, use binary search to find the first visible row and iterate forward from there until the row is below the viewport.
 
 ### 9. `BookingBlock.tsx` — Not wrapped in `React.memo` (line 6)
+
+**✅ DONE** — Wrapped in `memo()`.
 `BookingBlock` is not memoized. On every scroll event, `VirtualScheduler` re-renders, which re-renders every visible `ResourceRow`, which re-renders every visible `BookingBlock`. There can be many booking blocks on screen at once. Wrapping in `React.memo` would prevent re-renders when the booking's own props haven't changed.
 
 ### 10. `BookingBlock.tsx` — `bubbleHtml` JSON parsed on every render (lines 91–99)
+
+**✅ DONE** — Moved to `useMemo([booking.bubbleHtml])`. Also fixed #16 (moved `allowedSalesChannels` to module-level constant `ALLOWED_SALES_CHANNELS`) and #17 (removed the duplicate Lead_Source icon that rendered twice when `isSquareUser && showOnLeft` and `shouldShowIcon && showOnLeft` were both true).
 `JSON.parse(booking.bubbleHtml.replace(...))` runs on every render of every `BookingBlock`. This should be memoized with `useMemo`.
 
 ---

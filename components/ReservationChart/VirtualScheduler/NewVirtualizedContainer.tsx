@@ -53,6 +53,13 @@ const NewVirtualizedContainer = ({
   // ─── Dates ────────────────────────────────────────────────────────────────
   const dates = useMemo(() => generateDateRange(daysToShow, startDate), [daysToShow, startDate])
 
+  // O(1) date→index lookup — built once, passed to every BookingBlock via ResourceRow
+  const dateIndexMap = useMemo(() => {
+    const map = new Map<string, number>()
+    dates.forEach((date, i) => map.set(date, i))
+    return map
+  }, [dates])
+
   // ─── Availability ─────────────────────────────────────────────────────────
   const { availabilityByResource, totalAvailabilityByDate, availabilityByParent } = useMemo(() => {
     const byResource = {}
@@ -482,6 +489,7 @@ const NewVirtualizedContainer = ({
                     <ResourceRow
                       resource={row}
                       dates={dates}
+                      dateIndexMap={dateIndexMap}
                       resourceBookings={bookingsByResourceId.get(String(row.id)) || []}
                       selection={selection}
                       dragState={dragState}

@@ -10,6 +10,7 @@ import SelectionOverlay from './SelectionOverlay'
 interface ResourceRowProps {
   resource: any
   dates: string[]
+  dateIndexMap?: Map<string, number>
   resourceBookings?: any[]
   selection?: any
   dragState?: any
@@ -27,6 +28,7 @@ interface ResourceRowProps {
 const ResourceRow = memo(({
   resource,
   dates,
+  dateIndexMap,
   resourceBookings = [],
   selection,
   dragState,
@@ -42,10 +44,10 @@ const ResourceRow = memo(({
 }: ResourceRowProps) => {
   // Already filtered and sorted by ReservationChart via bookingsByResourceId
   const sortedBookings = resourceBookings
-  
+
   // Separate: first booking stays in row 0, overlapping ones go to additional rows
-  const mainRowBookings = []
-  const overbookingRowBookings = []
+  const mainRowBookings: any[] = []
+  const overbookingRowBookings: any[] = []
   
   sortedBookings.forEach((booking, index) => {
     // First booking always goes to main row, even if marked as overbooked
@@ -120,6 +122,7 @@ const ResourceRow = memo(({
             key={booking.id}
             booking={booking}
             dates={dates}
+            dateIndexMap={dateIndexMap}
             cellWidth={cellWidth}
             isDragging={isDragging}
             dragOffset={isDragging ? dragState.dragOffset : { x: 0, y: 0 }}
@@ -142,6 +145,7 @@ const ResourceRow = memo(({
             key={booking.id}
             booking={booking}
             dates={dates}
+            dateIndexMap={dateIndexMap}
             cellWidth={cellWidth}
             isDragging={isDragging}
             dragOffset={isDragging ? dragState.dragOffset : { x: 0, y: 0 }}
@@ -171,7 +175,7 @@ const ResourceRow = memo(({
 /**
  * Check if a date is within the current selection range
  */
-const isDateInSelection = (date, selection) => {
+const isDateInSelection = (date: string, selection: any) => {
   if (!selection || !selection.startDate || !selection.endDate) return false
   
   const dates = [selection.startDate, selection.endDate].sort()
