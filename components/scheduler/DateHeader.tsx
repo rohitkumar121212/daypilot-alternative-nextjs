@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { formatDateHeader } from './utils/dateUtils'
 
 /**
@@ -7,7 +8,7 @@ import { formatDateHeader } from './utils/dateUtils'
  * @param {number} props.cellWidth - Width of each date cell in pixels
  * @param {Object} props.totalAvailability - Total availability object with available and total
  */
-const DateHeader = ({ date, cellWidth = 100, totalAvailability = null }) => {
+const DateHeader = memo(({ date, cellWidth = 100, totalAvailability = null }) => {
   const formatted = formatDateHeader(date)
 
   const occupancyRatio =
@@ -33,9 +34,6 @@ const DateHeader = ({ date, cellWidth = 100, totalAvailability = null }) => {
       <div className={`text-xs font-medium ${formatted.isToday ? 'text-blue-600' : 'text-gray-600'}`}>
         {formatted.dayName} {" "} {formatted.dayNumber}
       </div>
-      {/* <div className={`text-lg font-semibold ${formatted.isToday ? 'text-blue-700' : 'text-gray-900'}`}>
-        {formatted.dayNumber}
-      </div> */}
       {totalAvailability && (
         <div className="relative group w-full">
           <div
@@ -55,6 +53,8 @@ const DateHeader = ({ date, cellWidth = 100, totalAvailability = null }) => {
       
     </div>
   )
-}
+})
+
+DateHeader.displayName = 'DateHeader'
 
 export default DateHeader

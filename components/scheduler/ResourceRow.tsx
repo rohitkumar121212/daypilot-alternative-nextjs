@@ -4,6 +4,15 @@ import BookingBlock from './BookingBlock'
 import SelectionOverlay from './SelectionOverlay'
 
 /**
+ * Check if a date is within the current selection range
+ */
+const isDateInSelection = (date: string, selection: any) => {
+  if (!selection || !selection.startDate || !selection.endDate) return false
+  const dates = [selection.startDate, selection.endDate].sort()
+  return date >= dates[0] && date <= dates[1]
+}
+
+/**
  * ResourceRow - Memoized component for better performance
  * Dynamically adjusts height based on overbooking count
  */
@@ -172,16 +181,6 @@ const ResourceRow = memo(({
     </div>
   )
 })
-
-/**
- * Check if a date is within the current selection range
- */
-const isDateInSelection = (date: string, selection: any) => {
-  if (!selection || !selection.startDate || !selection.endDate) return false
-  
-  const dates = [selection.startDate, selection.endDate].sort()
-  return date >= dates[0] && date <= dates[1]
-}
 
 export default ResourceRow
 

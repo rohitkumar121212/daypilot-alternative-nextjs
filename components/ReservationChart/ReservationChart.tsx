@@ -52,7 +52,7 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
       );
       const matchingApartmentIds = new Set(matchingBookings.map(booking => booking.resourceId));
       resourcesResult = resources.map(parent => {
-        const matchingChildren = (parent.children || []).filter(child => matchingApartmentIds.has(child.id));
+        const matchingChildren = (parent.children || []).filter((child: any) => matchingApartmentIds.has(child.id));
         return matchingChildren.length > 0 ? { ...parent, children: matchingChildren } : null;
       }).filter(Boolean);
     }
@@ -63,7 +63,7 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
       );
       const matchingApartmentIds = new Set(matchingBookings.map(booking => booking.resourceId));
       resourcesResult = resourcesResult.map(parent => {
-        const matchingChildren = (parent.children || []).filter(child => matchingApartmentIds.has(child.id));
+        const matchingChildren = (parent.children || []).filter((child: any) => matchingApartmentIds.has(child.id));
         return matchingChildren.length > 0 ? { ...parent, children: matchingChildren } : null;
       }).filter(Boolean);
     }
@@ -71,7 +71,7 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
     if (searchTerm.trim()) {
       resourcesResult = resourcesResult.map(parent => {
         const parentMatches = parent.name.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchingChildren = (parent.children || []).filter(child =>
+        const matchingChildren = (parent.children || []).filter((child: any) =>
           child.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
         if (parentMatches) return parent;

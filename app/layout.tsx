@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import DevTokenSetter from "@/components/dev/DevTokenSetter";
-import DevSessionSetter from "@/components/dev/DevSessionSetter";
 import Header from "@/components/Header/Header";
 import { UserProvider } from "@/contexts/UserContext";
 import { ErrorProvider } from "@/contexts/ErrorContext";
@@ -36,11 +34,9 @@ export default function RootLayout({
       >
         <ErrorProvider>
           <UserProvider>
-            {/* <DevSessionSetter /> */}
             <Header />
             {children}
             <ErrorModal />
-            {/* <DevTokenSetter /> */}
           </UserProvider>
         </ErrorProvider>
       </body>
