@@ -1,22 +1,14 @@
-import React, { useState, useCallback, useMemo, useRef, useEffect, Suspense } from 'react'
+import React, { useState, useCallback, useMemo, useRef } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import dayjs from 'dayjs'
-import dynamic from 'next/dynamic'
 
 import DateHeader from './DateHeader'
-import ResourceRow from './ResourceRow'
-import { generateDateRange, getDateIndex } from '@/utils/dateUtils'
-
-// Same lazy-loaded modals as VirtualScheduler
-const CreateBookingModal = dynamic(() => import('@/components/ReservationChart/Modals/CreateBookingModal/CreateBookingModal'), { ssr: false, loading: () => null })
-const BookingDetailsModal = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/BookingDetailsModal'), { ssr: false, loading: () => null })
-const BookingContextMenu = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/BookingContextMenu'), { ssr: false, loading: () => null })
-const ResourceContextMenu = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/ResourceContextMenu'), { ssr: false, loading: () => null })
-const BookingChangeConfirmModal = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/BookingChangeConfirmModal'), { ssr: false, loading: () => null })
-const SplitBookingModal = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/SplitBookingModal'), { ssr: false, loading: () => null })
-const SkipCheckInModal = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/SkipCheckInModal'), { ssr: false, loading: () => null })
-const CheckInModal = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/BookingDetailsModal/CheckInModal'), { ssr: false, loading: () => null })
-const CancelCheckInModal = dynamic(() => import('@/components/ReservationChart/VirtualScheduler/CancelCheckInModal'), { ssr: false, loading: () => null })
+import SchedulerRow from './SchedulerRow'
+import ModalManager from './ModalManager'
+import { generateDateRange } from '@/utils/dateUtils'
+import { useModalState } from '@/hooks/useModalState'
+import { useSelectionState } from '@/hooks/useSelectionState'
+import { useDragState } from '@/hooks/useDragState'
 
 /**
  * NewVirtualizedContainer
@@ -83,36 +75,23 @@ const NewVirtualizedContainer = ({
     return { availabilityByResource: byResource, totalAvailabilityByDate: byDate, availabilityByParent: byParent }
   }, [availability])
 
-  // ─── Interaction state (identical to VirtualScheduler) ────────────────────
-  const [selection, setSelection] = useState(null)
-  const [isSelecting, setIsSelecting] = useState(false)
-  const [modalOpen, setModalOpen] = useState(false)
-
-  const [selectedBooking, setSelectedBooking] = useState(null)
-  const [detailsModalOpen, setDetailsModalOpen] = useState(false)
-  const [detailsModalInitialTab, setDetailsModalInitialTab] = useState('details')
-
   const [contextMenu, setContextMenu] = useState({ isOpen: false, position: { x: 0, y: 0 }, booking: null })
   const [resourceContextMenu, setResourceContextMenu] = useState({ isOpen: false, position: { x: 0, y: 0 }, resource: null })
 
-  const [dragState, setDragState] = useState<{ draggedBooking: any; startX: number; startY: number; currentX: number; currentY: number } | null>(null)
-  const [changeConfirmation, setChangeConfirmation] = useState({ isOpen: false, data: null })
+  // ─── Drag — move a booking to a new date / resource ───────────────────────
+  // RAF throttle is applied inside the hook — mousemove updates are capped at
+  // 60fps instead of firing on every pixel.
+  const {
+    dragState,
+    changeConfirmation,
+    handleBookingDragStart,
+    handleConfirmChange,
+    handleCancelChange,
+  } = useDragState({ dateIndexMap, resources, onBookingUpdate })
 
-  const [splitModalOpen, setSplitModalOpen] = useState(false)
-  const [bookingToSplit, setBookingToSplit] = useState(null)
-
-  const [skipCheckInModalOpen, setSkipCheckInModalOpen] = useState(false)
-  const [bookingToSkip, setBookingToSkip] = useState(null)
-
-  const [checkInModalOpen, setCheckInModalOpen] = useState(false)
-  const [bookingToCheckIn, setBookingToCheckIn] = useState(null)
-
-  const [cancelCheckInModalOpen, setCancelCheckInModalOpen] = useState(false)
-  const [bookingToCancel, setBookingToCancel] = useState(null)
-
-  const mouseDownRef = useRef(false)
-  const startDateRef = useRef(null)
-  const startResourceIdRef = useRef(null)
+  // All booking-action modals (details, split, skip-check-in, check-in, cancel-check-in)
+  // are managed as a single activeModal object — one modal open at a time.
+  const { activeModal, openModal, closeModal } = useModalState()
 
   // ─── Single scroll container ───────────────────────────────────────────────
   // TanStack Virtual reads the scroll element directly — no manual scrollTop
@@ -163,72 +142,25 @@ const NewVirtualizedContainer = ({
     overscan: 5,
   })
 
-  // ─── Selection handlers (identical to VirtualScheduler) ───────────────────
-  const handleCellMouseDown = useCallback((date, resourceId, e) => {
-    e.preventDefault()
-    const resource = visibleRows.find(r => r.id === resourceId)
-    if (resource?.type === 'parent') return
-
-    mouseDownRef.current = true
-    startDateRef.current = date
-    startResourceIdRef.current = resourceId
-
-    setIsSelecting(true)
-    setSelection({
-      resourceId,
-      startDate: date,
-      endDate: dayjs(date).add(1, 'day').format('YYYY-MM-DD')
-    })
-  }, [visibleRows])
-
-  const handleCellMouseEnter = useCallback((date, resourceId) => {
-    if (!mouseDownRef.current || !isSelecting) return
-    if (resourceId !== startResourceIdRef.current) return
-    setSelection(prev => prev ? { ...prev, endDate: date } : null)
-  }, [isSelecting])
-
-  useEffect(() => {
-    const handleMouseUp = () => {
-      if (mouseDownRef.current && isSelecting && selection) {
-        mouseDownRef.current = false
-        setIsSelecting(false)
-
-        const startIndex = getDateIndex(selection.startDate, dates)
-        const endIndex = getDateIndex(selection.endDate, dates)
-        const finalStartDate = startIndex <= endIndex ? selection.startDate : selection.endDate
-        const finalEndDate = startIndex <= endIndex ? selection.endDate : selection.startDate
-
-        setSelection({ ...selection, startDate: finalStartDate, endDate: finalEndDate })
-        setTimeout(() => setModalOpen(true), 100)
-      }
-    }
-    window.addEventListener('mouseup', handleMouseUp)
-    return () => window.removeEventListener('mouseup', handleMouseUp)
-  }, [isSelecting, selection, dates])
-
-  const handleModalClose = useCallback(() => {
-    setModalOpen(false)
-    setSelection(null)
-    mouseDownRef.current = false
-    setIsSelecting(false)
-  }, [])
-
-  const handleBookingConfirm = useCallback((bookingData) => {
-    onBookingCreate?.(bookingData)
-    handleModalClose()
-  }, [onBookingCreate, handleModalClose])
+  // ─── Selection — click-drag to create a booking ───────────────────────────
+  const {
+    selection,
+    modalOpen,
+    selectedResource,
+    handleCellMouseDown,
+    handleCellMouseEnter,
+    handleModalClose,
+    handleBookingConfirm,
+  } = useSelectionState({ visibleRows, dates, onBookingCreate })
 
   // ─── Booking detail handlers ───────────────────────────────────────────────
   const handleBookingClick = useCallback((booking) => {
-    setSelectedBooking(booking)
-    setDetailsModalOpen(true)
-  }, [])
+    openModal('details', booking)
+  }, [openModal])
 
   const handleDetailsModalClose = useCallback(() => {
-    setDetailsModalOpen(false)
-    setSelectedBooking(null)
-    setDetailsModalInitialTab('details')
-  }, [])
+    closeModal()
+  }, [closeModal])
 
   // ─── Context menu handlers ─────────────────────────────────────────────────
   const handleBookingRightClick = useCallback((booking, position) => {
@@ -244,101 +176,34 @@ const NewVirtualizedContainer = ({
     } else if (action === 'view') {
       window.open(`https://aperfectstay.ai/aperfect-pms/booking/${booking?.id}/view-details`, '_blank', 'noopener,noreferrer')
     } else if (action === 'split') {
-      setBookingToSplit(booking)
-      setSplitModalOpen(true)
+      openModal('split', booking)
     } else if (action === 'skip') {
-      setBookingToSkip(booking)
-      setSkipCheckInModalOpen(true)
+      openModal('skip-check-in', booking)
     } else if (action === 'cancel-check-in') {
-      setBookingToCancel(booking)
-      setCancelCheckInModalOpen(true)
+      openModal('cancel-check-in', booking)
     } else if (action === 'new-task') {
-      setSelectedBooking(booking)
-      setDetailsModalOpen(true)
-      setDetailsModalInitialTab('task')
+      openModal('details', booking, 'task')
     } else if (action === 'new-case') {
-      setSelectedBooking(booking)
-      setDetailsModalOpen(true)
-      setDetailsModalInitialTab('case')
+      openModal('details', booking, 'case')
     }
-  }, [contextMenu.booking])
+  }, [contextMenu.booking, openModal])
 
   const handleResourceRightClick = useCallback((resource, e) => {
     e.preventDefault()
     e.stopPropagation()
-    setResourceContextMenu({ isOpen: false, position: { x: 0, y: 0 }, resource: null })
-    setTimeout(() => {
-      setResourceContextMenu({ isOpen: true, position: { x: e.clientX, y: e.clientY }, resource })
-    }, 10)
+    setResourceContextMenu({ isOpen: true, position: { x: e.clientX, y: e.clientY }, resource })
   }, [])
 
   const handleResourceContextMenuAction = useCallback((action) => {
     setResourceContextMenu({ isOpen: false, position: { x: 0, y: 0 }, resource: null })
   }, [])
 
-  // ─── Drag handlers (identical to VirtualScheduler) ────────────────────────
-  const handleBookingDragStart = useCallback((booking, e) => {
-    setDragState({ draggedBooking: booking, startX: e.clientX, startY: e.clientY, currentX: e.clientX, currentY: e.clientY })
+  const handleContextMenuClose = useCallback(() => {
+    setContextMenu({ isOpen: false, position: { x: 0, y: 0 }, booking: null })
   }, [])
 
-  useEffect(() => {
-    if (!dragState) return
-
-    const handleMouseMove = (e) => {
-      setDragState(prev => prev ? { ...prev, currentX: e.clientX, currentY: e.clientY } : null)
-    }
-
-    const handleMouseUp = (e) => {
-      const target = document.elementFromPoint(e.clientX, e.clientY)
-      const dateCell = target?.closest('[data-date]')
-
-      if (dateCell && dragState.draggedBooking) {
-        const newStartDate = dateCell.getAttribute('data-date')
-        const newResourceId = dateCell.getAttribute('data-resource-id')
-
-        if (newStartDate && newResourceId) {
-          const startIndex = getDateIndex(dragState.draggedBooking.startDate, dates)
-          const endIndex = getDateIndex(dragState.draggedBooking.endDate, dates)
-          const duration = endIndex - startIndex
-          const newEndDate = dayjs(newStartDate).add(duration, 'day').format('YYYY-MM-DD')
-
-          let newResourceName = newResourceId
-          for (const parent of resources) {
-            const child = (parent.children || []).find(c => c.id === newResourceId)
-            if (child) { newResourceName = child.name; break }
-          }
-
-          setChangeConfirmation({
-            isOpen: true,
-            data: {
-              booking: { ...dragState.draggedBooking, startDate: newStartDate, endDate: newEndDate, resourceId: newResourceId },
-              newResourceId,
-              newResourceName,
-              newStartDate,
-              newEndDate,
-              user: 'Aperfect Stay'
-            }
-          })
-        }
-      }
-      setDragState(null)
-    }
-
-    document.addEventListener('mousemove', handleMouseMove)
-    document.addEventListener('mouseup', handleMouseUp)
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove)
-      document.removeEventListener('mouseup', handleMouseUp)
-    }
-  }, [dragState, dates, resources])
-
-  const handleConfirmChange = useCallback(() => {
-    if (changeConfirmation.data?.booking) onBookingUpdate?.(changeConfirmation.data.booking)
-    setChangeConfirmation({ isOpen: false, data: null })
-  }, [changeConfirmation.data, onBookingUpdate])
-
-  const handleCancelChange = useCallback(() => {
-    setChangeConfirmation({ isOpen: false, data: null })
+  const handleResourceContextMenuClose = useCallback(() => {
+    setResourceContextMenu({ isOpen: false, position: { x: 0, y: 0 }, resource: null })
   }, [])
 
   // ─── Split / check-in handlers ────────────────────────────────────────────
@@ -348,24 +213,8 @@ const NewVirtualizedContainer = ({
     const booking2 = { ...originalBooking, startDate: dayjs(splitDate).add(1, 'day').format('YYYY-MM-DD'), endDate: originalBooking.endDate, backColor: '#5BCAC8' }
     onBookingUpdate?.(booking2)
     onBookingCreate?.(booking1)
-    setSplitModalOpen(false)
-    setBookingToSplit(null)
-  }, [onBookingUpdate, onBookingCreate])
-
-  const handleSkipCheckIn = useCallback(() => {
-    setSkipCheckInModalOpen(false)
-    setBookingToSkip(null)
-  }, [])
-
-  const handleCheckIn = useCallback(() => {
-    setCheckInModalOpen(false)
-    setBookingToCheckIn(null)
-  }, [])
-
-  const handleCancelCheckIn = useCallback(() => {
-    setCancelCheckInModalOpen(false)
-    setBookingToCancel(null)
-  }, [])
+    closeModal()
+  }, [onBookingUpdate, onBookingCreate, closeModal])
 
   // ─── Expand / collapse ────────────────────────────────────────────────────
   const handleToggleExpand = useCallback((parentId) => {
@@ -374,19 +223,6 @@ const NewVirtualizedContainer = ({
     )
     onResourcesChange?.(updated)
   }, [resources, onResourcesChange])
-
-  // ─── Selected resource for CreateBookingModal ─────────────────────────────
-  const selectedResource = useMemo(() => {
-    if (!selection) return null
-    const visibleRow = visibleRows.find(r => r.id === selection.resourceId)
-    if (visibleRow) return visibleRow
-    for (const parent of resources) {
-      if (parent.id === selection.resourceId) return parent
-      const child = (parent.children || []).find(c => c.id === selection.resourceId)
-      if (child) return child
-    }
-    return null
-  }, [selection, visibleRows, resources])
 
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
@@ -437,75 +273,27 @@ const NewVirtualizedContainer = ({
             const row = visibleRows[virtualRow.index]
             if (!row) return null
             return (
-              <div
+              <SchedulerRow
                 key={virtualRow.key}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: virtualRow.size,
-                  transform: `translateY(${virtualRow.start}px)`,
-                }}
-              >
-                <div className="flex border-b border-gray-200" style={{ height: '100%' }}>
-                  {/*
-                    Resource label cell.
-                    sticky left: stays visible when scrolling horizontally.
-                    z-30 keeps it above booking blocks (z-20) in the timeline cell.
-                  */}
-                  <div
-                    className={`w-64 min-w-64 sticky left-0 z-30 border-r border-gray-200 flex items-center hover:bg-gray-50 ${
-                      row.type === 'parent'
-                        ? 'font-semibold bg-gray-100'
-                        : 'pl-8 text-gray-700 bg-white'
-                    }`}
-                    {...(row.type === 'child' && { onContextMenu: (e) => handleResourceRightClick(row, e) })}
-                  >
-                    {row.type === 'parent' && (
-                      <button
-                        onClick={(e) => { e.stopPropagation(); handleToggleExpand(row.id) }}
-                        className="mr-2 p-1 hover:bg-gray-200 rounded shrink-0"
-                      >
-                        <svg
-                          className={`w-4 h-4 text-gray-600 transform ${row.expanded ? 'rotate-90' : ''}`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
-                    )}
-                    {row.type === 'child' && <span className="w-6 shrink-0" />}
-                    <span className="flex-1 truncate text-sm">{row.name}</span>
-                  </div>
-
-                  {/*
-                    Timeline cell — date cells + booking blocks for this row.
-                    ResourceRow handles its own internal layout (DateCell grid + BookingBlock overlays).
-                  */}
-                  <div className="relative" style={{ width: dates.length * cellWidth }}>
-                    <ResourceRow
-                      resource={row}
-                      dates={dates}
-                      dateIndexMap={dateIndexMap}
-                      resourceBookings={bookingsByResourceId.get(String(row.id)) || []}
-                      selection={selection}
-                      dragState={dragState}
-                      availabilityData={availabilityByResource}
-                      availabilityByParent={availabilityByParent}
-                      onCellMouseDown={handleCellMouseDown}
-                      onCellMouseEnter={handleCellMouseEnter}
-                      onBookingClick={handleBookingClick}
-                      onBookingRightClick={handleBookingRightClick}
-                      onBookingDragStart={handleBookingDragStart}
-                      cellWidth={cellWidth}
-                      rowHeight={rowHeight}
-                    />
-                  </div>
-                </div>
-              </div>
+                virtualRow={virtualRow}
+                row={row}
+                dates={dates}
+                dateIndexMap={dateIndexMap}
+                bookingsByResourceId={bookingsByResourceId}
+                selection={selection}
+                dragState={dragState}
+                availabilityByResource={availabilityByResource}
+                availabilityByParent={availabilityByParent}
+                cellWidth={cellWidth}
+                rowHeight={rowHeight}
+                onResourceRightClick={handleResourceRightClick}
+                onToggleExpand={handleToggleExpand}
+                onCellMouseDown={handleCellMouseDown}
+                onCellMouseEnter={handleCellMouseEnter}
+                onBookingClick={handleBookingClick}
+                onBookingRightClick={handleBookingRightClick}
+                onBookingDragStart={handleBookingDragStart}
+              />
             )
           })}
         </div>
@@ -513,119 +301,29 @@ const NewVirtualizedContainer = ({
       </div>
     </div>
 
-      {/* ── Modals (identical to VirtualScheduler) ──────────────────────── */}
-      {modalOpen && (
-        <Suspense fallback={null}>
-          <CreateBookingModal
-            isOpen={modalOpen}
-            selection={selection}
-            resource={selectedResource}
-            onClose={handleModalClose}
-            onConfirm={handleBookingConfirm}
-          />
-        </Suspense>
-      )}
-
-      {detailsModalOpen && (
-        <Suspense fallback={null}>
-          <BookingDetailsModal
-            isOpen={detailsModalOpen}
-            booking={selectedBooking}
-            onClose={handleDetailsModalClose}
-            initialTab={detailsModalInitialTab}
-            onCancelBooking={(booking) => {
-              setBookingToCancel(booking)
-              setCancelCheckInModalOpen(true)
-              setDetailsModalOpen(false)
-            }}
-            onOpenCheckInModal={(booking) => {
-              setBookingToCheckIn(booking)
-              setCheckInModalOpen(true)
-            }}
-          />
-        </Suspense>
-      )}
-
-      {contextMenu.isOpen && (
-        <Suspense fallback={null}>
-          <BookingContextMenu
-            isOpen={contextMenu.isOpen}
-            position={contextMenu.position}
-            onClose={() => setContextMenu({ isOpen: false, position: { x: 0, y: 0 }, booking: null })}
-            onAction={handleContextMenuAction}
-          />
-        </Suspense>
-      )}
-
-      {resourceContextMenu.isOpen && (
-        <Suspense fallback={null}>
-          <ResourceContextMenu
-            isOpen={resourceContextMenu.isOpen}
-            position={resourceContextMenu.position}
-            resource={resourceContextMenu.resource}
-            onClose={() => setResourceContextMenu({ isOpen: false, position: { x: 0, y: 0 }, resource: null })}
-            onAction={handleResourceContextMenuAction}
-          />
-        </Suspense>
-      )}
-
-      {changeConfirmation.isOpen && (
-        <Suspense fallback={null}>
-          <BookingChangeConfirmModal
-            isOpen={changeConfirmation.isOpen}
-            changeData={changeConfirmation.data}
-            onConfirm={handleConfirmChange}
-            onCancel={handleCancelChange}
-          />
-        </Suspense>
-      )}
-
-      {splitModalOpen && (
-        <Suspense fallback={null}>
-          <SplitBookingModal
-            isOpen={splitModalOpen}
-            booking={bookingToSplit}
-            resources={resources}
-            onSplit={handleSplitBooking}
-            onClose={() => { setSplitModalOpen(false); setBookingToSplit(null) }}
-          />
-        </Suspense>
-      )}
-
-      {skipCheckInModalOpen && (
-        <Suspense fallback={null}>
-          <SkipCheckInModal
-            isOpen={skipCheckInModalOpen}
-            booking={bookingToSkip}
-            resources={resources}
-            onSkip={handleSkipCheckIn}
-            onClose={() => { setSkipCheckInModalOpen(false); setBookingToSkip(null) }}
-          />
-        </Suspense>
-      )}
-
-      {checkInModalOpen && (
-        <Suspense fallback={null}>
-          <CheckInModal
-            isOpen={checkInModalOpen}
-            booking={bookingToCheckIn}
-            onCheckIn={handleCheckIn}
-            onClose={() => { setCheckInModalOpen(false); setBookingToCheckIn(null) }}
-          />
-        </Suspense>
-      )}
-
-      {cancelCheckInModalOpen && (
-        <Suspense fallback={null}>
-          <CancelCheckInModal
-            isOpen={cancelCheckInModalOpen}
-            booking={bookingToCancel}
-            resources={resources}
-            onCancel={handleCancelCheckIn}
-            onClose={() => { setCancelCheckInModalOpen(false); setBookingToCancel(null) }}
-          />
-        </Suspense>
-      )}
+      {/* ── All overlays: modals + context menus ────────────────────────── */}
+      <ModalManager
+        createBookingOpen={modalOpen}
+        selection={selection}
+        selectedResource={selectedResource}
+        onCreateBookingClose={handleModalClose}
+        onCreateBookingConfirm={handleBookingConfirm}
+        activeModal={activeModal}
+        openModal={openModal}
+        closeModal={closeModal}
+        onDetailsClose={handleDetailsModalClose}
+        onSplitBooking={handleSplitBooking}
+        contextMenu={contextMenu}
+        onContextMenuClose={handleContextMenuClose}
+        onContextMenuAction={handleContextMenuAction}
+        resourceContextMenu={resourceContextMenu}
+        onResourceContextMenuClose={handleResourceContextMenuClose}
+        onResourceContextMenuAction={handleResourceContextMenuAction}
+        changeConfirmation={changeConfirmation}
+        onConfirmChange={handleConfirmChange}
+        onCancelChange={handleCancelChange}
+        resources={resources}
+      />
     </>
   )
 }

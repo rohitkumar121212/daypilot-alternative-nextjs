@@ -1,30 +1,30 @@
 'use client';
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import dayjs from 'dayjs';
 import VirtualScheduler from './VirtualScheduler/VirtualScheduler';
 import NewVirtualizedContainer from './VirtualScheduler/NewVirtualizedContainer';
 import FilterContainer from './Filter/FilterContainer';
-
-// Toggle this to test the new single-container approach vs the current two-pane approach.
-// Once NewVirtualizedContainer is confirmed working, delete VirtualScheduler and flip this to false.
-const USE_NEW_CONTAINER = true
-import { detectOverbookings } from '@/utils/overbookingUtils';
-import { apiFetch } from '@/utils/apiRequest';
-import { proxyFetch } from '@/utils/proxyFetch';
 import { DataRefreshProvider } from '@/contexts/DataRefreshContext';
+import { useSchedulerData } from '@/hooks/useSchedulerData';
+
+// Toggle to test the new single-container approach. Delete VirtualScheduler and remove this flag once confirmed.
+const USE_NEW_CONTAINER = true
 
 const ReservationChart = ({ className = '', style = {} }: { className?: string; style?: React.CSSProperties }) => {
-  const [resources, setResources] = useState([])
-  const [bookings, setBookings] = useState([])
-  const [collaborators, setCollaborators] = useState([])
-  const [availability, setAvailability] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [bookingIdFilter, setBookingIdFilter] = useState('')
   const [enquiryIdFilter, setEnquiryIdFilter] = useState('')
   const [startDate, setStartDate] = useState(dayjs().format('YYYY-MM-DD'))
   const [daysToShow, setDaysToShow] = useState(30)
 
-  const [isLoading, setIsLoading] = useState(true)
+  const {
+    resources, setResources,
+    bookings, setBookings,
+    collaborators,
+    availability,
+    isLoading,
+    refresh,
+  } = useSchedulerData({ startDate, daysToShow })
 
   /* =========================
      Filter resources by search term, booking ID, and enquiry ID
@@ -114,96 +114,25 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
   /* =========================
      Create booking (local)
   ========================= */
-  const handleBookingCreate = (bookingData) => {
+  const handleBookingCreate = useCallback((bookingData: any) => {
     const newBooking = {
       id: bookings.length + 1,
       ...bookingData
     }
     setBookings(prev => [...prev, newBooking])
-  }
+  }, [bookings.length, setBookings])
 
   /* =========================
      Update booking on drag and drop
   ========================= */
-  const handleBookingUpdate = (updatedBooking) => {
-    setBookings(prev => prev.map(booking => 
+  const handleBookingUpdate = useCallback((updatedBooking: any) => {
+    setBookings(prev => prev.map(booking =>
       booking.id === updatedBooking.id ? updatedBooking : booking
     ))
-  }
+  }, [setBookings])
 
-  // Single source of truth for all data fetching.
-  // isCancelled is a getter so both useEffect cleanup and unmount can signal early exit.
-  const fetchSchedulerData = useCallback(async (isCancelled: () => boolean) => {
-    const endDate = dayjs(startDate).add(daysToShow, 'day').format('YYYY-MM-DD')
-
-    const resourcesUrl = `https://aperfectstay.ai/api/aps-pms/apts/private`
-    const bookingsUrl = `https://aperfectstay.ai/api/aps-pms/reservations/private?start=${startDate}&end=${endDate}`
-    const availabilityUrl = `https://aperfectstay.ai/api/aps-pms/buildings/avail/private?start=${startDate}&end=${endDate}`
-    const collaboratorUrl = 'https://aperfectstay.ai/aps-api/v1/collaborators/'
-
-    // ⚡ Fast requests first — show data before availability loads
-    const [resourcesJson, bookingsJson, collaboratorJson] = await Promise.all([
-      apiFetch(resourcesUrl),
-      apiFetch(bookingsUrl),
-      apiFetch(collaboratorUrl)
-    ])
-
-    if (isCancelled()) return
-
-    const normalizedBookingData =
-      bookingsJson.data.reservations?.map((parent: any) => ({
-        ...parent,
-        startDate: dayjs(parent.start).format('YYYY-MM-DD'),
-        endDate: dayjs(parent.end).format('YYYY-MM-DD'),
-        name: 'Room Booking',
-        notes: 'Sample booking for Room-1',
-        resourceId: parent?.booking_details?.apartment_id
-      })).filter((booking: any) => {
-        const start = dayjs(booking.startDate)
-        const end = dayjs(booking.endDate)
-        return start.isValid() && end.isValid() && !end.isBefore(start)
-      }) || []
-
-    const uniqueBookings = Array.from(
-      new Map(normalizedBookingData.map((b: any) => [b.id || b.booking_id, b])).values()
-    )
-
-    const bookingsWithOverbooking = detectOverbookings(uniqueBookings)
-
-    setCollaborators(collaboratorJson?.data || [])
-    setResources(resourcesJson?.data?.apt_build_details || [])
-    setBookings(bookingsWithOverbooking)
-    setIsLoading(false)
-
-    // 🔄 Fetch availability in background after main data is shown
-    apiFetch(availabilityUrl)
-      .then(availabilityJson => {
-        if (!isCancelled()) setAvailability(availabilityJson?.data || null)
-      })
-      .catch(err => console.error('Failed to load availability data', err))
-  }, [startDate, daysToShow])
-
-  useEffect(() => {
-    let cancelled = false
-    setIsLoading(true)
-    fetchSchedulerData(() => cancelled).catch(err => {
-      if (!cancelled) {
-        console.error('Failed to load scheduler data', err)
-        setIsLoading(false)
-      }
-    })
-    return () => { cancelled = true }
-  }, [fetchSchedulerData])
-
-  const handleRefreshData = useCallback(async () => {
-    setIsLoading(true)
-    await fetchSchedulerData(() => false).catch(err => {
-      console.error('Failed to load scheduler data', err)
-      setIsLoading(false)
-    })
-  }, [fetchSchedulerData])
     return (
-        <DataRefreshProvider onRefresh={handleRefreshData} isRefreshing={isLoading}>
+        <DataRefreshProvider onRefresh={refresh} isRefreshing={isLoading}>
             <div className={`w-full h-full overflow-hidden flex flex-col relative ${className}`} style={style}>
                 {isLoading && (
                   <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-50">
