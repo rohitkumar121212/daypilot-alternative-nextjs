@@ -1,14 +1,13 @@
 import { memo } from 'react'
 import { formatDateHeader } from './utils/dateUtils'
 
-/**
- * DateHeader - Displays date information in the timeline header
- * @param {Object} props
- * @param {string} props.date - Date string in YYYY-MM-DD format
- * @param {number} props.cellWidth - Width of each date cell in pixels
- * @param {Object} props.totalAvailability - Total availability object with available and total
- */
-const DateHeader = memo(({ date, cellWidth = 100, totalAvailability = null }) => {
+interface DateHeaderProps {
+  date: string
+  cellWidth?: number
+  totalAvailability?: { available: number; total: number } | null
+}
+
+const DateHeader = memo(({ date, cellWidth = 100, totalAvailability = null }: DateHeaderProps) => {
   const formatted = formatDateHeader(date)
 
   const occupancyRatio =

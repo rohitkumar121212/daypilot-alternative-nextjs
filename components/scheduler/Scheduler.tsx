@@ -87,7 +87,7 @@ const Scheduler = ({
     return resources.flatMap(parent => {
       const parentRow = { ...parent, type: 'parent', isParent: true }
       if (!parent.expanded) return [parentRow]
-      const childRows = (parent.children || []).map(child => ({
+      const childRows = (parent.children || []).map((child: any) => ({
         ...child,
         parentId: parent.id,
         parentName: parent.name,
@@ -125,11 +125,12 @@ const Scheduler = ({
   const { selection, handleCellMouseDown, handleCellMouseEnter } = useSelectionState({
     visibleRows,
     dates,
+    bookingsByResourceId,
     onTimeRangeSelect,
   })
 
   // ─── Expand / collapse ────────────────────────────────────────────────────
-  const handleToggleExpand = useCallback((parentId) => {
+  const handleToggleExpand = useCallback((parentId: any) => {
     const updated = resources.map(parent =>
       parent.id === parentId ? { ...parent, expanded: !parent.expanded } : parent
     )

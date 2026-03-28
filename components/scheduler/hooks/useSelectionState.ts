@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 interface UseSelectionStateParams {
   visibleRows: any[]
   dates: string[]
+  bookingsByResourceId?: Map<string, any[]>
   /** Called when the user finishes a drag-select. Consumer decides what to do (e.g. open a modal). */
   onTimeRangeSelect?: (selection: { resourceId: any; startDate: string; endDate: string }) => void
 }
@@ -31,6 +32,7 @@ interface UseSelectionStateResult {
 export function useSelectionState({
   visibleRows,
   dates,
+  bookingsByResourceId,
   onTimeRangeSelect,
 }: UseSelectionStateParams): UseSelectionStateResult {
 
@@ -75,13 +77,24 @@ export function useSelectionState({
       const finalStartDate = selection.startDate <= selection.endDate ? selection.startDate : selection.endDate
       const finalEndDate = selection.startDate <= selection.endDate ? selection.endDate : selection.startDate
 
-      onTimeRangeSelect?.({ ...selection, startDate: finalStartDate, endDate: finalEndDate })
+      // Block selection if it overlaps an existing booking in this row.
+      // Hotel convention: checkout day is free, so overlap = bookingStart < selectionEnd && bookingEnd > selectionStart
+      const resourceBookings = bookingsByResourceId?.get(String(selection.resourceId)) || []
+      const hasConflict = resourceBookings.some(booking => {
+        const bookingStart = booking.startDate || booking.start
+        const bookingEnd = booking.endDate || booking.end
+        return bookingStart < finalEndDate && bookingEnd > finalStartDate
+      })
+
       setSelection(null)
+      if (!hasConflict) {
+        onTimeRangeSelect?.({ ...selection, startDate: finalStartDate, endDate: finalEndDate })
+      }
     }
 
     window.addEventListener('mouseup', handleMouseUp)
     return () => window.removeEventListener('mouseup', handleMouseUp)
-  }, [isSelecting, selection, onTimeRangeSelect])
+  }, [isSelecting, selection, bookingsByResourceId, onTimeRangeSelect])
 
   return { selection, handleCellMouseDown, handleCellMouseEnter }
 }
