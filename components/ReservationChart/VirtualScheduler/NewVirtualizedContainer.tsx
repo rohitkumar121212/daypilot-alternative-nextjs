@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useMemo, useRef, useEffect, Suspense } from 'react'
+import { useVirtualizer } from '@tanstack/react-virtual'
 import dayjs from 'dayjs'
 import dynamic from 'next/dynamic'
 
@@ -106,34 +107,10 @@ const NewVirtualizedContainer = ({
   const startDateRef = useRef(null)
   const startResourceIdRef = useRef(null)
 
-  // ─── Single scroll container (replaces two panes + sync) ──────────────────
-  // wrapperRef measures the available viewport height (sized by the parent).
-  // scrollContainerRef gets an explicit pixel height from that measurement so
-  // overflow-auto always clips content correctly — h-full alone can fail in
-  // flex contexts by expanding the element to fit its content, which defeats
-  // virtualization (ResizeObserver would then report the full content height,
-  // containerHeight becomes huge, and every row becomes "visible").
-  const wrapperRef = useRef(null)
+  // ─── Single scroll container ───────────────────────────────────────────────
+  // TanStack Virtual reads the scroll element directly — no manual scrollTop
+  // tracking, no ResizeObserver, no spacer math needed.
   const scrollContainerRef = useRef(null)
-  const [scrollTop, setScrollTop] = useState(0)
-  const [containerHeight, setContainerHeight] = useState(600)
-
-  useEffect(() => {
-    const el = wrapperRef.current
-    if (!el) return
-
-    const observer = new ResizeObserver(entries => {
-      const height = entries[0]?.contentRect.height
-      if (height) setContainerHeight(height)
-    })
-
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
-
-  const handleScroll = useCallback((e) => {
-    setScrollTop(e.currentTarget.scrollTop)
-  }, [])
 
   // ─── Flatten resources into rows ──────────────────────────────────────────
   const visibleRows = useMemo(() => {
@@ -166,55 +143,18 @@ const NewVirtualizedContainer = ({
     return heightsMap
   }, [visibleRows, bookingsByResourceId, rowHeight])
 
-  // ─── Cumulative positions ─────────────────────────────────────────────────
-  const rowPositions = useMemo(() => {
-    const positions = []
-    let cumulative = 0
-    visibleRows.forEach(row => {
-      const h = rowHeightsMap.get(row.id)
-      positions.push({ id: row.id, top: cumulative, height: h })
-      cumulative += h
-    })
-    return positions
-  }, [visibleRows, rowHeightsMap])
-
-  const totalHeight = rowPositions.length > 0
-    ? rowPositions[rowPositions.length - 1].top + rowPositions[rowPositions.length - 1].height
-    : 0
-
-  // ─── Spacer-based virtual scroll ──────────────────────────────────────────
-  // Instead of absolute-positioning every row, we render only visible rows
-  // between a top spacer div and a bottom spacer div. This keeps rows in normal
-  // document flow so CSS `position: sticky` works on the resource label column.
-  const { visibleItems, topSpacerHeight, bottomSpacerHeight } = useMemo(() => {
-    if (rowPositions.length === 0) {
-      return { visibleItems: [], topSpacerHeight: 0, bottomSpacerHeight: 0 }
-    }
-
-    let firstVisible = -1
-    let lastVisible = -1
-
-    for (let i = 0; i < rowPositions.length; i++) {
-      const { top, height } = rowPositions[i]
-      if (top + height > scrollTop && firstVisible === -1) firstVisible = i
-      if (top < scrollTop + containerHeight) lastVisible = i
-    }
-
-    if (firstVisible === -1) {
-      return { visibleItems: [], topSpacerHeight: totalHeight, bottomSpacerHeight: 0 }
-    }
-
-    const items = []
-    for (let i = firstVisible; i <= lastVisible; i++) {
-      items.push({ ...visibleRows[i], ...rowPositions[i] })
-    }
-
-    const topSpacer = rowPositions[firstVisible].top
-    const lastPos = rowPositions[lastVisible]
-    const bottomSpacer = Math.max(0, totalHeight - (lastPos.top + lastPos.height))
-
-    return { visibleItems: items, topSpacerHeight: topSpacer, bottomSpacerHeight: bottomSpacer }
-  }, [rowPositions, visibleRows, scrollTop, containerHeight, totalHeight])
+  // ─── TanStack Virtual — vertical row virtualization only ──────────────────
+  // Virtualizes ROW rendering (vertical axis) only.
+  // Date columns are never virtualized — all dates always exist in the DOM so
+  // booking blocks that span many days always render at full width.
+  // overscan: 5 renders 5 extra rows above/below the viewport, eliminating
+  // blank content during fast scrolling (the main failure of DIY virtualization).
+  const rowVirtualizer = useVirtualizer({
+    count: visibleRows.length,
+    getScrollElement: () => scrollContainerRef.current,
+    estimateSize: (index) => rowHeightsMap.get(visibleRows[index]?.id) ?? rowHeight,
+    overscan: 5,
+  })
 
   // ─── Selection handlers (identical to VirtualScheduler) ───────────────────
   const handleCellMouseDown = useCallback((date, resourceId, e) => {
@@ -443,116 +383,127 @@ const NewVirtualizedContainer = ({
 
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
-    <div ref={wrapperRef} style={{ width: '100%', height }} className="bg-white select-none">
+    /*
+      SINGLE scroll container — handles both horizontal and vertical scroll.
+      height prop controls the component's visible area (e.g. "80vh", "600px").
+      TanStack Virtual reads scrollTop directly from this element via getScrollElement.
+    */
+    <>
+    <div
+      ref={scrollContainerRef}
+      style={{ width: '100%', height, overflow: 'auto' }}
+      className="bg-white select-none"
+    >
+      {/* Inner wrapper sets the total scrollable width */}
+      <div style={{ minWidth: 256 + dates.length * cellWidth }}>
 
-      {/*
-        SINGLE scroll container — handles both horizontal and vertical scroll.
-        No JS sync needed. CSS sticky handles the frozen header and resource column.
-        Height is set explicitly in pixels (not h-full) so overflow-auto reliably
-        clips the content and virtualization works correctly.
-      */}
-      <div
-        ref={scrollContainerRef}
-        className="w-full overflow-auto"
-        style={{ height: containerHeight }}
-        onScroll={handleScroll}
-      >
-        {/* Inner wrapper sets the total scrollable width */}
-        <div style={{ minWidth: 256 + dates.length * cellWidth }}>
-
-          {/* ── Sticky date header row ─────────────────────────────────────
-              sticky top: stays visible when scrolling vertically
-              The "Apartments" corner cell is also sticky left so it stays
-              visible when scrolling horizontally.
-          */}
-          <div className="sticky top-0 z-30 flex bg-gray-50 border-b border-gray-300 shadow-sm">
-            <div className="w-64 min-w-64 sticky left-0 z-40 bg-gray-50 border-r border-gray-200 flex items-center justify-center font-semibold text-gray-700">
-              Apartments
-            </div>
-            <div className="flex">
-              {dates.map(date => (
-                <DateHeader
-                  key={date}
-                  date={date}
-                  cellWidth={cellWidth}
-                  totalAvailability={totalAvailabilityByDate[date] || null}
-                />
-              ))}
-            </div>
+        {/* ── Sticky date header row ──────────────────────────────────────
+            sticky top: stays visible when scrolling vertically.
+            The "Apartments" corner cell is also sticky left so it stays
+            visible when scrolling horizontally.
+        */}
+        <div className="sticky top-0 z-30 flex bg-gray-50 border-b border-gray-300 shadow-sm">
+          <div className="w-64 min-w-64 sticky left-0 z-40 bg-gray-50 border-r border-gray-200 flex items-center justify-center font-semibold text-gray-700">
+            Apartments
           </div>
-
-          {/* ── Top spacer — represents rows scrolled above the viewport ─── */}
-          {topSpacerHeight > 0 && <div style={{ height: topSpacerHeight }} aria-hidden="true" />}
-
-          {/* ── Visible rows ──────────────────────────────────────────────── */}
-          {visibleItems.map(row => (
-            <div
-              key={row.id}
-              className="flex border-b border-gray-200"
-              style={{ height: row.height }}
-            >
-              {/*
-                Resource label cell.
-                sticky left: stays visible when scrolling horizontally.
-                z-20 keeps it above date cells but below the header (z-30/40).
-              */}
-              <div
-                className={`w-64 min-w-64 sticky left-0 z-30 border-r border-gray-200 flex items-center hover:bg-gray-50 ${
-                  row.type === 'parent'
-                    ? 'font-semibold bg-gray-100'
-                    : 'pl-8 text-gray-700 bg-white'
-                }`}
-                {...(row.type === 'child' && { onContextMenu: (e) => handleResourceRightClick(row, e) })}
-              >
-                {row.type === 'parent' && (
-                  <button
-                    onClick={(e) => { e.stopPropagation(); handleToggleExpand(row.id) }}
-                    className="mr-2 p-1 hover:bg-gray-200 rounded shrink-0"
-                  >
-                    <svg
-                      className={`w-4 h-4 text-gray-600 transform ${row.expanded ? 'rotate-90' : ''}`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
-                )}
-                {row.type === 'child' && <span className="w-6 shrink-0" />}
-                <span className="flex-1 truncate text-sm">{row.name}</span>
-              </div>
-
-              {/*
-                Timeline cell — date cells + booking blocks for this row.
-                ResourceRow handles its own internal layout (DateCell grid + BookingBlock overlays).
-              */}
-              <div className="relative" style={{ width: dates.length * cellWidth }}>
-                <ResourceRow
-                  resource={row}
-                  dates={dates}
-                  resourceBookings={bookingsByResourceId.get(String(row.id)) || []}
-                  selection={selection}
-                  dragState={dragState}
-                  availabilityData={availabilityByResource}
-                  availabilityByParent={availabilityByParent}
-                  onCellMouseDown={handleCellMouseDown}
-                  onCellMouseEnter={handleCellMouseEnter}
-                  onBookingClick={handleBookingClick}
-                  onBookingRightClick={handleBookingRightClick}
-                  onBookingDragStart={handleBookingDragStart}
-                  cellWidth={cellWidth}
-                  rowHeight={rowHeight}
-                />
-              </div>
-            </div>
-          ))}
-
-          {/* ── Bottom spacer — represents rows below the viewport ─────── */}
-          {bottomSpacerHeight > 0 && <div style={{ height: bottomSpacerHeight }} aria-hidden="true" />}
-
+          <div className="flex">
+            {dates.map(date => (
+              <DateHeader
+                key={date}
+                date={date}
+                cellWidth={cellWidth}
+                totalAvailability={totalAvailabilityByDate[date] || null}
+              />
+            ))}
+          </div>
         </div>
+
+        {/*
+          TanStack Virtual row container.
+          getTotalSize() sets the container height to the sum of all row heights
+          so the scrollbar reflects the full dataset even though only a subset
+          of rows is rendered. Each virtual row is absolutely positioned via
+          transform: translateY so the browser never has to re-flow the whole list.
+        */}
+        <div style={{ height: rowVirtualizer.getTotalSize(), position: 'relative' }}>
+          {rowVirtualizer.getVirtualItems().map(virtualRow => {
+            const row = visibleRows[virtualRow.index]
+            if (!row) return null
+            return (
+              <div
+                key={virtualRow.key}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: virtualRow.size,
+                  transform: `translateY(${virtualRow.start}px)`,
+                }}
+              >
+                <div className="flex border-b border-gray-200" style={{ height: '100%' }}>
+                  {/*
+                    Resource label cell.
+                    sticky left: stays visible when scrolling horizontally.
+                    z-30 keeps it above booking blocks (z-20) in the timeline cell.
+                  */}
+                  <div
+                    className={`w-64 min-w-64 sticky left-0 z-30 border-r border-gray-200 flex items-center hover:bg-gray-50 ${
+                      row.type === 'parent'
+                        ? 'font-semibold bg-gray-100'
+                        : 'pl-8 text-gray-700 bg-white'
+                    }`}
+                    {...(row.type === 'child' && { onContextMenu: (e) => handleResourceRightClick(row, e) })}
+                  >
+                    {row.type === 'parent' && (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleToggleExpand(row.id) }}
+                        className="mr-2 p-1 hover:bg-gray-200 rounded shrink-0"
+                      >
+                        <svg
+                          className={`w-4 h-4 text-gray-600 transform ${row.expanded ? 'rotate-90' : ''}`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    )}
+                    {row.type === 'child' && <span className="w-6 shrink-0" />}
+                    <span className="flex-1 truncate text-sm">{row.name}</span>
+                  </div>
+
+                  {/*
+                    Timeline cell — date cells + booking blocks for this row.
+                    ResourceRow handles its own internal layout (DateCell grid + BookingBlock overlays).
+                  */}
+                  <div className="relative" style={{ width: dates.length * cellWidth }}>
+                    <ResourceRow
+                      resource={row}
+                      dates={dates}
+                      resourceBookings={bookingsByResourceId.get(String(row.id)) || []}
+                      selection={selection}
+                      dragState={dragState}
+                      availabilityData={availabilityByResource}
+                      availabilityByParent={availabilityByParent}
+                      onCellMouseDown={handleCellMouseDown}
+                      onCellMouseEnter={handleCellMouseEnter}
+                      onBookingClick={handleBookingClick}
+                      onBookingRightClick={handleBookingRightClick}
+                      onBookingDragStart={handleBookingDragStart}
+                      cellWidth={cellWidth}
+                      rowHeight={rowHeight}
+                    />
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
       </div>
+    </div>
 
       {/* ── Modals (identical to VirtualScheduler) ──────────────────────── */}
       {modalOpen && (
@@ -667,7 +618,7 @@ const NewVirtualizedContainer = ({
           />
         </Suspense>
       )}
-    </div>
+    </>
   )
 }
 
