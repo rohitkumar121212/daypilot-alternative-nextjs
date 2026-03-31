@@ -40,7 +40,7 @@ const FilterContainer = ({ onSearchChange, onBookingIdChange, onDateChange, onDa
             </div>
           )}
           
-          {(user?.email==='stay@thesqua.re') && (
+          {(user?.admin_details?.email==='stay@thesqua.re') && (
             <div className='flex flex-row gap-2 text-sm'>
               <a href="https://aperfectstay.ai/aps-redis-memorystore" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
                 Cache |
