@@ -128,10 +128,10 @@ const CancelCheckInModal = ({ isOpen, booking, resources, onCancel, onClose }) =
             }`}
           >
             {isLoading ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              <div className="flex items-center justify-center">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
                 Canceling...
-              </>
+              </div>
             ) : (
               'Cancel Check-in'
             )}
