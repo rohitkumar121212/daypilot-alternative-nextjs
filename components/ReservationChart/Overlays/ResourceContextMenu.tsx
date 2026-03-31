@@ -1,4 +1,11 @@
 import { apiFetch } from '@/utils/apiRequest'
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuSeparator,
+} from '@/components/ui/context-menu'
 
 const ResourceContextMenu = ({ isOpen, position, resource, onClose, onAction }) => {
   if (!isOpen) return null
@@ -50,12 +57,48 @@ const ResourceContextMenu = ({ isOpen, position, resource, onClose, onAction }) 
 
   const menuItems = getMenuItems()
 
+  // Calculate position with collision detection
+  const getAdjustedPosition = () => {
+    const menuWidth = 180
+    const menuHeight = menuItems.length * 40 + 60 // Approximate height
+    const viewportWidth = window.innerWidth
+    const viewportHeight = window.innerHeight
+    const padding = 20
+
+    let adjustedX = position.x
+    let adjustedY = position.y
+
+    // Check right edge collision
+    if (position.x + menuWidth + padding > viewportWidth) {
+      adjustedX = viewportWidth - menuWidth - padding
+    }
+
+    // Check left edge collision
+    if (adjustedX < padding) {
+      adjustedX = padding
+    }
+
+    // Check bottom edge collision
+    if (position.y + menuHeight + padding > viewportHeight) {
+      adjustedY = viewportHeight - menuHeight - padding
+    }
+
+    // Check top edge collision
+    if (adjustedY < padding) {
+      adjustedY = padding
+    }
+
+    return { x: adjustedX, y: adjustedY }
+  }
+
+  const adjustedPosition = getAdjustedPosition()
+
   return (
     <>
       <div className="fixed inset-0 z-40" onClick={onClose} />
       <div 
         className="fixed bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50 min-w-[180px]"
-        style={{ top: position.y, left: position.x }}
+        style={{ top: adjustedPosition.y, left: adjustedPosition.x }}
       >
         <div className="px-3 py-2 border-b border-gray-100 bg-gray-50">
           <span className="text-xs font-medium text-gray-600">
@@ -65,7 +108,14 @@ const ResourceContextMenu = ({ isOpen, position, resource, onClose, onAction }) 
         {menuItems.map(item => (
           <button
             key={item.id}
-            onClick={() => statusActions.includes(item.id) ? handleStatusChange(item.id) : onAction(item.id)}
+            onClick={() => {
+              if (statusActions.includes(item.id)) {
+                handleStatusChange(item.id)
+              } else {
+                onAction(item.id)
+              }
+              onClose()
+            }}
             className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center gap-2"
           >
             <span>{item.icon}</span>
