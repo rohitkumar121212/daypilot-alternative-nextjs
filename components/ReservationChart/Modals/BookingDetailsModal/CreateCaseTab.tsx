@@ -180,7 +180,8 @@ const CreateCaseTab = ({ reservationConstants, bookingDetails, assignToUsers, on
           error={errors.priority}
           required
         />
-        <FloatingDropdown 
+        {
+          assignToUsers && assignToUsers.length > 0 && (<FloatingDropdown 
           label="Assign Case To" 
           options={assignToUsers}
           value={formData.assignTo}
@@ -190,7 +191,8 @@ const CreateCaseTab = ({ reservationConstants, bookingDetails, assignToUsers, on
           }}
           error={errors.assignTo}
           // required
-        />
+        />)
+        }
         <FloatingInput 
           label="Attach Image" 
           type="file" 
