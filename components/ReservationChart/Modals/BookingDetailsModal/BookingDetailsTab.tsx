@@ -4,6 +4,8 @@ import BookingNotes from '@/components/common/StringToHtml'
 import dayjs from 'dayjs'
 import { useState } from 'react'
 import CheckInModal from './CheckInModal'
+import { useUser } from '@/contexts/UserContext'
+import { useDataRefresh } from '@/contexts/DataRefreshContext'
 
 interface BookingDetailsTabProps {
   booking: any
@@ -14,13 +16,60 @@ interface BookingDetailsTabProps {
 
 
 const BookingDetailsTab = ({ booking, onCancelBooking, onClose, onOpenCheckInModal }: BookingDetailsTabProps) => {
+  const user = useUser()
+  const { refreshData } = useDataRefresh()
+  const [isConverting, setIsConverting] = useState(false)
+  
   const isTodayStart = dayjs(booking?.booking_details?.start).isSame(dayjs(), "day")
   const isTempReserve = booking?.booking_details?.booking_type === 'temp_reserve' ? true : false
   const isDoNotReserve = booking?.booking_details?.booking_type === 'do_not_reserve' ? true : false
+
+  const handleConvertToBooking = async () => {
+    if (isConverting) return
+    
+    setIsConverting(true)
+    
+    const payload = {
+      booking_id: booking?.booking_details?.booking_key,
+      response_version: 'v1'
+    }
+
+    try {
+      const isDevelopment = process.env.NODE_ENV === 'development'
+      const url = isDevelopment
+        ? '/api/proxy/convert-to-booking'
+        : 'https://aperfectstay.ai/api/aperfect-pms/convert-to-booking'
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+        credentials: 'include',
+      })
+
+      const data = await response.json()
+      
+      if (data.success) {
+        await refreshData()
+        onClose?.()
+      } else {
+        alert(data.error || 'Failed to convert to booking')
+      }
+    } catch (error) {
+      console.error('Failed to convert to booking:', error)
+      alert('An error occurred while converting to booking. Please try again.')
+    } finally {
+      setIsConverting(false)
+    }
+  }
   return (
     <div className="space-y-6">
       {/* Booking Details Section */}
       <div>
+        {console.log('bookingDetails in BookingDetailsTab:', user)}
+        {console.log('Booking details data:', booking)}
         <h3 className="text-lg font-semibold text-gray-800 mb-1 pb-2 ">Booking Details</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <FloatingInput label="Check-in" value={formatDateTime(booking?.booking_details?.start)} onChange={() => {}} readOnly />
@@ -90,10 +139,20 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose, onOpenCheckInMod
         )}
         {isTempReserve && (
           <button 
-            onClick={()=>{}}
-            className="btn btn-primary"
+            onClick={handleConvertToBooking}
+            disabled={isConverting}
+            className={`btn btn-primary ${
+              isConverting ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
-            Convert to Booking
+            {isConverting ? (
+              <div className="flex items-center justify-center">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                Converting...
+              </div>
+            ) : (
+              'Convert to Booking'
+            )}
           </button>
         )}
         <button 
