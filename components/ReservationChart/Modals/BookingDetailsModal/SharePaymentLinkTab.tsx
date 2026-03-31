@@ -5,6 +5,7 @@ import FloatingInput from '@/components/common/FloatingInput'
 import FloatingInputWithPrefix from '@/components/common/FloatingLabelInputWithPrefix'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
 import { sharePaymentLink } from '@/apiData/services/pms/booking-details-tabs'
+import LoadingOverlay from '@/components/ReservationChart/Modals/CreateBookingModal/components/LoadingOverlay'
 
 interface SharePaymentLinkTabProps {
   totalAmount?: number
@@ -35,6 +36,7 @@ const SharePaymentLinkTab = ({
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleSendLink = async() => {
     const newErrors: Record<string, string> = {}
@@ -48,6 +50,7 @@ const SharePaymentLinkTab = ({
 
     if (Object.keys(newErrors).length > 0) return
 
+    setIsLoading(true)
     console.log('Send payment link:', formData)
     try{
       const response = await sharePaymentLink({
@@ -69,12 +72,14 @@ const SharePaymentLinkTab = ({
       console.log('Payment link sent successfully:', response.data)
     } catch(error){
       console.error('Failed to send payment link:', error)
+    } finally {
+      setIsLoading(false)
     }
-    // TODO: Call API
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 relative h-full">
+      <LoadingOverlay isLoading={isLoading} />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FloatingInput 
           label="Total Amount" 
