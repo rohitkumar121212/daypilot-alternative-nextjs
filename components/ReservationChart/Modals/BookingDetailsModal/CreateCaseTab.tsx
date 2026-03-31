@@ -4,6 +4,7 @@ import { useState } from 'react'
 import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
+import LoadingOverlay from '@/components/ReservationChart/Modals/CreateBookingModal/components/LoadingOverlay'
 
 interface CreateCaseTabProps {
   reservationConstants: any,
@@ -27,6 +28,7 @@ const CreateCaseTab = ({ reservationConstants, bookingDetails, assignToUsers, on
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleCreateCase = async () => {
     const newErrors: Record<string, string> = {}
@@ -42,6 +44,8 @@ const CreateCaseTab = ({ reservationConstants, bookingDetails, assignToUsers, on
     setErrors(newErrors)
 
     if (Object.keys(newErrors).length > 0) return
+
+    setIsLoading(true)
 
     const formPayload = new FormData()
     formPayload.append('response_version', 'v1')
@@ -78,14 +82,28 @@ const CreateCaseTab = ({ reservationConstants, bookingDetails, assignToUsers, on
       console.log('Case created successfully:', data)
       
       if (data.success) {
-        alert('Case created successfully!')
-        // Reset form or close modal
+        const bookingId = data.data?.reservation_id
+        if (bookingId) {
+          window.location.href = `/aperfect-pms/booking/${bookingId}/view-details`
+        } else {
+          // onConfirm({
+          //   ...(booking || {}),
+          //   resourceId: modalData.resourceId,
+          //   startDate: modalData.startDate,
+          //   endDate: modalData.endDate,
+          //   text: formData.bookingName,
+          //   ...formData
+          // })
+          onClose()
+        }
       } else {
         alert(data.error || 'Failed to create case')
       }
     } catch (error) {
       console.error('Failed to create case:', error)
       alert('Failed to create case')
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -94,9 +112,10 @@ const CreateCaseTab = ({ reservationConstants, bookingDetails, assignToUsers, on
       setFormData({ ...formData, image: e.target.files[0] })
     }
   }
-
+  
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 relative h-full">
+      <LoadingOverlay isLoading={isLoading} />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FloatingInput 
           label="Apartment Name" 

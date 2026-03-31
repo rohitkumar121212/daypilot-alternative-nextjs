@@ -4,6 +4,7 @@ import { useState } from 'react'
 import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
+import LoadingOverlay from '@/components/ReservationChart/Modals/CreateBookingModal/components/LoadingOverlay'
 
 interface CreateTaskTabProps {
   bookingDetails?: any,
@@ -114,15 +115,8 @@ const CreateTaskTab = ({ bookingDetails, reservationConstants, onClose }: Create
   }
 
   return (
-    <div className="space-y-4 relative">
-      {isLoading && (
-        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-10 rounded-lg">
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-gray-700 font-medium">Creating task...</p>
-          </div>
-        </div>
-      )}
+    <div className="space-y-4 relative h-full">
+      <LoadingOverlay isLoading={isLoading} />
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <FloatingInput 
           label="Apartment Name" 
