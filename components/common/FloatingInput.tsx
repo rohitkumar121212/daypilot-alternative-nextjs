@@ -39,9 +39,9 @@ export function FloatingInput({
     }
     
     // Trim spaces for text inputs (but not for special types where spaces might be meaningful)
-    if (type === 'text' || type === 'email' || type === 'url') {
-      newValue = newValue.trim()
-    }
+    // if (type === 'text' || type === 'email' || type === 'url') {
+    //   newValue = newValue.trim()
+    // }
     
     // Clear email error when user is typing
     if (type === 'email') {
@@ -60,8 +60,27 @@ export function FloatingInput({
     onChange(trimmedEvent)
   }
 
-  const handleBlur = () => {
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     setIsFocused(false)
+
+
+
+  let newValue = e.target.value
+
+  // ✅ Trim only when user leaves the field
+  if (type === 'text' || type === 'email' || type === 'url') {
+    newValue = newValue.trim()
+  }
+
+  const trimmedEvent = {
+    ...e,
+    target: {
+      ...e.target,
+      value: newValue
+    }
+  } as unknown as React.ChangeEvent<HTMLInputElement>
+
+  onChange(trimmedEvent)
     
     // Validate email on blur
     if (type === 'email' && value) {
