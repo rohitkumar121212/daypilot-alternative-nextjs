@@ -76,7 +76,7 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
     { id: 'details', label: 'Booking Details', types: ['reserve', 'temp_reserve', 'do_not_reserve', 'old_reserve'] },
     { id: 'case', label: 'Create New Case', types: ['reserve', 'do_not_reserve', 'old_reserve'] },
     { id: 'task', label: 'Create New Task', types: ['reserve', 'do_not_reserve', 'old_reserve'] },
-    { id: 'payment', label: 'Add Payment', types: ['reserve', 'old_reserve'] },
+    // { id: 'payment', label: 'Add Payment', types: ['reserve', 'old_reserve'] },
     { id: 'share', label: 'Share Payment Link', types: ['reserve', 'old_reserve'] }
   ]
   
@@ -95,8 +95,8 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
         return <CreateCaseTab reservationConstants={reservationConstants} bookingDetails={booking?.booking_details} assignToUsers={assignToUsers} onClose={onClose}/>
       case 'task':
         return <CreateTaskTab reservationConstants={reservationConstants} bookingDetails={booking?.booking_details} onClose={onClose}/>
-      case 'payment':
-        return <AddPaymentTab bookingId={booking?.booking_id} onClose={onClose} reservationConstants={reservationConstants} bookingDetails={booking?.booking_details}/>
+      // case 'payment':
+      //   return <AddPaymentTab bookingId={booking?.booking_id} onClose={onClose} reservationConstants={reservationConstants} bookingDetails={booking?.booking_details}/>
       case 'share':
         return <SharePaymentLinkTab 
                   totalAmount={Number(booking?.booking_details?.price)} 

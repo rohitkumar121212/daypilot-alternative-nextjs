@@ -16,9 +16,9 @@ const HeaderNavigationList = ({ user }: HeaderNavigationListProps) => {
         { label: 'aPerfect Dashboard', url: `${baseDomain}/select_products` }
     ]
     const allNavItems = [
-        { label: 'Dashboard', hasDropdown: false },
-        { label: 'PMS', hasDropdown: false },
-        { label: 'Manage Properties', hasDropdown: false },
+        { label: 'Dashboard', hasDropdown: false, url: `${baseDomain}/perfect-property-cloud` },
+        { label: 'PMS', hasDropdown: false, url: `${baseDomain}/aperfect-pms` },
+        { label: 'Manage Properties', hasDropdown: false, url: `${baseDomain}/manage-pms-properties` },
         { 
         label: 'Room Operations', 
         hasDropdown: true,
@@ -33,7 +33,7 @@ const HeaderNavigationList = ({ user }: HeaderNavigationListProps) => {
             { label: 'Housekeeping Inspection', url: `${baseDomain}/aperfect10/gsadmin` }
         ]
         },
-        { label: 'Reports', hasDropdown: false },
+        { label: 'Reports', hasDropdown: false, url: `${baseDomain}/aperfect-pms/all-business-reports` },
         { 
         label: 'Channel Manager', 
         hasDropdown: true,
@@ -118,7 +118,7 @@ const HeaderNavigationList = ({ user }: HeaderNavigationListProps) => {
                 {navItems.map((item) => (
                 <li key={item.label} className="relative group">
                     <a
-                    href="#"
+                    href={item.hasDropdown ? "#" : item.url}
                     className="text-sm text-gray-600 hover:text-red-600 transition-colors whitespace-nowrap font-normal flex items-center gap-1"
                     >
                     {item.label}
