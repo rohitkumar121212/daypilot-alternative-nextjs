@@ -8,6 +8,8 @@ const PROXY_ROUTES: Record<string, string> = {
   '/aps-api/v1/guests/': '/api/proxy/guests',
   '/aps-api/v1/taxsets/': '/api/proxy/taxsets',
   '/api/aperfect-pms/share-payment-link': '/api/proxy/share-payment-link',
+  '/api/aperfect-pms/change-property-cleaning-status': '/api/proxy/change-property-cleaning-status',
+  '/api/aperfect-pms/fetch-property-address-and-details': '/api/proxy/fetch-property-address-and-details',
 }
 
 export async function proxyFetch(url: string, options: RequestInit = {}) {

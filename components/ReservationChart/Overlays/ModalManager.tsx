@@ -13,6 +13,7 @@ const SplitBookingModal    = dynamic(() => import('@/components/ReservationChart
 const SkipCheckInModal     = dynamic(() => import('@/components/ReservationChart/Overlays/SkipCheckInModal'), { ssr: false, loading: () => null })
 const CheckInModal         = dynamic(() => import('@/components/ReservationChart/Modals/BookingDetailsModal/CheckInModal'), { ssr: false, loading: () => null })
 const CancelCheckInModal   = dynamic(() => import('@/components/ReservationChart/Overlays/CancelCheckInModal'), { ssr: false, loading: () => null })
+const AddressDetailsModal = dynamic(() => import('@/components/ReservationChart/Overlays/AddressDetailsModal'), { ssr: false, loading: () => null })
 
 interface ContextMenuState {
   isOpen: boolean
@@ -41,7 +42,7 @@ interface ModalManagerProps {
 
   // ── Booking-action modals (details, split, skip/check-in, cancel) ─────────
   activeModal: ActiveModal | null
-  openModal: (type: SchedulerModalType, booking: any, tab?: string) => void
+  openModal: (type: SchedulerModalType, bookingOrResource: any, tab?: string) => void
   closeModal: () => void
   onDetailsClose: () => void
   onSplitBooking: (splitData: any) => void
@@ -147,6 +148,7 @@ const ModalManager = ({
             resource={resourceContextMenu.resource}
             onClose={onResourceContextMenuClose}
             onAction={onResourceContextMenuAction}
+            openModal={openModal}
           />
         </Suspense>
       )}
@@ -209,6 +211,17 @@ const ModalManager = ({
             booking={activeModal.booking}
             resources={resources}
             onCancel={closeModal}
+            onClose={closeModal}
+          />
+        </Suspense>
+      )}
+
+      {/* ── Address Details Modal ─────────────────────────────────────────── */}
+      {activeModal?.type === 'address-details' && (
+        <Suspense fallback={null}>
+          <AddressDetailsModal
+            isOpen={true}
+            resource={activeModal.resource}
             onClose={closeModal}
           />
         </Suspense>

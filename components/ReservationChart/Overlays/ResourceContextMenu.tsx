@@ -1,4 +1,4 @@
-import { apiFetch } from '@/utils/apiRequest'
+import { proxyFetch } from '@/utils/proxyFetch'
 import {
   ContextMenu,
   ContextMenuContent,
@@ -7,12 +7,12 @@ import {
   ContextMenuSeparator,
 } from '@/components/ui/context-menu'
 
-const ResourceContextMenu = ({ isOpen, position, resource, onClose, onAction, refreshData }) => {
+const ResourceContextMenu = ({ isOpen, position, resource, onClose, onAction, refreshData, openModal }) => {
   if (!isOpen) return null
 
   const handleStatusChange = async (status) => {
     try {
-      await apiFetch('/api/aperfect-pms/change-property-cleaning-status', {
+      await proxyFetch('/api/aperfect-pms/change-property-cleaning-status', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -44,8 +44,8 @@ const ResourceContextMenu = ({ isOpen, position, resource, onClose, onAction, re
         url = `${baseUrl}/manage-pms/prop-abbreviation/${resource?.id}/general-report`
         break
       case 'view-address-and-details':
-        url = `${baseUrl}/property/${resource?.id}/address-details`
-        break
+        openModal('address-details', resource)
+        return
       default:
         console.log('Unknown view action:', actionId)
         return
@@ -82,7 +82,6 @@ const ResourceContextMenu = ({ isOpen, position, resource, onClose, onAction, re
         { id: 'view-offered-details', label: 'View Offered Details', icon: '👁️' },
         { id: 'view-cases-and-tasks', label: 'View Cases & Tasks', icon: '📋' },
         { id: 'view-address-and-details', label: 'View Address & Details', icon: '📍' },
-        // { id: 'apartment-reports', label: 'Apartment Reports', icon: '📈' }
       ]
     }
   }

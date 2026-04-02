@@ -12,10 +12,12 @@ export type SchedulerModalType =
   | 'skip-check-in'
   | 'check-in'
   | 'cancel-check-in'
+  | 'address-details'
 
 export interface ActiveModal {
   type: SchedulerModalType
-  booking: any
+  booking?: any
+  resource?: any
   /** Only used by the 'details' modal to set the initial tab (e.g. 'task', 'case') */
   tab?: string
 }
@@ -29,8 +31,12 @@ interface UseModalStateResult {
 export function useModalState(): UseModalStateResult {
   const [activeModal, setActiveModal] = useState<ActiveModal | null>(null)
 
-  const openModal = useCallback((type: SchedulerModalType, booking: any, tab?: string) => {
-    setActiveModal({ type, booking, tab })
+  const openModal = useCallback((type: SchedulerModalType, bookingOrResource: any, tab?: string) => {
+    if (type === 'address-details') {
+      setActiveModal({ type, resource: bookingOrResource, tab })
+    } else {
+      setActiveModal({ type, booking: bookingOrResource, tab })
+    }
   }, [])
 
   const closeModal = useCallback(() => {
