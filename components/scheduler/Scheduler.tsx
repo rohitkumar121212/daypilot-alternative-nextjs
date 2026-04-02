@@ -149,7 +149,7 @@ const Scheduler = ({
 
         {/* ── Sticky date header ──────────────────────────────────────────── */}
         <div className="sticky top-0 z-30 flex bg-gray-50 border-b border-gray-300 shadow-sm">
-          <div className="w-64 min-w-64 sticky left-0 z-40 bg-gray-50 border-r border-gray-200 flex items-center justify-center font-semibold text-gray-700">
+          <div className="w-90 min-w-90 sticky left-0 z-40 bg-gray-50 border-r border-gray-200 flex items-center justify-center font-semibold text-gray-700">
             Apartments
           </div>
           <div className="flex">

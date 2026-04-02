@@ -6,5 +6,6 @@ export const addNewBookingPayment = (formData: FormData) =>
     headers: { 'Content-Type': 'multipart/form-data' }
   })
 
-export const sharePaymentLink = (data: any) =>
-  apiClient.post<ApiResponse>('/aperfect-pms/share-payment-link', data)
+// Note: sharePaymentLink now uses proxyFetch in components
+// export const sharePaymentLink = (data: any) =>
+//   apiClient.post<ApiResponse>('/aperfect-pms/share-payment-link', data)

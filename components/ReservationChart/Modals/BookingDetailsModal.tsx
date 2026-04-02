@@ -100,6 +100,7 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
       case 'share':
         return <SharePaymentLinkTab 
                   totalAmount={Number(booking?.booking_details?.price)} 
+                  bookingKey={booking?.booking_details?.booking_key}
                   paid={Number(booking?.booking_details?.paid)} 
                   bookingId={booking?.booking_id}
                   email={booking?.booking_details?.email} 

@@ -7,6 +7,7 @@ const PROXY_ROUTES: Record<string, string> = {
   '/aps-api/v1/users/details/private': '/api/proxy/user-details',
   '/aps-api/v1/guests/': '/api/proxy/guests',
   '/aps-api/v1/taxsets/': '/api/proxy/taxsets',
+  '/api/aperfect-pms/share-payment-link': '/api/proxy/share-payment-link',
 }
 
 export async function proxyFetch(url: string, options: RequestInit = {}) {

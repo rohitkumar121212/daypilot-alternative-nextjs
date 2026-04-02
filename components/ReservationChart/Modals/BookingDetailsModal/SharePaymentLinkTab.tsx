@@ -4,11 +4,13 @@ import { useState } from 'react'
 import FloatingInput from '@/components/common/FloatingInput'
 import FloatingInputWithPrefix from '@/components/common/FloatingLabelInputWithPrefix'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
-import { sharePaymentLink } from '@/apiData/services/pms/booking-details-tabs'
+import { proxyFetch } from '@/utils/proxyFetch'
+import { createFormData, logFormData } from '@/utils/formDataUtils'
 import LoadingOverlay from '@/components/ReservationChart/Modals/CreateBookingModal/components/LoadingOverlay'
 
 interface SharePaymentLinkTabProps {
   totalAmount?: number
+  bookingKey?: string
   paidAmount: number
   paid?: number
   email?: string
@@ -22,6 +24,7 @@ const SharePaymentLinkTab = ({
   paid = 0.000,
   email = 'guest@example.com',
   bookingId,
+  bookingKey,
   onClose
 }: SharePaymentLinkTabProps) => {
   const CURRENCY = '₹'
@@ -52,24 +55,42 @@ const SharePaymentLinkTab = ({
 
     setIsLoading(true)
     console.log('Send payment link:', formData)
-    try{
-      const response = await sharePaymentLink({
-        enq_id_payment: '328748324',
+    
+    try {
+      // Prepare the data for FormData
+      const paymentLinkData = {
+        enq_id_payment: '',
         payment_booking_id: bookingId,
         total_booking_amount: totalAmount.toString(),
         booking_amount_paid: paidAmount.toString(),  
         booking_amount_balance: balance.toString(),
-        payment_amount: parseFloat(formData.paymentAmount),
+        payment_amount: formData.paymentAmount,
         send_email: formData.email,
         payment_notes: formData.notes,
         send_payment_link: 'Send Payment Link',
+        // bookingId: bookingId,
+        // amount: formData.paymentAmount,
+        // email: formData.email,
+        // notes: formData.notes,
+        // response_version: 'v1'
+      }
 
-        bookingId: bookingId, // Use the actual booking ID passed in props
-        amount: parseFloat(formData.paymentAmount),
-        email: formData.email,
-        notes: formData.notes
+      // Create FormData using the utility function
+      const formDataPayload = createFormData(paymentLinkData, {
+        excludeEmpty: false, // Keep empty strings if needed by API
+        excludeNull: true,   // Remove null values
+        excludeUndefined: true // Remove undefined values
       })
-      console.log('Payment link sent successfully:', response.data)
+
+      // Log FormData for debugging (can be removed in production)
+      logFormData(formDataPayload, 'Share Payment Link FormData')
+
+      const response = await proxyFetch('/api/aperfect-pms/share-payment-link', {
+        method: 'POST',
+        body: formDataPayload // Send FormData directly
+      })
+      
+      console.log('Payment link sent successfully:', response)
     } catch(error){
       console.error('Failed to send payment link:', error)
     } finally {
