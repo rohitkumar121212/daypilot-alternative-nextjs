@@ -7,7 +7,7 @@ import {
   ContextMenuSeparator,
 } from '@/components/ui/context-menu'
 
-const ResourceContextMenu = ({ isOpen, position, resource, onClose, onAction }) => {
+const ResourceContextMenu = ({ isOpen, position, resource, onClose, onAction, refreshData }) => {
   if (!isOpen) return null
 
   const handleStatusChange = async (status) => {
@@ -17,16 +17,48 @@ const ResourceContextMenu = ({ isOpen, position, resource, onClose, onAction }) 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           prop_id: resource?.id,
-          status
+          status,
+          response_version: 'v1'
         })
       })
       onAction(status)
+      // Refresh data after successful status change
+      if (refreshData) {
+        refreshData()
+      }
     } catch (error) {
       console.error('Failed to update cleaning status:', error)
     }
   }
 
-  const statusActions = ['dirty', 'touch-up', 'clean', 'repair', 'inspect', 'dnr', 'house_use']
+  const handleViewAction = (actionId) => {
+    // Handle URL-based actions
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://aperfectstay.ai'
+    let url = ''
+    
+    switch (actionId) {
+      case 'view-offered-details':
+        url = `${baseUrl}/aperfect-pms/amenities/details/${resource?.id}`
+        break
+      case 'view-cases-and-tasks':
+        url = `${baseUrl}/manage-pms/prop-abbreviation/${resource?.id}/general-report`
+        break
+      case 'view-address-and-details':
+        url = `${baseUrl}/property/${resource?.id}/address-details`
+        break
+      default:
+        console.log('Unknown view action:', actionId)
+        return
+    }
+    
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer')
+    }
+    onAction(actionId)
+  }
+
+  const statusActions = ['dirty', 'touch_up', 'clean', 'repair', 'inspect', 'dnr', 'house_use']
+  const viewActions = ['view-offered-details', 'view-cases-and-tasks', 'view-address-and-details']
 
   const getMenuItems = () => {
     if (resource?.type === 'parent') {
@@ -111,6 +143,8 @@ const ResourceContextMenu = ({ isOpen, position, resource, onClose, onAction }) 
             onClick={() => {
               if (statusActions.includes(item.id)) {
                 handleStatusChange(item.id)
+              } else if (viewActions.includes(item.id)) {
+                handleViewAction(item.id)
               } else {
                 onAction(item.id)
               }
