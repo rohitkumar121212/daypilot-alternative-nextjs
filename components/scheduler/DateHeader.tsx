@@ -36,7 +36,7 @@ const DateHeader = memo(({ date, cellWidth = 100, totalAvailability = null }: Da
       {totalAvailability && (
         <div className="relative group w-full">
           <div
-            className={`text-xs font-semibold mt-1 rounded-lg text-center text-white p-2 ${
+            className={`text-xs font-semibold mt-1 rounded-lg text-center text-white p-1 ${
               isHighOccupancy ? 'bg-green-500' : 'bg-red-500'
             }`}
           >

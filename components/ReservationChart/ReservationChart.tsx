@@ -190,7 +190,7 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
                 onResourcesChange={setResources}
                 startDate={startDate}
                 daysToShow={daysToShow}
-                cellWidth={100}
+                cellWidth={70}
                 rowHeight={40}
                 height="80vh"
               />

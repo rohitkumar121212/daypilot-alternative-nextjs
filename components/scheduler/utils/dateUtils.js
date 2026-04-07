@@ -25,7 +25,7 @@ export const generateDateRange = (days = 30, startDate = null) => {
 export const formatDateHeader = (dateStr) => {
   const date = dayjs(dateStr)
   return {
-    dayName: date.format('ddd'),
+    dayName: date.format('dd'),
     dayNumber: date.format('D'),
     month: date.format('MMM'),
     isToday: date.isSame(dayjs(), 'day')
