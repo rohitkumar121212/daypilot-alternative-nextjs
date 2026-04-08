@@ -2,7 +2,7 @@
 const DEV_TOKEN = process.env.NEXT_PUBLIC_DEV_TOKEN || ''
 const isDevelopment = process.env.NODE_ENV === 'development'
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://aperfectstay.ai'
-const LOGIN_URL = 'https://aperfectstay.ai/login/'
+const LOGIN_URL = 'https://aperfectstay.ai/login?next=https://pms.aperfectstay.ai/pms-calendar'
 
 export async function apiFetch(url: string, options: RequestInit = {}) {
   const headers: HeadersInit = {
