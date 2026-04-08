@@ -76,7 +76,7 @@ const SchedulerRow = memo(({
           className={`w-90 min-w-90 sticky left-0 z-30 border-r border-gray-200 flex items-center hover:bg-gray-50 ${
             row.type === 'parent'
               ? 'font-semibold bg-gray-100'
-              : 'pl-8 text-gray-700 bg-white pr-2'
+              : 'text-gray-700 bg-white pr-2'
           }`}
           {...(row.type === 'child' && { onContextMenu: (e) => onResourceRightClick(row, e) })}
         >
@@ -95,44 +95,49 @@ const SchedulerRow = memo(({
               </svg>
             </button>
           )}
-          {row.type === 'child' && <span className="w-6 shrink-0" />}
-          {row.is_checkout_due && (
-            <div className="relative group mr-2">
-              🔴
-              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                Checkout Due
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+          {row.type === 'child' && (
+            <>
+              <span className="w-2 shrink-0" />
+              <div className="w-32 shrink-0 flex items-center gap-1">
+                {
+                  row.bed_desc && (
+                    <div className="relative group flex items-center">
+                      <span className='text-sm'>{`${row?.bed_desc ==='studio' ? '1' : row?.bed_desc}-`}</span>
+                      <BedSingle className="cursor-help" size={16} color="#4B5563" />
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                        Bed Configuration
+                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                      </div>
+                    </div>
+                  )
+                }
+                {
+                  row.min_stay && (
+                    <div className="relative group flex items-center">
+                      <span className='text-sm'>{`${row.min_stay}-`}</span>
+                      <MoonStar className="cursor-help" size={16} color="#4B5563" />
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                        Minimum Stay (nights)
+                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                      </div>
+                    </div>
+                  )
+                }
+                {
+                  row?.floor && (
+                    <div className="relative group flex items-center">
+                      <span className='text-sm'>{`${row?.floor}-`}</span>
+                      <LayersPlus className="ml-1 cursor-help" size={16} color="#4B5563" />
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                        Floor Level
+                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                      </div>
+                    </div>
+                  )
+                }
+                
               </div>
-            </div>
-          )}
-
-          {row?.open_cases_count > 0 && (
-            <div className="relative group mr-2">
-              🛠️
-              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                {row.open_cases_count} Open Case{row.open_cases_count > 1 ? 's' : ''}
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
-              </div>
-            </div>
-          )}
-          {row.is_lease_ending && (
-            <div className="relative group mr-2">
-              🚩
-              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                Lease Ending
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
-              </div>
-            </div>
-          )}
-
-          {row?.open_tasks_count > 0 && (
-            <div className="relative group mr-2">
-              ⚙️
-              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                {row.open_tasks_count} Open Task{row.open_tasks_count > 1 ? 's' : ''}
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
-              </div>
-            </div>
+            </>
           )}
           <div className="relative group flex-1 min-w-0">
             <span className="block truncate text-sm cursor-help">{row.name}</span>
@@ -142,7 +147,7 @@ const SchedulerRow = memo(({
             </div>
           </div>
           <div className='flex gap-2 items-center'>
-          {
+          {/* {
             row.bed_desc && (
               <div className="relative group flex items-center">
                 <span className='text-sm'>{`${row?.bed_desc}-`}</span>
@@ -177,7 +182,43 @@ const SchedulerRow = memo(({
                 </div>
               </div>
             )
-           }
+           } */}
+           {row.is_checkout_due && (
+                  <div className="relative group">
+                    🔴
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                      Checkout Due
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                    </div>
+                  </div>
+                )}
+                {row?.open_cases_count > 0 && (
+                  <div className="relative group">
+                    🛠️
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                      {row.open_cases_count} Open Case{row.open_cases_count > 1 ? 's' : ''}
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                    </div>
+                  </div>
+                )}
+                {row.is_lease_ending && (
+                  <div className="relative group">
+                    🚩
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                      Lease Ending
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                    </div>
+                  </div>
+                )}
+                {row?.open_tasks_count > 0 && (
+                  <div className="relative group">
+                    ⚙️
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                      {row.open_tasks_count} Open Task{row.open_tasks_count > 1 ? 's' : ''}
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                    </div>
+                  </div>
+                )}
           {row.is_balcony_available && (
             <div className="relative group">
               <svg 
