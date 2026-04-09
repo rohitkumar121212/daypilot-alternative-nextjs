@@ -100,10 +100,11 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
   }, [bookings])
 
   // ─── Frontend occupancy using unfiltered resources ────────────────────────
+  const dates = useMemo(() => generateDateRange(daysToShow, startDate), [daysToShow, startDate])
+
   const frontendOccupancyByDate = useMemo(() => {
     const allChildren = resources.flatMap(parent => parent.children || [])
     const total = allChildren.length
-    const dates = generateDateRange(daysToShow, startDate)
     const result: Record<string, { available: number; total: number }> = {}
     dates.forEach(date => {
       const occupied = allChildren.filter(child => {
@@ -113,7 +114,24 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
       result[date] = { available: total - occupied, total }
     })
     return result
-  }, [resources, bookingsByResourceId, daysToShow, startDate])
+  }, [resources, bookingsByResourceId, dates])
+
+  // ─── Frontend building-wise availability, keyed as `"parentId-date"` ──────
+  const frontendAvailabilityByParent = useMemo(() => {
+    const result: Record<string, { available: number; total: number }> = {}
+    resources.forEach(parent => {
+      const children = parent.children || []
+      const total = children.length
+      dates.forEach((date: string) => {
+        const occupied = children.filter((child: any) => {
+          const childBookings = bookingsByResourceId.get(String(child.id)) || []
+          return childBookings.some((b: any) => b.startDate <= date && b.endDate > date)
+        }).length
+        result[`${parent.id}-${date}`] = { available: total - occupied, total }
+      })
+    })
+    return result
+  }, [resources, bookingsByResourceId, dates])
 
   /* =========================
      Booking mutations
@@ -199,6 +217,7 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
                 bookingsByResourceId={bookingsByResourceId}
                 availability={availability}
                 frontendOccupancyByDate={frontendOccupancyByDate}
+                frontendAvailabilityByParent={frontendAvailabilityByParent}
                 isSquareUser={isSquareUser}
                 onTimeRangeSelect={setPendingSelection}
                 onBookingClick={(booking) => openModal('details', booking)}

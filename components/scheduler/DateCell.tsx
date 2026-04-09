@@ -12,6 +12,7 @@ interface DateCellProps {
   isSelected?: boolean
   isDropTarget?: boolean
   availability?: { available: number; total: number } | null
+  frontendAvailability?: { available: number; total: number } | null
   isParentRow?: boolean
   onMouseDown?: (date: string, resourceId: string, e: React.MouseEvent) => void
   onMouseEnter?: (date: string, resourceId: string, e: React.MouseEvent) => void
@@ -25,18 +26,19 @@ const DateCell = memo(({
   isSelected = false,
   isDropTarget = false,
   availability = null,
+  frontendAvailability = null,
   isParentRow = false,
   onMouseDown,
   onMouseEnter
 }: DateCellProps) => {
-  const handleMouseDown = (e) => {
-    if (isParentRow) return // Don't allow interaction on parent rows
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (isParentRow) return
     e.preventDefault()
     onMouseDown?.(date, resourceId, e)
   }
-  
-  const handleMouseEnter = (e) => {
-    if (isParentRow) return // Don't allow interaction on parent rows
+
+  const handleMouseEnter = (e: React.MouseEvent) => {
+    if (isParentRow) return
     onMouseEnter?.(date, resourceId, e)
   }
   
@@ -75,6 +77,11 @@ const DateCell = memo(({
       {availability !== null && availability !== undefined && (
         <div className={`text-xs font-semibold ${occupancyInfo.color}`}>
           {occupancyInfo.occupiedCount}/{occupancyInfo.totalCount}
+        </div>
+      )}
+      {frontendAvailability !== null && frontendAvailability !== undefined && (
+        <div className="text-xs font-semibold text-blue-500 ml-1">
+          {frontendAvailability.available}/{frontendAvailability.total}
         </div>
       )}
     </div>

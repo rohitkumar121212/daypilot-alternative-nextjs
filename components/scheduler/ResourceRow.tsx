@@ -24,6 +24,7 @@ interface ResourceRowProps {
   selection?: any
   dragState?: any
   availabilityByParent?: Record<string, any>
+  frontendAvailabilityByParent?: Record<string, { available: number; total: number }>
   onCellMouseDown?: (date: string, resourceId: string, e: React.MouseEvent) => void
   onCellMouseEnter?: (date: string, resourceId: string, e: React.MouseEvent) => void
   onBookingClick?: (booking: any) => void
@@ -42,6 +43,7 @@ const ResourceRow = memo(({
   selection,
   dragState,
   availabilityByParent = {},
+  frontendAvailabilityByParent = {},
   onCellMouseDown,
   onCellMouseEnter,
   onBookingClick,
@@ -89,8 +91,12 @@ const ResourceRow = memo(({
                               dragState?.dropTarget?.resourceId === resource.id
           
           // Only show availability for parent rows (buildings), not child rows (apartments)
-          const availability = resource.type === 'parent' 
+          const availability = resource.type === 'parent'
             ? availabilityByParent[`${resource.id}-${date}`]
+            : undefined
+
+          const frontendAvailability = resource.type === 'parent'
+            ? frontendAvailabilityByParent[`${resource.id}-${date}`]
             : undefined
           
           return (
@@ -103,6 +109,7 @@ const ResourceRow = memo(({
               isSelected={hasSelection && isDateInSelection(date, selection)}
               isDropTarget={isDropTarget}
               availability={availability}
+              frontendAvailability={frontendAvailability}
               isParentRow={resource.type === 'parent'}
               onMouseDown={onCellMouseDown}
               onMouseEnter={onCellMouseEnter}

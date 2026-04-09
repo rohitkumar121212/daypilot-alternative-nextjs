@@ -13,6 +13,7 @@ interface SchedulerRowProps {
   selection: any
   dragState: any
   availabilityByParent: any
+  frontendAvailabilityByParent?: Record<string, { available: number; total: number }>
   cellWidth: number
   rowHeight: number
   onResourceRightClick: (row: any, e: React.MouseEvent) => void
@@ -43,6 +44,7 @@ const SchedulerRow = memo(({
   selection,
   dragState,
   availabilityByParent,
+  frontendAvailabilityByParent = {},
   cellWidth,
   rowHeight,
   onResourceRightClick,
@@ -285,6 +287,7 @@ const SchedulerRow = memo(({
             selection={selection}
             dragState={dragState}
             availabilityByParent={availabilityByParent}
+            frontendAvailabilityByParent={frontendAvailabilityByParent}
             onCellMouseDown={onCellMouseDown}
             onCellMouseEnter={onCellMouseEnter}
             onBookingClick={onBookingClick}

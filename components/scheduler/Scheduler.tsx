@@ -44,6 +44,7 @@ interface SchedulerProps {
   rowHeight?: number
   height?: string
   frontendOccupancyByDate?: Record<string, { available: number; total: number }>
+  frontendAvailabilityByParent?: Record<string, { available: number; total: number }>
 }
 
 const Scheduler = ({
@@ -62,7 +63,8 @@ const Scheduler = ({
   cellWidth = 100,
   rowHeight = 60,
   height = '100%',
-  frontendOccupancyByDate = {}
+  frontendOccupancyByDate = {},
+  frontendAvailabilityByParent = {}
 }: SchedulerProps) => {
 
   // ─── Dates ────────────────────────────────────────────────────────────────
@@ -184,6 +186,7 @@ const Scheduler = ({
                 selection={selection}
                 dragState={dragState}
                 availabilityByParent={availabilityByParent}
+                frontendAvailabilityByParent={frontendAvailabilityByParent}
                 cellWidth={cellWidth}
                 rowHeight={rowHeight}
                 isSquareUser={isSquareUser}
