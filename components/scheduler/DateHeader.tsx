@@ -5,9 +5,10 @@ interface DateHeaderProps {
   date: string
   cellWidth?: number
   totalAvailability?: { available: number; total: number } | null
+  frontendAvailability?: { available: number; total: number } | null
 }
 
-const DateHeader = memo(({ date, cellWidth = 100, totalAvailability = null }: DateHeaderProps) => {
+const DateHeader = memo(({ date, cellWidth = 100, totalAvailability = null, frontendAvailability = null }: DateHeaderProps) => {
   const formatted = formatDateHeader(date)
 
   const occupancyRatio =
@@ -46,6 +47,13 @@ const DateHeader = memo(({ date, cellWidth = 100, totalAvailability = null }: Da
           {/* Tooltip */}
           <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block bg-black text-gray-100 text-sm font-semibold px-2 py-1 rounded whitespace-nowrap">
             {`O: ${occupancyPercentage}%`}
+          </div>
+        </div>
+      )}
+      {frontendAvailability && (
+        <div className="w-full mt-1">
+          <div className="text-xs font-semibold rounded-lg text-center text-white p-1 bg-blue-500">
+            FE: {frontendAvailability.available}/{frontendAvailability.total}
           </div>
         </div>
       )}

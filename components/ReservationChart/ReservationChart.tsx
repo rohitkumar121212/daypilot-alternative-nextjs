@@ -8,7 +8,8 @@ import { DataRefreshProvider } from '@/contexts/DataRefreshContext';
 import { useSchedulerData } from '@/hooks/useSchedulerData';
 import { useModalState } from '@/hooks/useModalState';
 import { useContextMenuState } from '@/hooks/useContextMenuState';
-import { useUser } from '@/hooks/useUser';
+import { useUser } from '@/hooks/useUser'
+import { generateDateRange } from '@/components/scheduler/utils/dateUtils';
 
 const ReservationChart = ({ className = '', style = {} }: { className?: string; style?: React.CSSProperties }) => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -98,6 +99,22 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
     return map
   }, [bookings])
 
+  // ─── Frontend occupancy using unfiltered resources ────────────────────────
+  const frontendOccupancyByDate = useMemo(() => {
+    const allChildren = resources.flatMap(parent => parent.children || [])
+    const total = allChildren.length
+    const dates = generateDateRange(daysToShow, startDate)
+    const result: Record<string, { available: number; total: number }> = {}
+    dates.forEach(date => {
+      const occupied = allChildren.filter(child => {
+        const childBookings = bookingsByResourceId.get(String(child.id)) || []
+        return childBookings.some((b: any) => b.startDate <= date && b.endDate > date)
+      }).length
+      result[date] = { available: total - occupied, total }
+    })
+    return result
+  }, [resources, bookingsByResourceId, daysToShow, startDate])
+
   /* =========================
      Booking mutations
   ========================= */
@@ -181,6 +198,7 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
                 resources={filteredResources}
                 bookingsByResourceId={bookingsByResourceId}
                 availability={availability}
+                frontendOccupancyByDate={frontendOccupancyByDate}
                 isSquareUser={isSquareUser}
                 onTimeRangeSelect={setPendingSelection}
                 onBookingClick={(booking) => openModal('details', booking)}

@@ -43,6 +43,7 @@ interface SchedulerProps {
   cellWidth?: number
   rowHeight?: number
   height?: string
+  frontendOccupancyByDate?: Record<string, { available: number; total: number }>
 }
 
 const Scheduler = ({
@@ -60,7 +61,8 @@ const Scheduler = ({
   daysToShow = 30,
   cellWidth = 100,
   rowHeight = 60,
-  height = '100%'
+  height = '100%',
+  frontendOccupancyByDate = {}
 }: SchedulerProps) => {
 
   // ─── Dates ────────────────────────────────────────────────────────────────
@@ -75,6 +77,7 @@ const Scheduler = ({
 
   // ─── Availability ─────────────────────────────────────────────────────────
   const { totalAvailabilityByDate, availabilityByParent } = useAvailability(availability)
+
 
   // ─── Drag — move a booking to a new date / resource ───────────────────────
   const { dragState, handleBookingDragStart } = useDragState({ dateIndexMap, resources, onBookingMove })
@@ -159,6 +162,7 @@ const Scheduler = ({
                 date={date}
                 cellWidth={cellWidth}
                 totalAvailability={totalAvailabilityByDate[date] || null}
+                frontendAvailability={frontendOccupancyByDate[date] ?? null}
               />
             ))}
           </div>
