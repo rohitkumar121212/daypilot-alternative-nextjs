@@ -55,7 +55,19 @@ const DateCell = memo(({
     
     return { occupiedCount, totalCount, percentage, color }
   }
-  
+    const getFrontendAvailabilityInfo = () => {
+    if (!frontendAvailability || frontendAvailability.total === 0) {
+      return { occupiedCount: 0, totalCount: 0, percentage: 0, color: 'text-gray-500' }
+    }
+    
+    const availabilityCount = frontendAvailability.available
+    const totalCount = frontendAvailability.total
+    const percentage = Math.round((availabilityCount / totalCount) * 100)
+    const color = percentage > 50 ? 'text-green-700' : 'text-red-700'
+    
+    return { availabilityCount, totalCount, percentage, color }
+  }
+  const frontendAvailabilityInfo = getFrontendAvailabilityInfo()
   const occupancyInfo = getOccupancyInfo()
   
   return (
@@ -72,15 +84,15 @@ const DateCell = memo(({
       data-resource-id={resourceId}
       onMouseDown={handleMouseDown}
       onMouseEnter={handleMouseEnter}
-      title={availability ? `O: ${occupancyInfo.percentage}% )` : ''}
+      title={frontendAvailability ? `A: ${frontendAvailabilityInfo.percentage}% ` : ''}
     >
-      {availability !== null && availability !== undefined && (
+      {/* {availability !== null && availability !== undefined && (
         <div className={`text-xs font-semibold ${occupancyInfo.color}`}>
           {occupancyInfo.occupiedCount}/{occupancyInfo.totalCount}
         </div>
-      )}
+      )} */}
       {frontendAvailability !== null && frontendAvailability !== undefined && (
-        <div className="text-xs font-semibold text-blue-500 ml-1">
+        <div className={`text-xs font-semibold ${frontendAvailabilityInfo.color} ml-1`}>
           {frontendAvailability.available}/{frontendAvailability.total}
         </div>
       )}
