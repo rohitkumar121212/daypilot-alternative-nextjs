@@ -39,7 +39,7 @@ export const formatDateHeader = (dateStr) => {
  * @returns {number} Number of days
  */
 export const daysBetween = (startDate, endDate) => {
-  return dayjs(endDate).diff(dayjs(startDate), 'day')
+  return dayjs(endDate).startOf('day').diff(dayjs(startDate).startOf('day'), 'day')
 }
 
 /**
