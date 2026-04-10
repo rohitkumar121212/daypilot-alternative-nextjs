@@ -47,7 +47,7 @@ const BookForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       <FloatingInput
         label="Check-in"
-        type="date"
+        type="datetime-local"
         value={formData.checkIn}
         onChange={(e) => {
           handleChange('checkIn', e.target.value)
@@ -59,7 +59,7 @@ const BookForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
 
       <FloatingInput
         label="Check-out"
-        type="date"
+        type="datetime-local"
         value={formData.checkOut}
         onChange={(e) => {
           handleChange('checkOut', e.target.value)

@@ -17,15 +17,15 @@ const BlockForm = ({ formData, handleChange, dayCount, errors = {}, setErrors, c
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
         <FloatingInput 
-          label="Check-in" 
-          type='date'
+          label="Check-in"
+          type='datetime-local'
           value={formData?.checkIn} 
           onChange={(e) => handleChange('checkIn', e.target.value)}
           required
         />
         <FloatingInput 
-          label="Check-out" 
-          type='date'
+          label="Check-out"
+          type='datetime-local'
           value={formData?.checkOut} 
           onChange={(e) => handleChange('checkOut', e.target.value)}
           required
