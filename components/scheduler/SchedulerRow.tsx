@@ -26,6 +26,25 @@ interface SchedulerRowProps {
   isSquareUser?: boolean
 }
 
+// const CLEANING_STATUS_COLORS: Record<string, string> = {
+//   dirty:     '#dbc6b2', // light red
+//   clean:     '#b2dbb4', // light green
+//   touch_up:  '#e3a6ff', // light yellow
+//   repair:    '#bdb9aa', // light orange
+//   inspect:   '#ffffff', // light blue
+//   dnr:       '#f0cb75', // light purple
+//   house_use: '#cafcca', // light sky
+// }
+const CLEANING_STATUS_COLORS: Record<string, string> = {
+  dirty:     '#dbc6b2', // light beige / tan
+  clean:     '#b2dbb4', // light green
+  touch_up:  '#e3a6ff', // light purple / lavender
+  repair:    '#bdb9aa', // light gray / taupe
+  inspect:   '#ffffff', // white
+  dnr:       '#f0cb75', // light yellow / mustard
+  house_use: '#cafcca', // light mint green
+}
+
 /**
  * SchedulerRow
  *
@@ -78,8 +97,9 @@ const SchedulerRow = memo(({
           className={`w-90 min-w-90 sticky left-0 z-30 border-r border-gray-200 flex items-center hover:bg-gray-50 ${
             row.type === 'parent'
               ? 'font-semibold bg-gray-100'
-              : 'text-gray-700 bg-white pr-2'
+              : 'text-gray-700 pr-2'
           }`}
+          style={row.type === 'child' ? (row.is_lease_ending == true && row.cleaning_status ? {backgroundColor:'yellow'} : { backgroundColor: CLEANING_STATUS_COLORS[row.cleaning_status] || '#dbc6b2' }) : undefined}
           {...(row.type === 'child' && { onContextMenu: (e) => onResourceRightClick(row, e) })}
         >
           {row.type === 'parent' && (
@@ -148,7 +168,7 @@ const SchedulerRow = memo(({
               <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
             </div>
           </div>
-          <div className='flex gap-2 items-center'>
+          <div className='flex gap-1 items-center'>
           {/* {
             row.bed_desc && (
               <div className="relative group flex items-center">
