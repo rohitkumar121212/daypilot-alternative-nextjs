@@ -12,8 +12,8 @@ export const buildBookingPayload = (formData: any, resource: any, modalData: any
 
   return {
     prop_abbr_id: resource?.id,
-    new_start_date: formData.checkIn || modalData.startDate,
-    new_end_date: formData.checkOut || modalData.endDate,
+    new_start_date: `${formData.checkIn || modalData.startDate}T00:00`,
+    new_end_date: `${formData.checkOut || modalData.endDate}T00:00`,
     response_version: "v1",
     duration: `${dayCount} Nights`,
     adult_count: (formData.adults || 1).toString(),
