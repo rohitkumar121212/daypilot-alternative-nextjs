@@ -7,6 +7,7 @@ import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
 import { proxyFetch } from '@/utils/proxyFetch'
 import { createFormData, logFormData } from '@/utils/formDataUtils'
 import LoadingOverlay from '@/components/ReservationChart/Modals/CreateBookingModal/components/LoadingOverlay'
+import { useUser } from '@/contexts/UserContext'
 
 interface SharePaymentLinkTabProps {
   totalAmount?: number
@@ -27,10 +28,12 @@ const SharePaymentLinkTab = ({
   bookingKey,
   onClose
 }: SharePaymentLinkTabProps) => {
-  const CURRENCY = '₹'
+  // const CURRENCY = '₹'
   console.log("totalAmount, paid, email, bookingId--", totalAmount, paid, email, bookingId)
   const balance = totalAmount - paid
   console.log("balance--", balance)
+  const { user } = useUser()
+  const CURRENCY = user?.admin_details?.selected_currency || 'GDP'
 
   const [formData, setFormData] = useState({
     paymentAmount: '',
