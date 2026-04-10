@@ -51,7 +51,7 @@ const FloatingInputWithPrefix = ({
         onBlur={() => setIsFocused(false)}
         readOnly={readOnly}
         min={type === 'number' ? '0' : undefined}
-        className={`peer w-full ${showPrefix ? 'pl-8' : 'pl-4'} p-2 border rounded-md outline-none transition-all
+        className={`peer w-full ${showPrefix ? 'pl-12' : 'pl-4'} p-2 border rounded-md outline-none transition-all
           ${readOnly ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'}
           ${
             error

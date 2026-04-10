@@ -19,7 +19,9 @@ interface SharePaymentLinkTabProps {
   onClose: () => void
 }
 
-const SharePaymentLinkTab = ({ 
+const IS_PAYMENT_LINK_ENABLED = false
+
+const SharePaymentLinkTab = ({
   totalAmount = 0.00, 
   paidAmount,
   paid = 0.000,
@@ -155,10 +157,16 @@ const SharePaymentLinkTab = ({
         value={formData.notes}
         onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
       />
+      {!IS_PAYMENT_LINK_ENABLED && (
+        <div className="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded px-3 py-2">
+          Coming Soon — Payment link sharing is under development.
+        </div>
+      )}
       <div className="flex gap-3">
-        <button 
+        <button
           onClick={handleSendLink}
-          className="btn btn-primary-with-bg"
+          disabled={!IS_PAYMENT_LINK_ENABLED}
+          className={`btn btn-primary-with-bg ${!IS_PAYMENT_LINK_ENABLED ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           Send Payment Link
         </button>
