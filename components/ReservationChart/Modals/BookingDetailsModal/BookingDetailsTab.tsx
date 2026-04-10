@@ -72,8 +72,8 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose, onOpenCheckInMod
         {console.log('Booking details data:', booking)}
         <h3 className="text-lg font-semibold text-gray-800 mb-1 pb-2 ">Booking Details</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <FloatingInput label="Check-in" value={formatDateTime(booking?.booking_details?.start)} onChange={() => {}} readOnly />
-          <FloatingInput label="Check-out" value={formatDateTime(booking?.booking_details?.end)} onChange={() => {}} readOnly />
+          <FloatingInput label="Check-in" type="datetime-local" value={booking?.booking_details?.start?.replace(' ', 'T') || ''} onChange={() => {}} readOnly />
+          <FloatingInput label="Check-out" type="datetime-local" value={booking?.booking_details?.end?.replace(' ', 'T') || ''} onChange={() => {}} readOnly />
           <FloatingInput label="Duration" value={`${booking?.booking_details?.days} nights` || 'N/A'} onChange={() => {}} readOnly />
           <FloatingInput label="Adults" value={booking?.booking_details?.adult_count || 'N/A'} onChange={() => {}} readOnly />
           <FloatingInput label="Children" value={booking?.booking_details?.child_count || 'N/A'} onChange={() => {}} readOnly />
