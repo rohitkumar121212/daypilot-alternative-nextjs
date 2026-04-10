@@ -39,7 +39,7 @@ export const useBookingSubmission = () => {
         const bookingId = data.data?.reservation_id
         if (bookingId) {
           // window.location.href = `/aperfect-pms/booking/${bookingId}/view-details`
-          window.location.href = `https://aperfectstay.ai/aperfect-pms/booking/${booking?.booking_details?.booking_key}/view-details`
+          window.location.href = `https://aperfectstay.ai/aperfect-pms/booking/${data.data?.reservation_id}/view-details`
 
         } else {
           onConfirm({

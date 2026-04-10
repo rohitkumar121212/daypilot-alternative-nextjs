@@ -4,6 +4,7 @@ import FloatingDropdown from '@/components/common/FloatingDropdown'
 import FloatingAutocomplete from '@/components/common/FloatingAutocomplete'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
 import { getTitleOptions } from '@/utils/common'
+import dayjs from 'dayjs'
 
 interface HoldFormProps {
   formData: any
@@ -145,6 +146,7 @@ const HoldForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
         label="Hold Booking Till"
         type="datetime-local"
         value={formData.holdBookingTill}
+        min={dayjs().format('YYYY-MM-DDTHH:mm')}
         onChange={(e) => {
           handleChange('holdBookingTill', e.target.value)
           if (errors.holdBookingTill && setErrors) setErrors({ ...errors, holdBookingTill: '' })

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import dayjs from 'dayjs'
 
 interface FormData {
   bookingName: string
@@ -109,7 +110,7 @@ export const useBookingForm = (isOpen: boolean, booking: any, modalData: any) =>
         commission: '',
         dnrReason: '',
         enquiryAppId: '',
-        holdBookingTill: '',
+        holdBookingTill: dayjs().endOf('day').format('YYYY-MM-DDTHH:mm'),
         status: '',
         dnrNotes: '',
         bookingType: 'book',

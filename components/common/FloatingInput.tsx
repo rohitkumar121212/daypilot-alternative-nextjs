@@ -9,6 +9,7 @@ interface FloatingInputProps {
   type?: string
   readOnly?: boolean
   placeholder?: string
+  min?: string
 }
 
 export function FloatingInput({
@@ -19,7 +20,8 @@ export function FloatingInput({
   required = false,
   type = "text",
   readOnly = false,
-  placeholder = ""
+  placeholder = "",
+  min
 }: FloatingInputProps) {
   const [isFocused, setIsFocused] = useState(false)
   const [emailError, setEmailError] = useState('')
@@ -104,7 +106,7 @@ export function FloatingInput({
         onBlur={handleBlur}
         readOnly={readOnly}
         placeholder={placeholder}
-        min={type === 'number' ? '0' : undefined}
+        min={min ?? (type === 'number' ? '0' : undefined)}
         className={`peer w-full p-2 px-4 border rounded-md outline-none transition-all
           ${readOnly ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'}
           ${
