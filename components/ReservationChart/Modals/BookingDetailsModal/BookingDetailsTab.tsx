@@ -68,8 +68,6 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose, onOpenCheckInMod
     <div className="space-y-6">
       {/* Booking Details Section */}
       <div>
-        {console.log('bookingDetails in BookingDetailsTab:', user)}
-        {console.log('Booking details data:', booking)}
         <h3 className="text-lg font-semibold text-gray-800 mb-1 pb-2 ">Booking Details</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <FloatingInput label="Check-in" type="datetime-local" value={booking?.booking_details?.start?.replace(' ', 'T') || ''} onChange={() => {}} readOnly />
