@@ -1,6 +1,6 @@
-import { ArrowLeft, CheckCircle, Printer, Edit } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ArrowLeft, CheckCircle, Edit, Printer } from "lucide-react";
 
 interface BookingHeaderProps {
   bookingId: string;
@@ -64,10 +64,10 @@ const BookingHeader = ({
           </h1>
           <Badge
             variant="outline"
-            className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full border ${statusInfo.className}`}
+            className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full border ${statusInfo?.className}`}
           >
-            {statusInfo.icon}
-            {statusInfo.label}
+            {statusInfo?.icon}
+            {statusInfo?.label}
           </Badge>
         </div>
 
