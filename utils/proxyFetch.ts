@@ -8,6 +8,13 @@ const PROXY_ROUTES: Record<string, string> = {
   '/aps-api/v1/taxsets/': '/api/proxy/taxsets',
 }
 
+const PROXY_PATTERNS: Array<{ pattern: RegExp; proxy: string }> = [
+  {
+    pattern: /^\/aps-api\/v1\/reservations\/details\/(\d+)$/,
+    proxy: '/api/proxy/reservations/$1',
+  },
+]
+
 export async function proxyFetch(url: string, options: RequestInit = {}) {
   // In development, check if this URL has a proxy route
   if (isDevelopment) {
@@ -18,6 +25,17 @@ export async function proxyFetch(url: string, options: RequestInit = {}) {
         credentials: 'include',
       })
       return response.json()
+    }
+
+    for (const { pattern, proxy } of PROXY_PATTERNS) {
+      if (pattern.test(url)) {
+        const proxyRoute = url.replace(pattern, proxy)
+        const response = await fetch(proxyRoute, {
+          ...options,
+          credentials: 'include',
+        })
+        return response.json()
+      }
     }
   }
 

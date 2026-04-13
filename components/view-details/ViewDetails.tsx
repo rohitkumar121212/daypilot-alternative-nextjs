@@ -10,7 +10,7 @@ import PaymentsTab from "@/components/view-details/PaymentsTab";
 import StayAndPricing from "@/components/view-details/StayAndPricing";
 import SupportTab from "@/components/view-details/SupportTab";
 import { useEffect, useState } from "react";
-
+import { proxyFetch } from "@/utils/proxyFetch";
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface BookingData {
   booking_header: {
@@ -47,62 +47,23 @@ interface BookingData {
   };
 }
 
-// ─── Mock / API Data ──────────────────────────────────────────────────────────
-const bookingData = {
-  data: {
-    booking_header: {
-      bookingId: 6747490016559104,
-      enquiry_app_id: "APS10690",
-      propertyAddress: "28 Freeland StToronto",
-      propertyName: "Apartment or Hotel 18 (1)",
-      status: "Reserved",
-    },
-    cost_break_down: {
-      ratePerNight: 2000,
-      taxAmount: 0,
-      totalAmount: 6000,
-      totalNights: 3,
-    },
-    guest_details: {
-      email: "euiehifhe@gmail.com",
-      full_name: "Rohit",
-      occupancy: { adults: "1", children: "0" },
-      phone: "12344567",
-    },
-    invoices: [] as Invoice[],
-    stay_and_pricing: {
-      checkIn: "12-04-2026",
-      checkOut: "15-04-2026",
-      currency: "",
-      ratePerNight: 2000,
-      taxAmount: 0,
-      totalAmount: 6000,
-      totalNights: 3,
-    },
-    support: {
-      enquiry_manager: "",
-    },
-  },
-  error: "",
-  message: "success",
-  success: true,
-};
+interface ViewDetailsComponentProps {
+  bookingId: string | number;
+}
 
 // ─── Component ────────────────────────────────────────────────────────────────
-const ViewDetailsComponent = () => {
+const ViewDetailsComponent = ({ bookingId }: ViewDetailsComponentProps) => {
   const [activeTab, setActiveTab] = useState<TabKey>("overview");
   const [viewDetailsData, setViewDetailsData] = useState<BookingData | null>(null);
 
   const fetchData = async () => {
-    // const viewDetailsURL = 'https://aperfectstay.ai/aps-api/v1/reservations/details/6747490016559104'
-    // const apiResponse = await apiFetch(viewDetailsURL)
-    // setViewDetailsData(apiResponse.data)
-    setViewDetailsData(bookingData.data);
+    const apiResponse = await proxyFetch(`/aps-api/v1/reservations/details/${bookingId}`)
+    setViewDetailsData(apiResponse.data)
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [bookingId]);
 
   // Guard: render nothing (or a loader) until data is ready
   if (!viewDetailsData) return null;

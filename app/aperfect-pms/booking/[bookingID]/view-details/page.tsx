@@ -1,7 +1,9 @@
 import ViewDetailsComponent from "@/components/view-details/ViewDetails"
-const ViewDetailsPage = () => {
+
+const ViewDetailsPage = async ({ params }: { params: Promise<{ bookingID: string }> }) => {
+  const { bookingID } = await params
   return (
-    <ViewDetailsComponent />
+    <ViewDetailsComponent bookingId={bookingID} />
   )
 }
 export default ViewDetailsPage
