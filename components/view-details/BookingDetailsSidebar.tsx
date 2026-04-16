@@ -1,9 +1,16 @@
 import { AlertCircle } from "lucide-react";
 
 interface BookingDetailsSidebarProps {
-  phase: string;
-  createdDate: string;
-  channel: string;
+  bookingDetails: {
+    booking_status: string;
+    booking_created_at: string;
+    channel_ota_name: string;
+    sales_channel: string;
+    sales_person: string;
+    enquiry_manager: string;
+    lead_source: string;
+    duration: number;
+  };
   extensionPending?: {
     reason: string;
     additionalCost: number;
@@ -11,10 +18,23 @@ interface BookingDetailsSidebarProps {
   };
 }
 
+interface DetailRowProps {
+  label: string;
+  value: string | number;
+}
+
+const DetailRow = ({ label, value }: DetailRowProps) => (
+  <>
+    <div>
+      <p className="text-xs text-slate-400 mb-0.5">{label}</p>
+      <p className="text-sm font-semibold text-slate-800">{value || "—"}</p>
+    </div>
+    <div className="border-t border-slate-50" />
+  </>
+);
+
 const BookingDetailsSidebar = ({
-  phase,
-  createdDate,
-  channel,
+  bookingDetails,
   extensionPending,
 }: BookingDetailsSidebarProps) => {
   const currency = extensionPending?.currency ?? "£";
@@ -26,23 +46,16 @@ const BookingDetailsSidebar = ({
         <h2 className="text-sm font-bold text-slate-800 mb-4">Booking Details</h2>
 
         <div className="space-y-4">
+          <DetailRow label="Status" value={bookingDetails.booking_status} />
+          <DetailRow label="Created" value={bookingDetails.booking_created_at} />
+          <DetailRow label="Channel" value={bookingDetails.channel_ota_name} />
+          <DetailRow label="Sales Channel" value={bookingDetails.sales_channel} />
+          <DetailRow label="Sales Person" value={bookingDetails.sales_person} />
+          <DetailRow label="Enquiry Manager" value={bookingDetails.enquiry_manager} />
+          <DetailRow label="Lead Source" value={bookingDetails.lead_source} />
           <div>
-            <p className="text-xs text-slate-400 mb-0.5">Phase</p>
-            <p className="text-sm font-semibold text-slate-800">{phase}</p>
-          </div>
-
-          <div className="border-t border-slate-50" />
-
-          <div>
-            <p className="text-xs text-slate-400 mb-0.5">Created</p>
-            <p className="text-sm font-semibold text-slate-800">{createdDate}</p>
-          </div>
-
-          <div className="border-t border-slate-50" />
-
-          <div>
-            <p className="text-xs text-slate-400 mb-0.5">Channel</p>
-            <p className="text-sm font-semibold text-slate-800">{channel}</p>
+            <p className="text-xs text-slate-400 mb-0.5">Duration</p>
+            <p className="text-sm font-semibold text-slate-800">{bookingDetails.duration} nights</p>
           </div>
         </div>
       </div>

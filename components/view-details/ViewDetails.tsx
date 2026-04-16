@@ -13,6 +13,16 @@ import { useEffect, useState } from "react";
 import { proxyFetch } from "@/utils/proxyFetch";
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface BookingData {
+  booking_details: {
+    booking_status: string;
+    booking_created_at: string;
+    channel_ota_name: string;
+    sales_channel: string;
+    sales_person: string;
+    enquiry_manager: string;
+    lead_source: string;
+    duration: number;
+  };
   booking_header: {
     bookingId: number;
     enquiry_app_id: string;
@@ -33,6 +43,37 @@ interface BookingData {
     phone: string;
   };
   invoices: Invoice[];
+  payment_details: {
+    additional_services_amount: number;
+    cancellation_charges: number;
+    canellation_commission: number;
+    commission_amount: number;
+    commission_percentage: number;
+    discount_amount: number;
+    exclusive_tax_amount: number;
+    inclusive_tax_amount: number;
+    is_booking_cancelled_with_charges: boolean;
+    ratePerNight: number;
+    revenue_against_cancellation: number;
+    security_deposit_amount: number;
+    taxAmount: number;
+    totalAmount: number;
+    totalNights: number;
+    total_paid_amount: number;
+  };
+  payment_history: Array<{
+    accepted_per: string;
+    amount: number;
+    created_at: string;
+    key: number;
+    mode: string;
+    notes: string;
+    receipt_img: string;
+    receipt_pdf: string;
+    ref_num: string;
+    reservation_history_id: number;
+    time: string;
+  }>;
   stay_and_pricing: {
     checkIn: string;
     checkOut: string;
@@ -68,7 +109,7 @@ const ViewDetailsComponent = ({ bookingId }: ViewDetailsComponentProps) => {
   // Guard: render nothing (or a loader) until data is ready
   if (!viewDetailsData) return null;
 
-  const { booking_header, stay_and_pricing, cost_break_down, invoices } = viewDetailsData;
+  const { booking_header, booking_details, stay_and_pricing, cost_break_down, invoices, payment_details, payment_history } = viewDetailsData;
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -115,16 +156,13 @@ const ViewDetailsComponent = ({ bookingId }: ViewDetailsComponentProps) => {
             {/* Right Column (1/3) */}
             <div className="col-span-1">
               <BookingDetailsSidebar
-                phase=""
-                createdDate=""
-                channel=""
-                extensionPending={undefined}
+                bookingDetails={booking_details}
               />
             </div>
           </div>
         )}
 
-        {activeTab === "payments" && <PaymentsTab />}
+        {activeTab === "payments" && <PaymentsTab paymentDetails={payment_details} paymentHistory={payment_history} />}
 
         {activeTab === "guest" && <GuestTab guestDetails={viewDetailsData.guest_details} />}
 
