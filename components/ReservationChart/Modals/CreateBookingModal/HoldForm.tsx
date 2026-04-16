@@ -1,9 +1,10 @@
-import { TITLES, ACCOUNT_LIST } from '@/constants/constant'
 import guestsData from '@/mocks/data/guests-data.json'
 import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
 import FloatingAutocomplete from '@/components/common/FloatingAutocomplete'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
+import { getTitleOptions } from '@/utils/common'
+import dayjs from 'dayjs'
 
 interface HoldFormProps {
   formData: any
@@ -15,13 +16,17 @@ interface HoldFormProps {
 }
 
 const HoldForm = ({ formData, handleChange, dayCount, constants, errors = {}, setErrors }: HoldFormProps) => {
-  const titleOptions = constants?.titles 
-    ? Object.values(constants.titles).map((title: string) => ({ value: title, label: title }))
-    : []
   
+  // const titleOptions = constants?.titles 
+  //   ? Object.values(constants.titles).map((title: string) => ({ value: title, label: title }))
+  //   : []
+
+  const titleOptions = getTitleOptions(constants?.titles)
+
   const adultOptions = constants?.adultCountList || []
   const childrenOptions = constants?.childrenCountList || []
   const accountOptions = constants?.accounts || []
+
   const handleSelectGuest = (guest: any) => {
     handleChange('guestName', guest.guest_name)
     handleChange('email', guest.guest_email !== 'None' && guest.guest_email !== '' ? guest.guest_email : '')
@@ -29,15 +34,16 @@ const HoldForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
   }
 
   const handleSelectAccount = (account: any) => {
-    handleChange('account', account.label)
+    handleChange('account', account.value)
+    handleChange('accountLabel', account.label)
   }
 
   return (
     <>
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mb-2">
       <FloatingInput 
-        label="Check-in" 
-        type="date"
+        label="Check-in"
+        type="datetime-local"
         value={formData?.checkIn} 
         onChange={(e) => {
           handleChange('checkIn', e.target.value)
@@ -48,8 +54,8 @@ const HoldForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
       />
 
       <FloatingInput 
-        label="Check-out" 
-        type="date"
+        label="Check-out"
+        type="datetime-local"
         value={formData?.checkOut} 
         onChange={(e) => {
           handleChange('checkOut', e.target.value)
@@ -119,8 +125,8 @@ const HoldForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
       {accountOptions.length > 0 && (
         <FloatingAutocomplete
           label="Account"
-          value={formData.account || ''}
-          onChange={(value) => handleChange('account', value)}
+          value={formData.accountLabel || ''}
+          onChange={(value) => handleChange('accountLabel', value)}
           onSelect={handleSelectAccount}
           suggestions={accountOptions}
           filterKey="label"
@@ -140,6 +146,7 @@ const HoldForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
         label="Hold Booking Till"
         type="datetime-local"
         value={formData.holdBookingTill}
+        min={dayjs().format('YYYY-MM-DDTHH:mm')}
         onChange={(e) => {
           handleChange('holdBookingTill', e.target.value)
           if (errors.holdBookingTill && setErrors) setErrors({ ...errors, holdBookingTill: '' })

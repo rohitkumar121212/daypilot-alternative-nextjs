@@ -12,3 +12,9 @@ export const createBlock = (data: any) =>
 
 export const createTask = (data: any) =>
   apiClient.post<ApiResponse>('/api/aperfect-pms/create-task', data)
+export const createCase = (data: any) =>
+  apiClient.post<ApiResponse>('/api/aperfect-pms/create-case', data)
+
+
+export const createAddPayment = (data: any) =>
+  apiClient.post<ApiResponse>('/api/aperfect10/pms/add-payment', data)

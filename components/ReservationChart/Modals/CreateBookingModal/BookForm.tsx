@@ -1,10 +1,9 @@
-import React from 'react'
-import { ACCOUNT_LIST, TAXSET_LIST } from '@/constants/constant'
 import guestsData from '@/mocks/data/guests-data.json'
 import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
 import FloatingAutocomplete from '@/components/common/FloatingAutocomplete'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
+import { getTitleOptions } from '@/utils/common'
 
 interface BookFormProps {
   formData: any
@@ -17,15 +16,13 @@ interface BookFormProps {
 
 const BookForm = ({ formData, handleChange, dayCount, constants, errors = {}, setErrors }: BookFormProps) => {
   // Convert API constants to dropdown format
-  const titleOptions = constants?.titles 
-    ? Object.values(constants.titles).map((title: string) => ({ value: title, label: title }))
-    : []
-  
+  const titleOptions = getTitleOptions(constants?.titles)
   const nationalityOptions = constants?.nationalities || []
   const adultOptions = constants?.adultCountList || []
   const childrenOptions = constants?.childrenCountList || []
   const accountOptions = constants?.accounts || []
   const taxOptions = constants?.taxSets || []
+
   const handleSelectGuest = (guest: any) => {
     handleChange('guestName', guest.guest_name)
     handleChange('email', guest.guest_email !== 'None' && guest.guest_email !== '' ? guest.guest_email : '')
@@ -33,28 +30,24 @@ const BookForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
   }
 
   const handleSelectAccount = (account: any) => {
-    handleChange('account', account.label)
+    handleChange('account', account.value)
+    handleChange('accountLabel', account.label)
   }
 
   const handleSelectTax = (tax: any) => {
-    handleChange('tax', tax.label)
+    handleChange('tax', tax.value)
+    handleChange('taxLabel', tax.label)
   }
 
   const handleSelectNationality = (nationality: any) => {
     handleChange('nationality', nationality.label)
   }
 
-  const getGuestSecondaryDisplay = (guest: any) => {
-    const email = guest.guest_email !== 'None' && guest.guest_email !== '' ? guest.guest_email : ''
-    const phone = guest.guest_contact !== 'None' && guest.guest_contact !== '' ? guest.guest_contact : ''
-    return email && phone ? `${email} • ${phone}` : email || phone
-  }
-
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       <FloatingInput
         label="Check-in"
-        type="date"
+        type="datetime-local"
         value={formData.checkIn}
         onChange={(e) => {
           handleChange('checkIn', e.target.value)
@@ -66,7 +59,7 @@ const BookForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
 
       <FloatingInput
         label="Check-out"
-        type="date"
+        type="datetime-local"
         value={formData.checkOut}
         onChange={(e) => {
           handleChange('checkOut', e.target.value)
@@ -144,8 +137,8 @@ const BookForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
       {accountOptions.length > 0 && (
         <FloatingAutocomplete
           label="Account"
-          value={formData.account || ''}
-          onChange={(value) => handleChange('account', value)}
+          value={formData.accountLabel || ''}
+          onChange={(value) => handleChange('accountLabel', value)}
           onSelect={handleSelectAccount}
           suggestions={accountOptions}
           filterKey="label"
@@ -167,8 +160,8 @@ const BookForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
 
       {taxOptions.length > 0 && (<FloatingAutocomplete
         label="Select Tax"
-        value={formData.tax || ''}
-        onChange={(value) => handleChange('tax', value)}
+        value={formData.taxLabel || ''}
+        onChange={(value) => handleChange('taxLabel', value)}
         onSelect={handleSelectTax}
         suggestions={taxOptions}
         filterKey="label"

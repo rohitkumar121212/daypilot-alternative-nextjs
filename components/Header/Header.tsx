@@ -1,117 +1,41 @@
 'use client'
 
-import Image from 'next/image'
-import { useEffect, useState } from 'react'
-import { proxyFetch } from '@/utils/proxyFetch'
+import { useUser } from '@/contexts/UserContext'
+import HeaderLogo from './HeaderLogo'
+import HeaderNavigationList from './HeaderNavigationList'
+import HeaderUserInfo from './HeaderUserInfo'
 
 const Header = () => {
-  const [user, setUser] = useState<any>(null)
-  
-  useEffect(() => {
-    proxyFetch('/aps-api/v1/users/details/private')
-      .then(data => setUser(data?.data?.user_details || "Unknown User"))
-      .catch(err => console.error('Failed to fetch user:', err))
-  }, [])
+  const { user, isLoading, error } = useUser()
   const baseDomain="https://aperfectstay.ai"
-  
-  const menuItems = [
-    { label: 'aPerfect Housekeeping', url: `${baseDomain}/aperfect10/gsadmin` },
-    { label: 'aPerfect Team: Collaborate', url: `${baseDomain}/aperfect10/staff_accountability/report` },
-    { label: 'aPerfect PMS', url: `${baseDomain}/aperfect-pms` },
-    { label: 'aPerfect HRMS', url: `${baseDomain}/hrcloud/dashboard` },
-    { label: 'aPerfect Dashboard', url: `${baseDomain}/select_products` }
-  ]
-  
-  const userMenuItems = [
-    { label: 'Switch Account', url: `${baseDomain}/collaboration_access` },
-    { label: 'Edit Accout Picture', url: `${baseDomain}/aperfect10/account/picture` },
-    { label: 'Change Password', url: `${baseDomain}/aperfect10/account/change_password` },
-    { label: 'Edit Profile', url: `${baseDomain}/aperfectstay/user/4789839916433408` },
-    { label: 'Manage Billing Account', url: `${baseDomain}/billing/edit` },
-    { label: 'Logout', url: `${baseDomain}/logout` }
-  ]
-  
-  const navItems = [
-    { label: 'Dashboard', hasDropdown: false },
-    { label: 'PMS', hasDropdown: false },
-    { label: 'Manage Properties', hasDropdown: false },
-    { 
-      label: 'Room Operations', 
-      hasDropdown: true,
-      dropdownItems: [
-        { label: 'Daily Check-in List', url: `${baseDomain}/aperfect-pms/checkin-list` },
-        { label: 'Daily Check-out List', url: `${baseDomain}/aperfect-pms/checkout-list` },
-        { label: 'Daily Reservations List', url: `${baseDomain}/aperfect-pms/reservation-list` },
-        { label: 'Daily In-house Guest List', url: `${baseDomain}/pms/report-viewer/in-house-guests` },
-        { label: 'Cancelled Bookings', url: `${baseDomain}/pms/cancelled-bookings` },
-        { label: 'Temp Hold List', url: `${baseDomain}/aperfect-pms/temp-list` },
-        { label: 'Housekeeping List', url: `${baseDomain}/aperfect-pms/housekeeping` },
-        { label: 'Housekeeping Inspection', url: `${baseDomain}/aperfect10/gsadmin` }
-      ]
-    },
-    { label: 'Reports', hasDropdown: false },
-    { 
-      label: 'Channel Manager', 
-      hasDropdown: true,
-      dropdownItems: [
-        { label: 'Inventory & Rates', url: `${baseDomain}/channel-operations-inventory?active_true=inventory` },
-        { label: 'Bookings', url: `${baseDomain}/channel-operations-bookings?active_true=bookings` },
-        { label: 'Properties', url: `${baseDomain}/channel-operations-properties?active_true=properties` },
-        { label: 'Rate Plans', url: `${baseDomain}/channel-operations-rates?active_true=rooms` },
-        { label: 'Manage Channels', url: `${baseDomain}/channel-operations-channels?active_true=channels` },
-        { label: 'Messages', url: `${baseDomain}/channel-operations-messages?active_true=messages` },
-        { label: 'Reviews', url: `${baseDomain}/channel-operations-reviews?active_true=reviews` },
-      ]
-    },
-    { label: 'APS Channel Manager', hasDropdown: false },
-    { 
-      label: 'Integrations', 
-      hasDropdown: true,
-      dropdownItems: [
-        { label: 'aPerfect Docs: Inspections', url: `${baseDomain}/aperfect10/gsadmin` },
-        { label: 'Channel Manager', url: `${baseDomain}/aperfect-pms/settings` },
-        { label: 'Nuki Smart Locks', url: `${baseDomain}/aperfect10/smart-locks/all-properties` },
-        { label: 'Reserve Parking', url: `${baseDomain}/manage-parking-in-building` }
-      ]
-    },
-    { 
-      label: 'Manage', 
-      hasDropdown: true,
-      dropdownItems: [
-        { label: 'Advanced Search', url: `${baseDomain}/aperfect-pms/advanced-search` },
-        { label: 'Add Agents/Clients', url: `${baseDomain}/aperfect10/cases/account/edit-all` },
-        { label: 'Xero Invoice Search', url: `${baseDomain}/aperfect-pms/search-xero-invoice` },
-        { label: 'Consolidated Invoice', url: `${baseDomain}/aperfect-pms/consolidated-invoice` },
-        { label: 'Apartment Availability Guide', url: `${baseDomain}/aperfect-pms/weekly-availability-report` },
-        { label: 'Expense Management', url: `${baseDomain}/aperfect-pms/expense-table` },
-        { label: 'Damages Tracker', url: `${baseDomain}/aperfect10/damages/dashboard` },
-        { label: 'Todo List', url: `${baseDomain}/aperfect-pms/todo-list` },
-        { label: 'Night Audit', url: `${baseDomain}/aperfect-pms/night-audit` },
-        { label: 'Group Booking', url: `${baseDomain}/aperfect-pms/check-availability` },
-        { label: 'Group Billing', url: `${baseDomain}/aperfect-pms/add-reservation` },
-        { label: 'GSA Arrivals', url: `${baseDomain}/gsa-arrivals` },
-        { label: 'Lost and Found', url: `${baseDomain}/lost-and-found` },
-        { label: 'Generate Payment Link', url: `${baseDomain}/aperfect-pms/add-payment` },
-        { label: 'Settings', url: `${baseDomain}/aperfect-pms/settings` },
-      ]
-    }
-  ]
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+    <>
+      <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+        <div className="flex items-center justify-between px-6 py-3">
+          <HeaderLogo />
+          <HeaderNavigationList user={user} />
+          <HeaderUserInfo user={user} />
+        </div>
+      </header>
+    </>
+  )
+}
+
+export default Header
+
+// Old Layout for header
+{/* <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
       <div className="flex items-center justify-between px-6 py-3">
-        {/* Logo + Navigation */}
         <div className="flex items-center gap-6 flex-1">
-          {/* Logo */}
           <Image 
             src="https://aperfectstay.ai/static/images/logo_image.png" 
             alt="A Perfect Stay" 
             width={100} 
             height={30}
-            className="w-auto flex-shrink-0"
+            className="w-auto shrink-0"
           />
 
-          {/* Navigation */}
           <nav className="flex-1">
             <ul className="flex items-center gap-4 flex-wrap">
               <li className="relative group">
@@ -127,8 +51,7 @@ const Header = () => {
                   </svg>
                 </a>
                 
-                {/* 9dots Dropdown Menu */}
-                <div className="absolute left-0 top-full mt-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out transform translate-y-[-10px] group-hover:translate-y-0 bg-white border border-gray-200 rounded-lg shadow-lg min-w-[200px] py-2 z-50">
+                <div className="absolute left-0 top-full mt-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out transform -translate-y-2.5 group-hover:translate-y-0 bg-white border border-gray-200 rounded-lg shadow-lg min-w-50 py-2 z-50">
                   {menuItems.map((menuItem) => (
                     <a
                       key={menuItem.label}
@@ -154,9 +77,8 @@ const Header = () => {
                     )}
                   </a>
                   
-                  {/* Dropdown Menu */}
                   {item.hasDropdown && item.dropdownItems && (
-                    <div className="absolute left-0 top-full mt-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out transform translate-y-[-10px] group-hover:translate-y-0 bg-white border border-gray-200 rounded-lg shadow-lg min-w-[200px] py-2 z-50">
+                    <div className="absolute left-0 top-full mt-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out transform -translate-y-2.5 group-hover:translate-y-0 bg-white border border-gray-200 rounded-lg shadow-lg min-w-50 py-2 z-50">
                       {item.dropdownItems.map((dropdownItem) => (
                         <a
                           key={dropdownItem.label}
@@ -173,20 +95,31 @@ const Header = () => {
             </ul>
           </nav>
         </div>
-        {console.log('User Info:', user)}
 
-        {/* User Info */}
-        <div className="flex-shrink-0 flex items-center gap-3 relative group cursor-pointer">
-          <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold">
-            U
+        <div className="shrink-0 flex items-center gap-3 relative group cursor-pointer">
+           <div className="w-10 h-10 rounded-full overflow-hidden">
+            {user?.company_logo_details?.url ? (<Image
+              src={`https:${user.company_logo_details.url}`}
+              alt="Company Logo"
+              width={40}
+              height={40}
+              className="object-cover"
+            />):(
+              <Image
+              src="https://aperfectstay.ai/static/images/user.png" // you can replace this later with company logo URL
+              alt="Company Logo"
+              width={40}
+              height={40}
+              className="object-cover"
+            />
+            )}
           </div>
           <div className="text-right">
             <div className="text-sm font-medium text-gray-900">{user?.name || "User Name"}</div>
             <div className="text-xs text-gray-500">{user?.email || "user@example.com"}</div>
           </div>
           
-          {/* User Dropdown Menu */}
-          <div className="absolute right-0 top-full mt-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out transform translate-y-[-10px] group-hover:translate-y-0 bg-white border border-gray-200 rounded-lg shadow-lg min-w-[180px] py-2 z-50">
+          <div className="absolute right-0 top-full mt-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out transform -translate-y-2.5 group-hover:translate-y-0 bg-white border border-gray-200 rounded-lg shadow-lg min-w-45 py-2 z-50">
             {userMenuItems.map((menuItem) => (
               <a
                 key={menuItem.label}
@@ -199,78 +132,4 @@ const Header = () => {
           </div>
         </div>
       </div>
-    </header>
-  )
-}
-
-export default Header
-
-
-/* OLD LAYOUT - Left, Middle, Right */
-// const Header = () => {
-//   const navItems = [
-//     'Dashboard',
-//     'PMS',
-//     'Manage Properties',
-//     'Room Operations',
-//     'Reports',
-//     'Channel Manager',
-//     'APS Channel Manager',
-//     'Integrations',
-//     'Manage'
-//   ]
-
-//   return (
-//     <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-//       <div className="flex items-center justify-between px-6 py-3">
-//         {/* Logo */}
-//         <div className="flex-shrink-0">
-//           <Image 
-//             src="https://aperfectstay.ai/static/images/logo_image.png" 
-//             alt="A Perfect Stay" 
-//             width={80} 
-//             height={30}
-//             className="w-auto"
-//           />
-//         </div>
-
-//         {/* Navigation */}
-//         <nav className="flex-1 flex justify-center px-4">
-//           <ul className="flex items-center gap-4 flex-wrap justify-center">
-//             <li>
-//               <a href="#" className="flex items-center">
-//                 <Image 
-//                   src="/icons/9dots.png" 
-//                   alt="Menu" 
-//                   width={20} 
-//                   height={20}
-//                 />
-//               </a>
-//             </li>
-//             {navItems.map((item) => (
-//               <li key={item}>
-//                 <a
-//                   href="#"
-//                   className="text-sm text-gray-600 hover:text-red-600 transition-colors whitespace-nowrap font-medium"
-//                 >
-//                   {item}
-//                 </a>
-//               </li>
-//             ))}
-//           </ul>
-//         </nav>
-
-//         {/* User Info */}
-//         <div className="flex-shrink-0 flex items-center gap-3">
-//           <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold">
-//             U
-//           </div>
-//           <div className="text-right">
-//             <div className="text-sm font-medium text-gray-900">User Name</div>
-//             <div className="text-xs text-gray-500">user@example.com</div>
-//           </div>
-//         </div>
-//       </div>
-//     </header>
-//   )
-// }
+    </header> */}

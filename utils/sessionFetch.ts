@@ -4,40 +4,72 @@ const DEV_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo0Nzg5ODM5
 
 const isDevelopment = process.env.NODE_ENV === 'development'
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://aperfectstay.ai'
+const LOGIN_URL = 'https://aperfectstay.ai/login?next=https://pms.aperfectstay.ai/pms-calendar'
 
 export async function sessionFetch(url: string, options: RequestInit = {}) {
-  // In development, use proxy for case-accounts API
-  if (isDevelopment && url.includes('case-accounts')) {
-    const response = await fetch('/api/proxy/case-accounts', {
-      ...options,
-      credentials: 'include',
-    })
-    return response.json()
-  }
+  let response: Response
 
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json',
-    ...options.headers,
-  }
+  try {
+    // In development, use proxy for case-accounts API
+    if (isDevelopment && url.includes('case-accounts')) {
+      response = await fetch('/api/proxy/case-accounts', {
+        ...options,
+        credentials: 'include',
+      })
+    } else {
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      }
 
-  // Only add token in development
-  if (isDevelopment) {
-    const token = typeof window !== 'undefined'
-      ? localStorage.getItem('token') || DEV_TOKEN
-      : DEV_TOKEN
-    
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`
+      // Only add token in development
+      if (isDevelopment) {
+        const token = typeof window !== 'undefined'
+          ? localStorage.getItem('token') || DEV_TOKEN
+          : DEV_TOKEN
+        
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`
+        }
+      }
+
+      const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`
+
+      response = await fetch(fullUrl, {
+        credentials: 'include',
+        ...options,
+        headers,
+      })
     }
+
+    // Global 401 handling - redirect to login
+    if (response.status === 401) {
+      console.warn('Unauthorized access detected in sessionFetch. Redirecting to login...')
+      
+      // Check if we're in a browser environment
+      if (typeof window !== 'undefined') {
+        window.location.href = LOGIN_URL
+      }
+      
+      // Throw error to prevent further processing
+      throw new Error('Unauthorized - redirecting to login')
+    }
+
+    // Handle other HTTP errors
+    if (!response.ok) {
+      console.error(`SessionFetch Error: ${response.status} ${response.statusText} for ${url}`)
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    return response.json()
+  } catch (error) {
+    // Re-throw 401 errors (already handled above)
+    if (error.message?.includes('Unauthorized')) {
+      throw error
+    }
+    
+    // Handle network errors or other issues
+    console.error('SessionFetch Request failed:', error)
+    throw error
   }
-
-  const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`
-
-  const response = await fetch(fullUrl, {
-    credentials: 'include',
-    ...options,
-    headers,
-  })
-
-  return response.json()
 }

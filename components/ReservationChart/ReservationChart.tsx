@@ -1,314 +1,242 @@
 'use client';
-import { useEffect, useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import dayjs from 'dayjs';
-import VirtualScheduler from './VirtualScheduler/VirtualScheduler';
+import { Scheduler } from '@/components/scheduler';
 import FilterContainer from './Filter/FilterContainer';
-import { detectOverbookings } from '@/utils/overbookingUtils';
-import { apiFetch } from '@/utils/apiRequest';
-import { proxyFetch } from '@/utils/proxyFetch';
+import ModalManager from './Overlays/ModalManager';
+import { DataRefreshProvider } from '@/contexts/DataRefreshContext';
+import { useSchedulerData } from '@/hooks/useSchedulerData';
+import { useModalState } from '@/hooks/useModalState';
+import { useContextMenuState } from '@/hooks/useContextMenuState';
+import { useUser } from '@/hooks/useUser'
+import { generateDateRange } from '@/components/scheduler/utils/dateUtils'
+import { useFrontendAvailability } from '@/components/scheduler/hooks/useFrontendAvailability';
 
-const ReservationChart = ()=>{
-  const [resources, setResources] = useState([])
-  const [bookings, setBookings] = useState([])
-  const [availability, setAvailability] = useState(null)
+const ReservationChart = ({ className = '', style = {} }: { className?: string; style?: React.CSSProperties }) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [bookingIdFilter, setBookingIdFilter] = useState('')
+  const [enquiryIdFilter, setEnquiryIdFilter] = useState('')
   const [startDate, setStartDate] = useState(dayjs().format('YYYY-MM-DD'))
   const [daysToShow, setDaysToShow] = useState(30)
 
-  const [resourcesLoaded, setResourcesLoaded] = useState(false)
-  const [bookingsLoaded, setBookingsLoaded] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
+  const {
+    resources, setResources,
+    bookings, setBookings,
+    collaborators,
+    availability,
+    isLoading,
+    refresh,
+  } = useSchedulerData({ startDate, daysToShow })
 
-  // Force landscape on mobile
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.innerWidth < 768) {
-      const style = document.createElement('style')
-      style.innerHTML = `
-        @media screen and (max-width: 767px) {
-          body { transform: rotate(90deg); transform-origin: left top; width: 100vh; height: 100vw; overflow-x: hidden; position: absolute; top: 100%; left: 0; }
-        }
-      `
-      document.head.appendChild(style)
-      return () => document.head.removeChild(style)
-    }
-  }, [])
+  const { isSquareUser } = useUser()
+
+  // ─── Modal + context menu state ───────────────────────────────────────────
+  const { activeModal, openModal, closeModal } = useModalState()
+  const [pendingSelection, setPendingSelection] = useState<any>(null)
+  const [changeConfirmation, setChangeConfirmation] = useState<{ isOpen: boolean; data: any }>({ isOpen: false, data: null })
+
+  const {
+    contextMenu, resourceContextMenu,
+    handleBookingRightClick, handleContextMenuAction, handleContextMenuClose,
+    handleResourceRightClick, handleResourceContextMenuAction, handleResourceContextMenuClose,
+  } = useContextMenuState({ openModal })
 
   /* =========================
-     Filter resources by search term and booking ID
+     Filter resources
   ========================= */
   const filteredResources = useMemo(() => {
     let resourcesResult = resources;
-    
-    // Filter by booking ID first - show only apartments that have the booking
+
     if (bookingIdFilter.trim()) {
-      const matchingBookings = bookings.filter(booking => 
+      const matchingBookings = bookings.filter(booking =>
         booking.booking_id?.toString().includes(bookingIdFilter) ||
         booking.id?.toString().includes(bookingIdFilter)
       );
-      
       const matchingApartmentIds = new Set(matchingBookings.map(booking => booking.resourceId));
-      
       resourcesResult = resources.map(parent => {
-        const matchingChildren = (parent.children || []).filter(child => 
-          matchingApartmentIds.has(child.id)
-        );
-        
-        if (matchingChildren.length > 0) {
-          return { ...parent, children: matchingChildren };
-        }
-        
-        return null;
+        const matchingChildren = (parent.children || []).filter((child: any) => matchingApartmentIds.has(child.id));
+        return matchingChildren.length > 0 ? { ...parent, children: matchingChildren } : null;
       }).filter(Boolean);
     }
-    
-    // Then filter by search term
+
+    if (enquiryIdFilter.trim()) {
+      const matchingBookings = bookings.filter(booking =>
+        booking.booking_details?.enq_app_id?.toString().includes(enquiryIdFilter)
+      );
+      const matchingApartmentIds = new Set(matchingBookings.map(booking => booking.resourceId));
+      resourcesResult = resourcesResult.map(parent => {
+        const matchingChildren = (parent.children || []).filter((child: any) => matchingApartmentIds.has(child.id));
+        return matchingChildren.length > 0 ? { ...parent, children: matchingChildren } : null;
+      }).filter(Boolean);
+    }
+
     if (searchTerm.trim()) {
       resourcesResult = resourcesResult.map(parent => {
         const parentMatches = parent.name.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchingChildren = (parent.children || []).filter(child => 
+        const matchingChildren = (parent.children || []).filter((child: any) =>
           child.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
-        
-        if (parentMatches) {
-          return parent; // Show all children if parent matches
-        } else if (matchingChildren.length > 0) {
-          return { ...parent, children: matchingChildren }; // Show only matching children
-        }
-        
-        return null; // Hide this parent entirely
+        if (parentMatches) return parent;
+        if (matchingChildren.length > 0) return { ...parent, children: matchingChildren };
+        return null;
       }).filter(Boolean);
     }
-    
+
     return resourcesResult;
-  }, [resources, searchTerm, bookingIdFilter, bookings]);
+  }, [resources, searchTerm, bookingIdFilter, enquiryIdFilter, bookings]);
+
+  const bookingsByResourceId = useMemo(() => {
+    const map = new Map<string, any[]>()
+    bookings.forEach(booking => {
+      const id = String(booking.resourceId)
+      if (!map.has(id)) map.set(id, [])
+      map.get(id)!.push(booking)
+    })
+    map.forEach((arr, id) => {
+      map.set(id, [...arr].sort((a, b) =>
+        new Date(a.startDate || a.start).getTime() - new Date(b.startDate || b.start).getTime()
+      ))
+    })
+    return map
+  }, [bookings])
+
+  // ─── Frontend availability (global + building-wise) ──────────────────────
+  const dates = useMemo(() => generateDateRange(daysToShow, startDate), [daysToShow, startDate])
+
+  const { frontendOccupancyByDate, frontendAvailabilityByParent } = useFrontendAvailability(
+    resources,
+    bookingsByResourceId,
+    dates
+  )
 
   /* =========================
-     Create booking (local)
+     Booking mutations
   ========================= */
-  const handleBookingCreate = (bookingData) => {
-    const newBooking = {
-      id: bookings.length + 1,
-      ...bookingData
-    }
+  const handleBookingCreate = useCallback((bookingData: any) => {
+    const newBooking = { id: bookings.length + 1, ...bookingData }
     setBookings(prev => [...prev, newBooking])
-  }
+  }, [bookings.length, setBookings])
 
-  /* =========================
-     Update booking on drag and drop
-  ========================= */
-  const handleBookingUpdate = (updatedBooking) => {
-    setBookings(prev => prev.map(booking => 
+  const handleBookingUpdate = useCallback((updatedBooking: any) => {
+    setBookings(prev => prev.map(booking =>
       booking.id === updatedBooking.id ? updatedBooking : booking
     ))
-  }
+  }, [setBookings])
 
   /* =========================
-     Parallel data fetching
+     Scheduler event handlers
   ========================= */
-  // useEffect(() => {
-  //   let cancelled = false
 
-  //   async function loadData() {
-  //     try {
-  //       const endDate = dayjs(startDate).add(daysToShow, 'day').format('YYYY-MM-DD')
-  //       // const resourcesUrl = `https://aperfectstay.ai/api/aps-pms/apts/?user=6552614495846400&start=${startDate}`
-  //       const resourcesUrl = `https://aperfectstay.ai/api/aps-pms/apts/private`
+  // Drag-and-drop: consumer receives move data, shows confirm dialog
+  const handleBookingMove = useCallback((moveData: any) => {
+    setChangeConfirmation({ isOpen: true, data: moveData })
+  }, [])
 
-  //       const bookingsUrl = `https://aperfectstay.ai/api/aps-pms/reservations/private?start=${startDate}&end=${endDate}`
-  //       const availabilityUrl = `https://aperfectstay.ai/api/aps-pms/buildings/avail/private?start=${startDate}&end=${endDate}`
-  //       const resourcesRequest = fetch(resourcesUrl,{
-  //         credentials: "include", // include cookies for authentication
-  //         next: { revalidate: 600 } // revalidate every 60 seconds
-  //       })
+  const handleConfirmChange = useCallback(() => {
+    if (changeConfirmation.data?.booking) handleBookingUpdate(changeConfirmation.data.booking)
+    setChangeConfirmation({ isOpen: false, data: null })
+  }, [changeConfirmation.data, handleBookingUpdate])
 
-  //       const bookingsRequest = fetch(bookingsUrl,{
-  //         credentials: "include", // include cookies for authentication
-  //         next: { revalidate: 600 } // revalidate every 60 seconds
-  //       })
+  const handleCancelChange = useCallback(() => {
+    setChangeConfirmation({ isOpen: false, data: null })
+  }, [])
 
-  //       const availabilityRequest = fetch(availabilityUrl,{
-  //         credentials: "include", // include cookies for authentication
-  //         next: { revalidate: 600 } // revalidate every 60 seconds
-  //       })
+  // Details modal
+  const handleDetailsModalClose = useCallback(() => closeModal(), [closeModal])
 
-  //       // 🚀 parallel execution
-  //       const [resourcesRes, bookingsRes, availabilityRes] = await Promise.all([
-  //         resourcesRequest,
-  //         bookingsRequest, 
-  //         availabilityRequest
-  //       ])
+  // Split booking
+  const handleSplitBooking = useCallback((splitData: any) => {
+    const { originalBooking, splitDate, newApartmentId } = splitData
+    const booking1 = { ...originalBooking, id: Date.now(), startDate: originalBooking.startDate, endDate: splitDate, resourceId: newApartmentId, backColor: '#5BCAC8' }
+    const booking2 = { ...originalBooking, startDate: dayjs(splitDate).add(1, 'day').format('YYYY-MM-DD'), endDate: originalBooking.endDate, backColor: '#5BCAC8' }
+    handleBookingUpdate(booking2)
+    handleBookingCreate(booking1)
+    closeModal()
+  }, [handleBookingUpdate, handleBookingCreate, closeModal])
 
-  //       const resourcesJson = await resourcesRes.json()
-  //       const bookingsJson = await bookingsRes.json()
-  //       const availabilityJson = await availabilityRes.json()
-
-  //       if (cancelled) return
-
-  //       const normalizedBookingData =
-  //          bookingsJson.data.reservations?.map(parent => ({
-  //           ...parent,
-  //           startDate: dayjs(parent.start).format('YYYY-MM-DD'),
-  //           endDate: dayjs(parent.end).format('YYYY-MM-DD'),
-  //           name: 'Room Booking',
-  //           notes: 'Sample booking for Room-1',
-  //           resourceId: parent?.booking_details?.apartment_id
-  //         })).filter(booking => {
-  //           // Filter out invalid bookings where end date is before start date
-  //           const start = dayjs(booking.startDate)
-  //           const end = dayjs(booking.endDate)
-  //           return start.isValid() && end.isValid() && !end.isBefore(start)
-  //         }) || []
-        
-  //       // Remove duplicate bookings by ID
-  //       const uniqueBookings = Array.from(
-  //         new Map(normalizedBookingData.map(b => [b.id || b.booking_id, b])).values()
-  //       )
-        
-  //       // Detect and mark overbookings
-  //       const bookingsWithOverbooking = detectOverbookings(uniqueBookings)
-          
-  //       setResources(resourcesJson?.data?.apt_build_details || [])
-  //       setResourcesLoaded(true)
-
-  //       setBookings(bookingsWithOverbooking)
-  //       setBookingsLoaded(true)
-        
-  //       setAvailability(availabilityJson?.data || null)
-  //     } catch (err) {
-  //       console.error('Failed to load scheduler data', err)
-  //     }
-  //   }
-
-  //   loadData()
-
-  //   return () => {
-  //     cancelled = true
-  //   }
-  // }, [startDate, daysToShow])
-  useEffect(() => {
-  let cancelled = false
-
-  async function loadData() {
-    try {
-      const endDate = dayjs(startDate).add(daysToShow, 'day').format('YYYY-MM-DD')
-      
-      const resourcesUrl = `https://aperfectstay.ai/api/aps-pms/apts/private`
-      const bookingsUrl = `https://aperfectstay.ai/api/aps-pms/reservations/private?start=${startDate}&end=${endDate}`
-      const availabilityUrl = `https://aperfectstay.ai/api/aps-pms/buildings/avail/private?start=${startDate}&end=${endDate}`
-      const caseAccountUrl = '/aps-api/v1/case-accounts/'
-      // ⚡ Fast requests first
-      const [resourcesJson, bookingsJson] = await Promise.all([
-        apiFetch(resourcesUrl),
-        apiFetch(bookingsUrl)
-      ])
-
-      if (cancelled) return
-
-      // Process and show data immediately
-      const normalizedBookingData =
-        bookingsJson.data.reservations?.map(parent => ({
-          ...parent,
-          startDate: dayjs(parent.start).format('YYYY-MM-DD'),
-          endDate: dayjs(parent.end).format('YYYY-MM-DD'),
-          name: 'Room Booking',
-          notes: 'Sample booking for Room-1',
-          resourceId: parent?.booking_details?.apartment_id
-        })).filter(booking => {
-          const start = dayjs(booking.startDate)
-          const end = dayjs(booking.endDate)
-          return start.isValid() && end.isValid() && !end.isBefore(start)
-        }) || []
-      
-      const uniqueBookings = Array.from(
-        new Map(normalizedBookingData.map(b => [b.id || b.booking_id, b])).values()
-      )
-      
-      const bookingsWithOverbooking = detectOverbookings(uniqueBookings)
-        
-      // ✅ Show resources and bookings immediately
-      setResources(resourcesJson?.data?.apt_build_details || [])
-      setResourcesLoaded(true)
-      setBookings(bookingsWithOverbooking)
-      setBookingsLoaded(true)
-      setIsLoading(false)
-
-      // 🔄 Fetch availability in background
-      apiFetch(availabilityUrl)
-        .then(availabilityJson => {
-          if (!cancelled) {
-            setAvailability(availabilityJson?.data || null)
-          }
-        })
-        .catch(err => {
-          console.error('Failed to load availability data', err)
-        })
-      // 🔄 Fetch case accounts in background (uses proxy in dev, direct in prod)
-      // proxyFetch(caseAccountUrl)
-      //   .then(caseAccountJson => {
-      //     if (!cancelled) {
-      //       console.log('Case Accounts Full Response:', caseAccountJson)
-      //       console.log('Case Accounts Data:', caseAccountJson?.data || [])
-      //     }
-      //   })
-      //   .catch(err => {
-      //     console.error('Failed to load case accounts data', err)
-      //   })
-
-    } catch (err) {
-      console.error('Failed to load scheduler data', err)
-      setIsLoading(false)
+  // Resolve the resource object from a pending selection's resourceId
+  const selectedResource = useMemo(() => {
+    if (!pendingSelection) return null
+    for (const parent of resources) {
+      if (String(parent.id) === String(pendingSelection.resourceId)) return parent
+      const child = (parent.children || []).find((c: any) => String(c.id) === String(pendingSelection.resourceId))
+      if (child) return child
     }
-  }
+    return null
+  }, [pendingSelection, resources])
 
-  loadData()
-
-  return () => {
-    cancelled = true
-  }
-}, [startDate, daysToShow])
-    return (
-        <div className="flex-1 overflow-hidden flex flex-col relative">
-            {isLoading && (
-              <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-50">
-                <div className="bg-white rounded-lg shadow-2xl p-8 flex flex-col items-center gap-4">
-                  <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                  <p className="text-gray-700 font-medium text-lg">Loading reservations...</p>
-                </div>
+  return (
+    <DataRefreshProvider onRefresh={refresh} isRefreshing={isLoading}>
+      <>
+        <div className={`w-full h-full overflow-hidden flex flex-col relative ${className}`} style={style}>
+          {isLoading && (
+            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-2xl p-8 flex flex-col items-center gap-4">
+                <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-gray-700 font-medium text-lg">Loading reservations...</p>
               </div>
-            )}
-            <div className="flex-1 border-b-2 border-gray-300">
-            {/* <div className="bg-blue-50 px-4 py-2 border-b border-gray-200">
-                <h2 className="text-lg font-semibold text-blue-800">SimpleVirtualScheduler (Custom Implementation)</h2>
-                <p className="text-sm text-blue-600">Manual virtualization without external dependencies</p>
-            </div> */}
-            <div>
-              <button className='p-2 bg-red-500 rounded-lg text-white mt-2 ml-4' onClick={() => window.location.href = 'https://aperfectstay.ai/aperfect-pms'}>Go back to APS</button>
             </div>
-            <FilterContainer 
+          )}
+          <div className="flex-1 min-h-0 border-b-2 border-gray-300 flex flex-col">
+            <FilterContainer
               onSearchChange={setSearchTerm}
               onBookingIdChange={setBookingIdFilter}
+              onEnquiryIdChange={setEnquiryIdFilter}
               onDateChange={setStartDate}
               onDaysChange={setDaysToShow}
               bookings={bookings}
+              collaborators={collaborators}
             />
-            <div className="h-[82vh]">
-                <VirtualScheduler
+            <div className="flex-1 min-h-0 w-full shadow-md">
+              <Scheduler
                 resources={filteredResources}
-                bookings={bookings}
+                bookingsByResourceId={bookingsByResourceId}
                 availability={availability}
-                onBookingCreate={handleBookingCreate}
-                onBookingUpdate={handleBookingUpdate}
+                frontendOccupancyByDate={frontendOccupancyByDate}
+                frontendAvailabilityByParent={frontendAvailabilityByParent}
+                isSquareUser={isSquareUser}
+                onTimeRangeSelect={setPendingSelection}
+                onBookingClick={(booking) => openModal('details', booking)}
+                onBookingMove={handleBookingMove}
+                onBookingRightClick={handleBookingRightClick}
+                onResourceRightClick={handleResourceRightClick}
                 onResourcesChange={setResources}
                 startDate={startDate}
                 daysToShow={daysToShow}
-                cellWidth={100}
+                cellWidth={70}
                 rowHeight={40}
-                />
+                height="80vh"
+              />
             </div>
-            </div>
-         </div>
-    );
+          </div>
+        </div>
+
+        {/* ── All APS overlays rendered outside the scheduler ────────────── */}
+        <ModalManager
+          createBookingOpen={!!pendingSelection}
+          selection={pendingSelection}
+          selectedResource={selectedResource}
+          onCreateBookingClose={() => setPendingSelection(null)}
+          onCreateBookingConfirm={(bookingData) => { handleBookingCreate(bookingData); setPendingSelection(null) }}
+          activeModal={activeModal}
+          openModal={openModal}
+          closeModal={closeModal}
+          onDetailsClose={handleDetailsModalClose}
+          onSplitBooking={handleSplitBooking}
+          contextMenu={contextMenu}
+          onContextMenuClose={handleContextMenuClose}
+          onContextMenuAction={handleContextMenuAction}
+          resourceContextMenu={resourceContextMenu}
+          onResourceContextMenuClose={handleResourceContextMenuClose}
+          onResourceContextMenuAction={handleResourceContextMenuAction}
+          changeConfirmation={changeConfirmation}
+          onConfirmChange={handleConfirmChange}
+          onCancelChange={handleCancelChange}
+          resources={resources}
+        />
+      </>
+    </DataRefreshProvider>
+  );
 }
 
 export default ReservationChart;

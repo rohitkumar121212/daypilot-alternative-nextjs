@@ -7,28 +7,61 @@ import StartDateFilter from './StartDateFilter';
 import DaysFilter from './DaysFilter';
 import AbbreviationsModal from '../Modals/Abbreviation/AbbreviationModal';
 import PropertiesLegendsModal from '../Modals/PropertiesLegends/PropertiesLegendsModal';
+import { useUser } from "@/contexts/UserContext"
+import CollaboratorFilter from './CollaboratorFilter';
+import EnquiryIdFilter from './EnquiryIdFilter';
+import { useDataRefresh } from '@/contexts/DataRefreshContext';
+
 interface FilterContainerProps {
   onSearchChange: (searchTerm: string) => void;
   onBookingIdChange: (bookingId: string) => void;
   onDateChange: (date: string) => void;
   onDaysChange: (days: number) => void;
+  onEnquiryIdChange: (enquiryId: string) => void;
   bookings: any[];
+  collaborators: any[]
 }
 
-const FilterContainer = ({ onSearchChange, onBookingIdChange, onDateChange, onDaysChange, bookings }: FilterContainerProps) => {
+const FilterContainer = ({ onSearchChange, onBookingIdChange, onDateChange, onDaysChange, onEnquiryIdChange, bookings, collaborators }: FilterContainerProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [colorsModalOpen, setColorsModalOpen] = useState(false);
-
+  const { user } = useUser()
+  const { refreshData, isRefreshing } = useDataRefresh()
+  const currentUserId =  user?.admin_details?.id
   return (
     <>
       <div className="bg-white px-4 py-3 border-b border-gray-200">
         <div className="flex items-center gap-4">
+          {/* Show refreshing indicator */}
+          {isRefreshing && (
+            <div className="flex items-center gap-2 text-sm text-blue-600">
+              <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              <span>Refreshing...</span>
+            </div>
+          )}
+          
+          {(user?.admin_details?.email==='stay@thesqua.re') && (
+            <div className='flex flex-row gap-2 text-sm'>
+              <a href="https://aperfectstay.ai/aps-redis-memorystore" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                Cache |
+              </a>
+              <a href="" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                STAAH Logs |
+            </a>
+            <a href="" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+              STAAH Reservation Logs |
+            </a>
+            <a href="https://aperfectstay.ai/aperfect-pms/refresh-booking-window-cache" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+              Refresh Window
+            </a>
+          </div>)}
+          {/* {collaborators && collaborators?.length>1 ?<CollaboratorFilter collaborators={collaborators} currentUserId={currentUserId} onRefreshData={refreshData}/> : null} */}
           <SearchApartmentFilter onSearchChange={onSearchChange} />
-          <BookingIdFilter onBookingIdChange={onBookingIdChange} bookings={bookings} />
+          {/* <BookingIdFilter onBookingIdChange={onBookingIdChange} bookings={bookings} />
+          <EnquiryIdFilter onEnquiryIdChange={onEnquiryIdChange} bookings={bookings} /> */}
           <StartDateFilter onDateChange={onDateChange} />
           <DaysFilter onDaysChange={onDaysChange} />
-          <AbbreviationsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-          <button
+            <button
             onClick={() => setIsModalOpen(true)}
             className="p-2 hover:bg-gray-100 rounded-md transition-colors"
           >

@@ -1,0 +1,167 @@
+import { useState, useEffect } from 'react'
+import dayjs from 'dayjs'
+import FloatingInput from '@/components/common/FloatingInput'
+import { useDataRefresh } from '@/contexts/DataRefreshContext'
+
+const SkipCheckInModal = ({ isOpen, booking, resources, onSkip, onClose }) => {
+  const [isChecked, setIsChecked] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const { refreshData } = useDataRefresh()
+
+  // Reset state when modal opens/closes
+  useEffect(() => {
+    if (!isOpen) {
+      setIsChecked(false)
+      setIsLoading(false)
+    }
+  }, [isOpen])
+
+  if (!isOpen || !booking) return null
+  console.log("booking in skip modal:", booking)
+
+  // Find resource name from resources
+  const getResourceName = () => {
+    for (const parent of resources || []) {
+      const child = (parent.children || []).find(c => c.id === booking.resourceId)
+      if (child) return child.name
+    }
+    return 'Unknown'
+  }
+
+  const handleSkip = async () => {
+    if (!isChecked || isLoading) return
+    
+    setIsLoading(true)
+    
+    const payload = {
+      booking_id: booking.id,
+      action: 'skip_checkin',
+      response_version: 'v1'
+    }
+
+    try {
+      const isDevelopment = process.env.NODE_ENV === 'development'
+      const url = isDevelopment
+        ? '/api/proxy/pms-mark-guest-as-inhouse'
+        : 'https://aperfectstay.ai/api/pms-mark-guest-as-inhouse'
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+        credentials: 'include',
+      })
+
+      const data = await response.json()
+      console.log('Skip Check-in response:', data)
+      
+      if (data.success) {
+        const bookingId = data.data?.reservation_id
+        console.log('Skip Check-in successful for booking ID:', bookingId)
+        
+        // ✅ Success: Refresh data and close modal
+        await refreshData()
+        onClose()
+      } else {
+        alert(data.error || 'Failed to Skip Check-in')
+      }
+    } catch (error) {
+      console.error('Failed to Skip Check-in:', error)
+      alert('An error occurred while skipping check-in. Please try again.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center z-50" style={{ backgroundColor: 'rgba(0, 0, 0, 0.3)' }} onClick={onClose}>
+      <div className="bg-white rounded-lg shadow-xl p-6 w-[92%] md:w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+        <h2 className="text-xl font-semibold mb-4">Skip Check-in</h2>
+        
+        <div className='grid grid-cols-1 gap-4'>
+          <FloatingInput 
+            label="Guest Name" 
+            type="text"
+            value={booking?.booking_details?.name || booking?.text} 
+            onChange={() => {}}
+            readOnly
+          />
+
+          <FloatingInput 
+            label="Apartment" 
+            type="text"
+            // value={getResourceName()} 
+            value={booking.resource }
+            onChange={() => {}}
+            readOnly
+          />
+          <FloatingInput 
+            label="Check-in" 
+            type="date"
+            // value={dayjs(booking.startDate).format('YYYY-MM-DD HH:mm')}
+            value={booking.startDate ? dayjs(booking.startDate).format('YYYY-MM-DD') : ''}
+            onChange={() => {}}
+            readOnly
+          />
+          <div>
+            <input 
+              type="checkbox" 
+              checked={isChecked}
+              onChange={(e) => setIsChecked(e.target.checked)}
+            />
+            <label className="ml-2 text-sm text-gray-700">
+              <span className="font-semibold text-red-600">Please Note</span> - Use this option for same guest with different booking.
+            </label>
+          </div>
+        </div>
+        
+
+        <div className="space-y-4 mb-6">
+          
+          <div className="bg-yellow-50 border border-yellow-200 rounded p-3 mt-4">
+            {/* <p className="text-sm text-red-700 mb-2">
+              <strong>Please Note</strong> - Use this option for same guest with different booking.
+            </p> */}
+            <p className="text-sm text-red-700">
+              Incase checkin is skipped, this booking will <strong>"NOT"</strong> appear in Checkin List on the day of guest arrival.
+            </p>
+          </div>
+        </div>
+        
+        <div className="flex gap-3">
+          <button 
+            onClick={handleSkip}
+            disabled={!isChecked || isLoading}
+            className={`flex-1 px-4 py-2 rounded flex items-center justify-center gap-2 ${
+              isChecked && !isLoading
+                ? 'btn btn-primary-with-bg' 
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+          >
+            {isLoading ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Skipping...
+              </>
+            ) : (
+              'Skip Check-in'
+            )}
+          </button>
+          <button 
+            onClick={onClose}
+            disabled={isLoading}
+            className={`flex-1 btn btn-primary ${
+              isLoading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default SkipCheckInModal
