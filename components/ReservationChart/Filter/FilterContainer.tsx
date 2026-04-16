@@ -40,7 +40,7 @@ const FilterContainer = ({ onSearchChange, onBookingIdChange, onDateChange, onDa
             </div>
           )}
           
-          {(user?.admin_details?.email==='stay@thesqua.re') && (
+          {/* {(user?.admin_details?.email==='stay@thesqua.re') && (
             <div className='flex flex-row gap-2 text-sm'>
               <a href="https://aperfectstay.ai/aps-redis-memorystore" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
                 Cache |
@@ -54,7 +54,7 @@ const FilterContainer = ({ onSearchChange, onBookingIdChange, onDateChange, onDa
             <a href="https://aperfectstay.ai/aperfect-pms/refresh-booking-window-cache" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
               Refresh Window
             </a>
-          </div>)}
+          </div>)} */}
           {/* {collaborators && collaborators?.length>1 ?<CollaboratorFilter collaborators={collaborators} currentUserId={currentUserId} onRefreshData={refreshData}/> : null} */}
           <SearchApartmentFilter onSearchChange={onSearchChange} />
           {/* <BookingIdFilter onBookingIdChange={onBookingIdChange} bookings={bookings} />

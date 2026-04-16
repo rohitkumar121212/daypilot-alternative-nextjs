@@ -17,7 +17,7 @@ const HeaderNavigationList = ({ user }: HeaderNavigationListProps) => {
     ]
     const allNavItems = [
         { label: 'Dashboard', hasDropdown: false, url: `${baseDomain}/perfect-property-cloud` },
-        { label: 'PMS', hasDropdown: false, url: `${baseDomain}/aperfect-pms` },
+        { label: 'PMS', hasDropdown: false, url: `/pms-calendar` },
         { label: 'Manage Properties', hasDropdown: false, url: `${baseDomain}/manage-pms-properties` },
         { 
         label: 'Room Operations', 
