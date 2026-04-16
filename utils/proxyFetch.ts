@@ -12,6 +12,13 @@ const PROXY_ROUTES: Record<string, string> = {
   '/api/aperfect-pms/fetch-property-address-and-details': '/api/proxy/fetch-property-address-and-details',
 }
 
+const PROXY_PATTERNS: Array<{ pattern: RegExp; proxy: string }> = [
+  {
+    pattern: /^\/aps-api\/v1\/reservations\/details\/(\d+)$/,
+    proxy: '/api/proxy/reservations/$1',
+  },
+]
+
 export async function proxyFetch(url: string, options: RequestInit = {}) {
   let response: Response
 

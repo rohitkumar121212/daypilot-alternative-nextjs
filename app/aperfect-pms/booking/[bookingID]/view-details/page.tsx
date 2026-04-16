@@ -1,10 +1,9 @@
-const ViewDetailsPage=() => {
+import ViewDetailsComponent from "@/components/view-details/ViewDetails"
+
+const ViewDetailsPage = async ({ params }: { params: Promise<{ bookingID: string }> }) => {
+  const { bookingID } = await params
   return (
-    <div>
-      <h1>Booking Details</h1>
-      {/* Booking details content goes here */}
-    </div>
+    <ViewDetailsComponent bookingId={bookingID} />
   )
 }
-
 export default ViewDetailsPage
