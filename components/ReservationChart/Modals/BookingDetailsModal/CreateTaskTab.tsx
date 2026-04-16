@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
@@ -29,6 +30,8 @@ const CreateTaskTab = ({ bookingDetails, reservationConstants, onClose }: Create
 
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isLoading, setIsLoading] = useState(false)
+
+  const router = useRouter()
 
   const handleCreateTask = async () => {
     const newErrors: Record<string, string> = {}
@@ -83,9 +86,10 @@ const CreateTaskTab = ({ bookingDetails, reservationConstants, onClose }: Create
       //   alert(data.error || 'Failed to create task')
       // }
       if (data.success) {
-        const bookingId = data.data?.reservation_id
+        const bookingId = data?.data?.reservation_id
         if (bookingId) {
-          window.location.href = `/aperfect-pms/booking/${bookingId}/view-details`
+          router.push(`/aperfect-pms/booking/${bookingId}/view-details`)
+          // window.location.href = `/aperfect-pms/booking/${bookingId}/view-details`
           // window.location.href = `https://aperfectstay.ai/aperfect-pms/booking/${booking?.booking_details?.booking_key}/view-details`
 
         } else {
