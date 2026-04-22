@@ -1,8 +1,8 @@
-import { apiClient } from '@/apiData/lib/axios'
+import { fetchUtils } from '@/utils/fetchUtils'
 import type { ApiResponse } from '@/apiData/types/api'
 
 export const getCurrentUser = () =>
-  apiClient.get<ApiResponse>('/auth/me')
+  fetchUtils.get<ApiResponse>('/api/proxy?path=%2Fauth%2Fme')
 
 export const logout = () =>
-  apiClient.post<ApiResponse>('/auth/logout')
+  fetchUtils.post<ApiResponse>('/api/proxy?path=%2Fauth%2Flogout')

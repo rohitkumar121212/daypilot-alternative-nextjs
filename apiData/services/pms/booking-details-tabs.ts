@@ -1,11 +1,5 @@
-import { apiClient } from '@/apiData/lib/axios'
+import { fetchUtils } from '@/utils/fetchUtils'
 import type { ApiResponse } from '@/apiData/types/api'
 
 export const addNewBookingPayment = (formData: FormData) =>
-  apiClient.post<ApiResponse>('/aperfect-pms/add-new-booking-payment', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-  })
-
-// Note: sharePaymentLink now uses proxyFetch in components
-// export const sharePaymentLink = (data: any) =>
-//   apiClient.post<ApiResponse>('/aperfect-pms/share-payment-link', data)
+  fetchUtils.post<ApiResponse>('/api/proxy/add-payment', formData)

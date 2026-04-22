@@ -1,20 +1,20 @@
-import { apiClient } from '@/apiData/lib/axios'
+import { fetchUtils } from '@/utils/fetchUtils'
 import type { ApiResponse } from '@/apiData/types/api'
 
 export const createReservation = (data: any) =>
-  apiClient.post<ApiResponse>('/api/aperfect-pms/create-reservation', data)
+  fetchUtils.post<ApiResponse>('/api/proxy/add-reservation', data)
 
 export const createHold = (data: any) =>
-  apiClient.post<ApiResponse>('/api/aperfect-pms/create-hold', data)
+  fetchUtils.post<ApiResponse>('/api/proxy?path=%2Fapi%2Faperfect-pms%2Fcreate-hold', data)
 
 export const createBlock = (data: any) =>
-  apiClient.post<ApiResponse>('/api/aperfect-pms/create-block', data)
+  fetchUtils.post<ApiResponse>('/api/proxy?path=%2Fapi%2Faperfect-pms%2Fcreate-block', data)
 
 export const createTask = (data: any) =>
-  apiClient.post<ApiResponse>('/api/aperfect-pms/create-task', data)
-export const createCase = (data: any) =>
-  apiClient.post<ApiResponse>('/api/aperfect-pms/create-case', data)
+  fetchUtils.post<ApiResponse>('/api/proxy/create-task', data)
 
+export const createCase = (data: any) =>
+  fetchUtils.post<ApiResponse>('/api/proxy/create-case', data)
 
 export const createAddPayment = (data: any) =>
-  apiClient.post<ApiResponse>('/api/aperfect10/pms/add-payment', data)
+  fetchUtils.post<ApiResponse>('/api/proxy/add-payment', data)

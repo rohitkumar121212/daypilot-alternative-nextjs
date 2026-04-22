@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import dayjs from 'dayjs'
 import { detectOverbookings } from '@/utils/overbookingUtils'
-import { apiFetch } from '@/utils/apiRequest'
+import { fetchUtils } from '@/utils/fetchUtils'
 
 interface UseSchedulerDataParams {
   startDate: string
@@ -35,10 +35,10 @@ export function useSchedulerData({ startDate, daysToShow }: UseSchedulerDataPara
     const collaboratorUrl = 'https://aperfectstay.ai/aps-api/v1/collaborators/'
 
     // ⚡ Fast requests first — show data before availability loads
-    const [resourcesJson, bookingsJson, collaboratorJson] = await Promise.all([
-      apiFetch(resourcesUrl),
-      apiFetch(bookingsUrl),
-      apiFetch(collaboratorUrl)
+    const [{ data: resourcesJson }, { data: bookingsJson }, { data: collaboratorJson }] = await Promise.all([
+      fetchUtils.get(resourcesUrl),
+      fetchUtils.get(bookingsUrl),
+      fetchUtils.get(collaboratorUrl)
     ])
 
     if (isCancelled()) return
@@ -69,11 +69,11 @@ export function useSchedulerData({ startDate, daysToShow }: UseSchedulerDataPara
     setIsLoading(false)
 
     // 🔄 Fetch availability in background after main data is shown
-    apiFetch(availabilityUrl)
-      .then(availabilityJson => {
+    fetchUtils.get(availabilityUrl)
+      .then(({ data: availabilityJson }) => {
         if (!isCancelled()) setAvailability(availabilityJson?.data || null)
       })
-      .catch(err => console.error('Failed to load availability data', err))
+      .catch((err: any) => console.error('Failed to load availability data', err))
   }, [startDate, daysToShow])
 
   // Auto-fetch when startDate or daysToShow changes

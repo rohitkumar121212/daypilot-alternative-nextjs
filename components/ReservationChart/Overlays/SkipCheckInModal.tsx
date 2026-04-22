@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import dayjs from 'dayjs'
 import FloatingInput from '@/components/common/FloatingInput'
+import { fetchUtils } from '@/utils/fetchUtils'
 import { useDataRefresh } from '@/contexts/DataRefreshContext'
 
 const SkipCheckInModal = ({ isOpen, booking, resources, onSkip, onClose }) => {
@@ -40,21 +41,7 @@ const SkipCheckInModal = ({ isOpen, booking, resources, onSkip, onClose }) => {
     }
 
     try {
-      const isDevelopment = process.env.NODE_ENV === 'development'
-      const url = isDevelopment
-        ? '/api/proxy/pms-mark-guest-as-inhouse'
-        : 'https://aperfectstay.ai/api/pms-mark-guest-as-inhouse'
-      
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-        credentials: 'include',
-      })
-
-      const data = await response.json()
+      const { data } = await fetchUtils.post('/api/proxy/pms-mark-guest-as-inhouse', payload)
       console.log('Skip Check-in response:', data)
       
       if (data.success) {
