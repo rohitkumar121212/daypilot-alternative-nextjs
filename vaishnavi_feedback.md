@@ -43,3 +43,8 @@
 - All apartments and bookings are fetched and held in memory at once.
 - With 1000+ apartments and thousands of bookings, initial load and memory usage will grow.
 - **Fix:** Consider paginated or windowed API fetching, loading only the visible date range plus a small buffer.
+
+## 11. Reduce Third-Party Library Dependencies (e.g. Day.js)
+- The project uses `dayjs` for all date operations, adding an external dependency for functionality that can be handled natively or with a small custom utility.
+- Modern JavaScript (`Date`, `Intl`, `Temporal`) covers most date formatting, diffing, and parsing needs without a library.
+- **Fix:** Replace `dayjs` with a lightweight custom `dateUtils` module (the project already has `utils/dateUtils.js`). Move all date logic there — formatting, range generation, diff calculations — and remove the `dayjs` dependency entirely. This reduces bundle size and eliminates a library upgrade surface.
