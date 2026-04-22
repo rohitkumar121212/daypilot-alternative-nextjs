@@ -33,12 +33,12 @@ export async function apiFetch(url: string, options: RequestInit = {}) {
       console.warn('Unauthorized access detected. Redirecting to login...')
       
       // Check if we're in a browser environment
-      if (typeof window !== 'undefined') {
-        window.location.href = LOGIN_URL
-      }
+      // if (typeof window !== 'undefined') {
+      //   window.location.href = LOGIN_URL
+      // }
       
-      // Throw error to prevent further processing
-      throw new Error('Unauthorized - redirecting to login')
+      // // Throw error to prevent further processing
+      // throw new Error('Unauthorized - redirecting to login')
     }
 
     // Handle other HTTP errors
