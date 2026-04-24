@@ -1,6 +1,7 @@
 'use client'
 
 import { proxyFetch } from '@/utils/proxyFetch'
+import { getLoginUserInfo } from '@/apiData/loginUserInfo'
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode, useMemo } from 'react'
 
 interface User {
@@ -70,6 +71,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   }, [])
 
   useEffect(() => {
+    getLoginUserInfo().then((d) => console.log('fetchUtils result:', d))
     fetchUser()
   }, [])
 

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { buildBookingPayload } from '../utils/payloadBuilder'
+import { fetchUtils } from '@/utils/fetchUtils'
 
 export const useBookingSubmission = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -18,21 +19,7 @@ export const useBookingSubmission = () => {
     
     try {
       setIsSubmitting(true)
-      const isDevelopment = process.env.NODE_ENV === 'development'
-      const url = isDevelopment
-        ? '/api/proxy/add-reservation'
-        : 'https://aperfectstay.ai/api/aperfect-pms/add-new-reservation'
-      
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-        credentials: 'include',
-      })
-
-      const data = await response.json()
+      const { data } = await fetchUtils.post('/api/proxy/add-reservation', payload)
       console.log('Booking created successfully:', data)
       
       if (data.success) {

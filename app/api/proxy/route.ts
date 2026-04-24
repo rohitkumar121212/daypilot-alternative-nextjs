@@ -22,17 +22,17 @@ export async function PATCH(request: NextRequest) {
 
 async function proxyRequest(request: NextRequest, method: string) {
   const path = request.nextUrl.searchParams.get('path')
-  
+
   console.log('[Proxy] Received request:', { method, path })
-  
+
   if (!path) {
     return NextResponse.json({ error: 'Path parameter required' }, { status: 400 })
   }
 
   const targetUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}${path}`
-  
+
   console.log('[Proxy] Target URL:', targetUrl)
-  
+
   const headers: HeadersInit = {
     'Content-Type': request.headers.get('content-type') || 'application/json',
   }

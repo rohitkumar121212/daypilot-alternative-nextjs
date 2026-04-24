@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { apiFetch } from '@/utils/apiRequest'
+import { fetchUtils } from '@/utils/fetchUtils'
 
 type Collaborator = {
   id: number
@@ -38,21 +38,7 @@ const CollaboratorFilter = ({ collaborators, currentUserId, onRefreshData }: Col
       }
       
       try{
-        const isDevelopment = process.env.NODE_ENV === 'development'
-        const url = isDevelopment
-          ? '/api/proxy/collab-admin-session'
-          : 'https://aperfectstay.ai/collab_admin_session/'
-        
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
-          credentials: 'include',
-        })
-
-        const data = await response.json()
+        const { data } = await fetchUtils.post('/api/proxy/collab-admin-session', payload)
         console.log('Collaborator admin session updated successfully:', data)
         
         if (data.success) {

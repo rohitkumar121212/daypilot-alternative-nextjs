@@ -1,3 +1,4 @@
+import { fetchUtils } from '@/utils/fetchUtils'
 import FloatingInput from '@/components/common/FloatingInput'
 import { formatDateTime } from '@/utils/formatDateTime'
 import BookingNotes from '@/components/common/StringToHtml'
@@ -36,21 +37,7 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose, onOpenCheckInMod
     }
 
     try {
-      const isDevelopment = process.env.NODE_ENV === 'development'
-      const url = isDevelopment
-        ? '/api/proxy/convert-to-booking'
-        : 'https://aperfectstay.ai/api/aperfect-pms/convert-to-booking'
-      
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-        credentials: 'include',
-      })
-
-      const data = await response.json()
+      const { data } = await fetchUtils.post('/api/proxy/convert-to-booking', payload)
       
       if (data.success) {
         await refreshData()

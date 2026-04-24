@@ -4,11 +4,10 @@ import Tabs from '@/components/common/Tabs'
 import BookingDetailsTab from '../Modals/BookingDetailsModal/BookingDetailsTab'
 import CreateCaseTab from '../Modals/BookingDetailsModal/CreateCaseTab'
 import CreateTaskTab from '../Modals/BookingDetailsModal/CreateTaskTab'
-import AddPaymentTab from '../Modals/BookingDetailsModal/AddPaymentTab'
 import SharePaymentLinkTab from '../Modals/BookingDetailsModal/SharePaymentLinkTab'
 
 import {formatBookingType} from '@/utils/common'
-import { apiFetch } from '@/utils/apiRequest'
+import { fetchUtils } from '@/utils/fetchUtils'
 
 interface BookingDetailsModalProps {
   isOpen: boolean
@@ -45,12 +44,10 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
     setActiveTab(initialTab)
 
     Promise.all([
-      apiFetch('/aps-api/v1/cases/users'),
-      fetch('https://aperfectstay.ai/aps-api/v1/constants/reservation', {
-        credentials: 'include'
-      }).then(res => res.json())
+      fetchUtils.get('https://aperfectstay.ai/aps-api/v1/cases/users'),
+      fetchUtils.get('https://aperfectstay.ai/aps-api/v1/constants/reservation')
     ])
-      .then(([assignToUsersData, reservationConstantsData]) => {
+      .then(([{ data: assignToUsersData }, { data: reservationConstantsData }]) => {
         // if needed later
         // setUsers(usersData?.data)
         console.log('Assign to users data:', assignToUsersData)

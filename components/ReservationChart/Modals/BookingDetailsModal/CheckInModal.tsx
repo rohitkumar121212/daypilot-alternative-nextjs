@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { fetchUtils } from '@/utils/fetchUtils'
 import { useDataRefresh } from '@/contexts/DataRefreshContext'
 
 interface CheckInModalProps {
@@ -39,21 +40,7 @@ const CheckInModal = ({ isOpen, onClose, booking, onCheckIn }: CheckInModalProps
     console.log('Checking in booking:', payload)
 
     try {
-      const isDevelopment = process.env.NODE_ENV === 'development'
-      const url = isDevelopment
-        ? '/api/proxy/pms-mark-guest-as-inhouse'
-        : 'https://aperfectstay.ai/api/pms-mark-guest-as-inhouse'
-      
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-        credentials: 'include',
-      })
-
-      const data = await response.json()
+      const { data } = await fetchUtils.post('/api/proxy/pms-mark-guest-as-inhouse', payload)
       console.log('Check-in response:', data)
       
       if (data.success) {

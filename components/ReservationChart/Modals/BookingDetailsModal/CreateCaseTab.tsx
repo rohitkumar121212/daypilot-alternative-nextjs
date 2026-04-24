@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { fetchUtils } from '@/utils/fetchUtils'
 import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
@@ -70,18 +71,7 @@ const CreateCaseTab = ({ reservationConstants, bookingDetails, assignToUsers, on
     if (formData.image) formPayload.append('images', formData.image)
     console.log('Form payload:', Object.fromEntries(formPayload.entries()))
     try {
-      const isDevelopment = process.env.NODE_ENV === 'development'
-      const url = isDevelopment
-        ? '/api/proxy/create-case'
-        : 'https://aperfectstay.ai/api/aperfect10/pms/create-new-case'
-      
-      const response = await fetch(url, {
-        method: 'POST',
-        body: formPayload,
-        credentials: 'include',
-      })
-
-      const data = await response.json()
+      const { data } = await fetchUtils.post('/api/proxy/create-case', formPayload)
       console.log('Case created successfully:', data)
       
       if (data.success) {
