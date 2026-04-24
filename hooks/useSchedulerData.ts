@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import dayjs from 'dayjs'
 import { detectOverbookings } from '@/utils/overbookingUtils'
 import { fetchUtils } from '@/utils/fetchUtils'
+import type { SSEReservationEvent } from './useSSEBookings'
 
 interface UseSchedulerDataParams {
   startDate: string
@@ -17,6 +18,18 @@ interface UseSchedulerDataResult {
   availability: any
   isLoading: boolean
   refresh: () => Promise<void>
+  applySSEEvent: (event: SSEReservationEvent) => void
+}
+
+function normalizeBooking(raw: any) {
+  return {
+    ...raw,
+    startDate: dayjs(raw.start).format('YYYY-MM-DD'),
+    endDate: dayjs(raw.end).format('YYYY-MM-DD'),
+    name: 'Room Booking',
+    notes: 'Sample booking for Room-1',
+    resourceId: raw?.booking_details?.apartment_id,
+  }
 }
 
 export function useSchedulerData({ startDate, daysToShow }: UseSchedulerDataParams): UseSchedulerDataResult {
@@ -44,14 +57,7 @@ export function useSchedulerData({ startDate, daysToShow }: UseSchedulerDataPara
     if (isCancelled()) return
 
     const normalizedBookingData =
-      bookingsJson.data.reservations?.map((parent: any) => ({
-        ...parent,
-        startDate: dayjs(parent.start).format('YYYY-MM-DD'),
-        endDate: dayjs(parent.end).format('YYYY-MM-DD'),
-        name: 'Room Booking',
-        notes: 'Sample booking for Room-1',
-        resourceId: parent?.booking_details?.apartment_id
-      })).filter((booking: any) => {
+      bookingsJson.data.reservations?.map(normalizeBooking).filter((booking: any) => {
         const start = dayjs(booking.startDate)
         const end = dayjs(booking.endDate)
         return start.isValid() && end.isValid() && !end.isBefore(start)
@@ -98,5 +104,33 @@ export function useSchedulerData({ startDate, daysToShow }: UseSchedulerDataPara
     })
   }, [fetchData])
 
-  return { resources, setResources, bookings, setBookings, collaborators, availability, isLoading, refresh }
+  const applySSEEvent = useCallback((event: SSEReservationEvent) => {
+    setBookings(prev => {
+      let updated: any[]
+
+      if (event.type === 'reservation.created') {
+        const normalized = normalizeBooking(event.data)
+        const alreadyExists = prev.some(b => b.id === normalized.id || b.booking_id === normalized.booking_id)
+        if (alreadyExists) return prev
+        updated = [...prev, normalized]
+        console.log('[SSE] Applied create for booking', normalized.id ?? normalized.booking_id)
+      } else if (event.type === 'reservation.updated') {
+        const normalized = normalizeBooking(event.data)
+        updated = prev.map(b =>
+          (b.id === normalized.id || b.booking_id === normalized.booking_id) ? normalized : b
+        )
+        console.log('[SSE] Applied update for booking', normalized.id ?? normalized.booking_id)
+      } else if (event.type === 'reservation.deleted') {
+        const id = event.data?.id ?? event.data?.booking_id
+        updated = prev.filter(b => b.id !== id && b.booking_id !== id)
+        console.log('[SSE] Applied delete for booking', id)
+      } else {
+        return prev
+      }
+
+      return detectOverbookings(updated)
+    })
+  }, [])
+
+  return { resources, setResources, bookings, setBookings, collaborators, availability, isLoading, refresh, applySSEEvent }
 }

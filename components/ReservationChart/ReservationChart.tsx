@@ -11,6 +11,7 @@ import { useContextMenuState } from '@/hooks/useContextMenuState';
 import { useUser } from '@/hooks/useUser'
 import { generateDateRange } from '@/components/scheduler/utils/dateUtils'
 import { useFrontendAvailability } from '@/components/scheduler/hooks/useFrontendAvailability';
+import { useSSEBookings } from '@/hooks/useSSEBookings'
 
 const ReservationChart = ({ className = '', style = {} }: { className?: string; style?: React.CSSProperties }) => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -26,7 +27,17 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
     availability,
     isLoading,
     refresh,
+    applySSEEvent,
   } = useSchedulerData({ startDate, daysToShow })
+
+  const sseEndDate = dayjs(startDate).add(daysToShow, 'day').format('YYYY-MM-DD')
+
+  useSSEBookings({
+    startDate,
+    endDate: sseEndDate,
+    onEvent: applySSEEvent,
+    enabled: !isLoading,
+  })
 
   const { isSquareUser } = useUser()
 
@@ -175,6 +186,12 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
                 <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
                 <p className="text-gray-700 font-medium text-lg">Loading reservations...</p>
               </div>
+            </div>
+          )}
+          {!isLoading && (
+            <div className="absolute top-2 right-3 z-40 flex items-center gap-1.5 rounded-full bg-white/90 px-2.5 py-1 shadow-sm ring-1 ring-green-200 text-xs font-medium text-green-700">
+              <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+              Live
             </div>
           )}
           <div className="flex-1 min-h-0 border-b-2 border-gray-300 flex flex-col">
