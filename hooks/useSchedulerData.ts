@@ -133,7 +133,7 @@ export function useSchedulerData({ startDate, daysToShow }: UseSchedulerDataPara
         return detectOverbookings(updated)
       }
 
-      if (event.type === 'BOOKING_DELETED') {
+      if (event.type === 'BOOKING_DELETED' || event.type === 'BOOKING_CANCELLED') {
         const id = event.data?.booking_id ?? event.data?.id
         const updated = prev.filter(b => String(b.id) !== String(id) && String(b.booking_id) !== String(id))
         console.log('[SSE] Deleted booking', id)

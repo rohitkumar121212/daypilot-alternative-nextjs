@@ -6,6 +6,7 @@ export type SSEEventType =
   | 'BOOKING_GUEST_UPDATED'
   | 'BOOKING_AMOUNT_CHANGED'
   | 'BOOKING_DELETED'
+  | 'BOOKING_CANCELLED'
 
 export interface SSEReservationEvent {
   type: SSEEventType
