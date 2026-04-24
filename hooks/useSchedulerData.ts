@@ -26,8 +26,8 @@ function normalizeBooking(raw: any) {
     ...raw,
     startDate: dayjs(raw.start).format('YYYY-MM-DD'),
     endDate: dayjs(raw.end).format('YYYY-MM-DD'),
-    name: 'Room Booking',
-    notes: 'Sample booking for Room-1',
+    // name: 'Room Booking',
+    // notes: 'Sample booking for Room-1',
     resourceId: raw?.booking_details?.apartment_id,
   }
 }
