@@ -106,7 +106,12 @@ export function useSchedulerData({ startDate, daysToShow }: UseSchedulerDataPara
 
   const applySSEEvent = useCallback((event: SSEReservationEvent) => {
     setBookings(prev => {
-      if (event.type === 'BOOKING_UPDATED' || event.type === 'BOOKING_CREATED') {
+      if (
+        event.type === 'BOOKING_CREATED' ||
+        event.type === 'BOOKING_UPDATED' ||
+        event.type === 'BOOKING_GUEST_UPDATED' ||
+        event.type === 'BOOKING_AMOUNT_CHANGED'
+      ) {
         // payload.reservations is the array of full booking objects to upsert
         const incoming: any[] = event.data?.reservations ?? []
         if (incoming.length === 0) return prev

@@ -1,6 +1,11 @@
 import { useEffect, useRef, useCallback } from 'react'
 
-export type SSEEventType = 'BOOKING_UPDATED' | 'BOOKING_CREATED' | 'BOOKING_DELETED'
+export type SSEEventType =
+  | 'BOOKING_CREATED'
+  | 'BOOKING_UPDATED'
+  | 'BOOKING_GUEST_UPDATED'
+  | 'BOOKING_AMOUNT_CHANGED'
+  | 'BOOKING_DELETED'
 
 export interface SSEReservationEvent {
   type: SSEEventType
