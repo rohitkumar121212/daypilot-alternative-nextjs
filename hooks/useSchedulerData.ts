@@ -106,29 +106,36 @@ export function useSchedulerData({ startDate, daysToShow }: UseSchedulerDataPara
 
   const applySSEEvent = useCallback((event: SSEReservationEvent) => {
     setBookings(prev => {
-      let updated: any[]
+      if (event.type === 'BOOKING_UPDATED' || event.type === 'BOOKING_CREATED') {
+        // payload.reservations is the array of full booking objects to upsert
+        const incoming: any[] = event.data?.reservations ?? []
+        if (incoming.length === 0) return prev
 
-      if (event.type === 'reservation.created') {
-        const normalized = normalizeBooking(event.data)
-        const alreadyExists = prev.some(b => b.id === normalized.id || b.booking_id === normalized.booking_id)
-        if (alreadyExists) return prev
-        updated = [...prev, normalized]
-        console.log('[SSE] Applied create for booking', normalized.id ?? normalized.booking_id)
-      } else if (event.type === 'reservation.updated') {
-        const normalized = normalizeBooking(event.data)
-        updated = prev.map(b =>
-          (b.id === normalized.id || b.booking_id === normalized.booking_id) ? normalized : b
-        )
-        console.log('[SSE] Applied update for booking', normalized.id ?? normalized.booking_id)
-      } else if (event.type === 'reservation.deleted') {
-        const id = event.data?.id ?? event.data?.booking_id
-        updated = prev.filter(b => b.id !== id && b.booking_id !== id)
-        console.log('[SSE] Applied delete for booking', id)
-      } else {
-        return prev
+        let updated = [...prev]
+        for (const raw of incoming) {
+          const normalized = normalizeBooking(raw)
+          const idx = updated.findIndex(
+            b => String(b.id) === String(normalized.id) || String(b.booking_id) === String(normalized.booking_id)
+          )
+          if (idx !== -1) {
+            updated[idx] = normalized
+            console.log('[SSE] Updated booking', normalized.id ?? normalized.booking_id)
+          } else {
+            updated.push(normalized)
+            console.log('[SSE] Added booking', normalized.id ?? normalized.booking_id)
+          }
+        }
+        return detectOverbookings(updated)
       }
 
-      return detectOverbookings(updated)
+      if (event.type === 'BOOKING_DELETED') {
+        const id = event.data?.booking_id ?? event.data?.id
+        const updated = prev.filter(b => String(b.id) !== String(id) && String(b.booking_id) !== String(id))
+        console.log('[SSE] Deleted booking', id)
+        return detectOverbookings(updated)
+      }
+
+      return prev
     })
   }, [])
 

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react'
 
-export type SSEEventType = 'reservation.created' | 'reservation.updated' | 'reservation.deleted'
+export type SSEEventType = 'BOOKING_UPDATED' | 'BOOKING_CREATED' | 'BOOKING_DELETED'
 
 export interface SSEReservationEvent {
   type: SSEEventType
@@ -127,7 +127,8 @@ export function useSSEBookings({ startDate, endDate, onEvent, enabled }: UseSSEB
     }
 
     console.log('[SSE] Event received:', type, parsed)
-    onEventRef.current({ type, data: parsed?.data ?? parsed })
+    // Real event shape: { type, payload: { reservations: [...], ... } }
+    onEventRef.current({ type, data: parsed?.payload ?? parsed?.data ?? parsed })
   }
 
   function scheduleRetry(signal: AbortSignal) {
