@@ -51,7 +51,10 @@ const AddPaymentTab = ({ bookingId, onClose, reservationConstants, bookingDetail
     if (formData.receipt) formPayload.append('receipt_img', formData.receipt)
     
     try {
-      const { data } = await fetchUtils.post('/api/proxy/add-payment', formPayload)
+      const url = process.env.NODE_ENV === 'development'
+        ? '/api/proxy/add-payment'
+        : 'https://aperfectstay.ai/api/aperfect-pms/add-new-booking-payment'
+      const { data } = await fetchUtils.post(url, formPayload)
       console.log('Payment added successfully:', data)
       
       if (data.success) {

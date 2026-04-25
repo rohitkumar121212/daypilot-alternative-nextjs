@@ -40,7 +40,10 @@ const CheckInModal = ({ isOpen, onClose, booking, onCheckIn }: CheckInModalProps
     console.log('Checking in booking:', payload)
 
     try {
-      const { data } = await fetchUtils.post('/api/proxy/pms-mark-guest-as-inhouse', payload)
+      const url = process.env.NODE_ENV === 'development'
+        ? '/api/proxy/pms-mark-guest-as-inhouse'
+        : 'https://aperfectstay.ai/api/pms-mark-guest-as-inhouse'
+      const { data } = await fetchUtils.post(url, payload)
       console.log('Check-in response:', data)
       
       if (data.success) {

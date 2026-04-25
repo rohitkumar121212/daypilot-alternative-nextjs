@@ -41,7 +41,10 @@ const SkipCheckInModal = ({ isOpen, booking, resources, onSkip, onClose }) => {
     }
 
     try {
-      const { data } = await fetchUtils.post('/api/proxy/pms-mark-guest-as-inhouse', payload)
+      const url = process.env.NODE_ENV === 'development'
+        ? '/api/proxy/pms-mark-guest-as-inhouse'
+        : 'https://aperfectstay.ai/api/pms-mark-guest-as-inhouse'
+      const { data } = await fetchUtils.post(url, payload)
       console.log('Skip Check-in response:', data)
       
       if (data.success) {

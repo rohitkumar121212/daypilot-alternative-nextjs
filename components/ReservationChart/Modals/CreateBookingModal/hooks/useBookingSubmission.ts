@@ -19,7 +19,10 @@ export const useBookingSubmission = () => {
     
     try {
       setIsSubmitting(true)
-      const { data } = await fetchUtils.post('/api/proxy/add-reservation', payload)
+      const url = process.env.NODE_ENV === 'development'
+        ? '/api/proxy/add-reservation'
+        : 'https://aperfectstay.ai/api/aperfect-pms/add-new-reservation'
+      const { data } = await fetchUtils.post(url, payload)
       console.log('Booking created successfully:', data)
       
       if (data.success) {

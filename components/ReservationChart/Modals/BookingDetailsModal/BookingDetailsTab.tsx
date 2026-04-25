@@ -37,7 +37,10 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose, onOpenCheckInMod
     }
 
     try {
-      const { data } = await fetchUtils.post('/api/proxy/convert-to-booking', payload)
+      const url = process.env.NODE_ENV === 'development'
+        ? '/api/proxy/convert-to-booking'
+        : `https://aperfectstay.ai/pms/convert_hold_to_booking/${payload.booking_id}`
+      const { data } = await fetchUtils.post(url, payload)
       
       if (data.success) {
         await refreshData()

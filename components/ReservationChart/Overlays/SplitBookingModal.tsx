@@ -80,7 +80,10 @@ const SplitBookingModal = ({ isOpen, booking, resources, onSplit, onClose }) => 
     console.log('Splitting booking with payload:', payload)
 
     try {
-      const { data } = await fetchUtils.post('/api/proxy/split-booking', payload)
+      const url = process.env.NODE_ENV === 'development'
+        ? '/api/proxy/split-booking'
+        : 'https://aperfectstay.ai/api/pms-enqire-split-booking'
+      const { data } = await fetchUtils.post(url, payload)
       console.log('Split booking response:', data)
       
       if (data.success) {
