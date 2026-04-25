@@ -15,8 +15,15 @@ export async function POST(request: NextRequest) {
     headers['Cookie'] = `session=${DEV_SESSION}`
     headers['Authorization'] = `Bearer ${DEV_TOKEN}`
   } else {
-    const cookie = request.headers.get('cookie')
-    if (cookie) headers['Cookie'] = cookie
+    const authHeader = request.headers.get('authorization')
+    if (authHeader) {
+      headers['Authorization'] = authHeader
+    } else {
+      const accessToken = request.cookies.get('access_token')?.value
+      if (accessToken) {
+        headers['Authorization'] = `Bearer ${accessToken}`
+      }
+    }
   }
 
   try {
@@ -54,16 +61,23 @@ export async function POST(request: NextRequest) {
       method: 'POST',
       headers,
       body: JSON.stringify(responseData),
+      redirect: 'manual',
     })
 
-    // const text = await response.text()
-    const data = await response.json()
-    console.log('proxy add-reservation Booking created successfully:', data)
-    // console.log('Response status:', response.status)
-    // console.log('Response body:', text)
+    console.log('[add-reservation] upstream status:', response.status, response.statusText)
+
+    const text = await response.text()
+    console.log('[add-reservation] upstream body:', text.substring(0, 500))
+
+    let data: any
+    try {
+      data = JSON.parse(text)
+    } catch {
+      return NextResponse.json({ error: 'Upstream returned non-JSON', status: response.status, body: text.substring(0, 500) }, { status: 502 })
+    }
 
     if (data.success === true) {
-      return NextResponse.json({ data: data.data,success: true, message: data.message}, { status: 200 })
+      return NextResponse.json({ data: data.data, success: true, message: data.message }, { status: 200 })
     }
 
     return NextResponse.json({ error: 'API request failed', details: data }, { status: response.status })
