@@ -24,6 +24,12 @@ export async function POST(request: NextRequest) {
         headers['Authorization'] = `Bearer ${accessToken}`
       }
     }
+
+    // The upstream requires the session cookie in addition to the Bearer token
+    const sessionCookie = request.cookies.get('session')?.value
+    if (sessionCookie) {
+      headers['Cookie'] = `session=${sessionCookie}`
+    }
   }
 
   try {

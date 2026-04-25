@@ -43,7 +43,10 @@ const CancelCheckInModal = ({ isOpen, booking, resources, onCancel, onClose }) =
     }
 
     try {
-      const { data } = await fetchUtils.post('/api/proxy/cancel-checkin', payload)
+      const url = process.env.NODE_ENV === 'development'
+        ? '/api/proxy/cancel-checkin'
+        : 'https://aperfectstay.ai/api/aperfect-pms/cancel-checkin'
+      const { data } = await fetchUtils.post(url, payload)
       
       if (data.success) {
         const bookingId = data.data?.reservation_id
