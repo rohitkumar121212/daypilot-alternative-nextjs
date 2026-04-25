@@ -67,7 +67,10 @@ const CreateTaskTab = ({ bookingDetails, reservationConstants, onClose }: Create
     if (formData.image) formPayload.append('images', formData.image)
     
     try {
-      const { data } = await fetchUtils.post('/api/proxy/create-task', formPayload)
+      const url = process.env.NODE_ENV === 'development'
+        ? '/api/proxy/create-task'
+        : 'https://aperfectstay.ai/api/aperfect10/pms/create-new-task'
+      const { data } = await fetchUtils.post(url, formPayload)
       console.log('Task created successfully:', data)
       
       // if (data.success) {

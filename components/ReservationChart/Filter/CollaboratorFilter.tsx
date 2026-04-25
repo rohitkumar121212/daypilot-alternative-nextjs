@@ -38,7 +38,10 @@ const CollaboratorFilter = ({ collaborators, currentUserId, onRefreshData }: Col
       }
       
       try{
-        const { data } = await fetchUtils.post('/api/proxy/collab-admin-session', payload)
+        const url = process.env.NODE_ENV === 'development'
+          ? '/api/proxy/collab-admin-session'
+          : 'https://aperfectstay.ai/collab_admin_session/'
+        const { data } = await fetchUtils.post(url, payload)
         console.log('Collaborator admin session updated successfully:', data)
         
         if (data.success) {

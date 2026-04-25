@@ -71,7 +71,10 @@ const CreateCaseTab = ({ reservationConstants, bookingDetails, assignToUsers, on
     if (formData.image) formPayload.append('images', formData.image)
     console.log('Form payload:', Object.fromEntries(formPayload.entries()))
     try {
-      const { data } = await fetchUtils.post('/api/proxy/create-case', formPayload)
+      const url = process.env.NODE_ENV === 'development'
+        ? '/api/proxy/create-case'
+        : 'https://aperfectstay.ai/api/aperfect10/pms/create-new-case'
+      const { data } = await fetchUtils.post(url, formPayload)
       console.log('Case created successfully:', data)
       
       if (data.success) {
