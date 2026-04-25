@@ -14,6 +14,9 @@ export async function POST(request: NextRequest) {
   if (isDevelopment) {
     headers['Cookie'] = `session=${DEV_SESSION}`
     headers['Authorization'] = `Bearer ${DEV_TOKEN}`
+  } else {
+    const cookie = request.headers.get('cookie')
+    if (cookie) headers['Cookie'] = cookie
   }
 
   try {
@@ -63,7 +66,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ data: data.data,success: true, message: data.message}, { status: 200 })
     }
 
-    return NextResponse.json({ error: 'API request failed', status: response.status, response: text.substring(0, 500) }, { status: response.status })
+    return NextResponse.json({ error: 'API request failed', details: data }, { status: response.status })
   } catch (error) {
     console.error('Proxy error:', error)
     return NextResponse.json({ error: 'Failed to create reservation', details: String(error) }, { status: 500 })
