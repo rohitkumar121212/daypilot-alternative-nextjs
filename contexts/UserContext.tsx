@@ -1,7 +1,6 @@
 'use client'
 
 import { proxyFetch } from '@/utils/proxyFetch'
-import { getLoginUserInfo } from '@/apiData/loginUserInfo'
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode, useMemo } from 'react'
 
 interface User {
@@ -15,7 +14,13 @@ interface User {
     id: string
     url: string
   }
-  // Add other user properties as needed
+  admin_details?: {
+    property_settings?: {
+      one_day_before_calendar?: string
+      [key: string]: any
+    }
+    [key: string]: any
+  }
 }
 
 interface UserContextType {
@@ -71,7 +76,6 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   }, [])
 
   useEffect(() => {
-    getLoginUserInfo().then((d) => console.log('fetchUtils result:', d))
     fetchUser()
   }, [])
 

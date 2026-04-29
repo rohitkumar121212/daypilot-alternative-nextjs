@@ -1,5 +1,5 @@
 'use client';
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import dayjs from 'dayjs';
 import { Scheduler } from '@/components/scheduler';
 import FilterContainer from './Filter/FilterContainer';
@@ -14,11 +14,20 @@ import { useFrontendAvailability } from '@/components/scheduler/hooks/useFronten
 import { useSSEBookings } from '@/hooks/useSSEBookings'
 
 const ReservationChart = ({ className = '', style = {} }: { className?: string; style?: React.CSSProperties }) => {
+  const { user, isSquareUser } = useUser()
   const [searchTerm, setSearchTerm] = useState('')
   const [bookingIdFilter, setBookingIdFilter] = useState('')
   const [enquiryIdFilter, setEnquiryIdFilter] = useState('')
   const [startDate, setStartDate] = useState(dayjs().format('YYYY-MM-DD'))
   const [daysToShow, setDaysToShow] = useState(30)
+
+  useEffect(() => {
+    if (!user) return
+    if (user?.admin_details?.pms_settings?.one_day_before_calendar === 'True') {
+      setStartDate(dayjs().subtract(1, 'day').format('YYYY-MM-DD'))
+      console.log('One day before calendar enabled, setting start date to yesterday:', dayjs().subtract(1, 'day').format('YYYY-MM-DD'))
+    }
+  }, [user])
 
   const {
     resources, setResources,
@@ -38,8 +47,6 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
     onEvent: applySSEEvent,
     enabled: !isLoading,
   })
-
-  const { isSquareUser } = useUser()
 
   // ─── Modal + context menu state ───────────────────────────────────────────
   const { activeModal, openModal, closeModal } = useModalState()
