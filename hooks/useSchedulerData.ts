@@ -7,6 +7,7 @@ import type { SSEReservationEvent } from './useSSEBookings'
 interface UseSchedulerDataParams {
   startDate: string
   daysToShow: number
+  enabled?: boolean
 }
 
 interface UseSchedulerDataResult {
@@ -32,7 +33,7 @@ function normalizeBooking(raw: any) {
   }
 }
 
-export function useSchedulerData({ startDate, daysToShow }: UseSchedulerDataParams): UseSchedulerDataResult {
+export function useSchedulerData({ startDate, daysToShow, enabled = true }: UseSchedulerDataParams): UseSchedulerDataResult {
   const [resources, setResources] = useState<any[]>([])
   const [bookings, setBookings] = useState<any[]>([])
   const [collaborators, setCollaborators] = useState<any[]>([])
@@ -82,8 +83,9 @@ export function useSchedulerData({ startDate, daysToShow }: UseSchedulerDataPara
       .catch((err: any) => console.error('Failed to load availability data', err))
   }, [startDate, daysToShow])
 
-  // Auto-fetch when startDate or daysToShow changes
+  // Auto-fetch when startDate or daysToShow changes, but only once user has loaded
   useEffect(() => {
+    if (!enabled) return
     let cancelled = false
     setIsLoading(true)
     fetchData(() => cancelled).catch(err => {
@@ -93,7 +95,7 @@ export function useSchedulerData({ startDate, daysToShow }: UseSchedulerDataPara
       }
     })
     return () => { cancelled = true }
-  }, [fetchData])
+  }, [fetchData, enabled])
 
   // Manual refresh — never cancellable, always runs to completion
   const refresh = useCallback(async () => {

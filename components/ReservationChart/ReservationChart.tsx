@@ -14,7 +14,7 @@ import { useFrontendAvailability } from '@/components/scheduler/hooks/useFronten
 import { useSSEBookings } from '@/hooks/useSSEBookings'
 
 const ReservationChart = ({ className = '', style = {} }: { className?: string; style?: React.CSSProperties }) => {
-  const { user, isSquareUser } = useUser()
+  const { user, isSquareUser, isLoading: isUserLoading } = useUser()
   const [searchTerm, setSearchTerm] = useState('')
   const [bookingIdFilter, setBookingIdFilter] = useState('')
   const [enquiryIdFilter, setEnquiryIdFilter] = useState('')
@@ -37,7 +37,7 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
     isLoading,
     refresh,
     applySSEEvent,
-  } = useSchedulerData({ startDate, daysToShow })
+  } = useSchedulerData({ startDate, daysToShow, enabled: !isUserLoading })
 
   const sseEndDate = dayjs(startDate).add(daysToShow, 'day').format('YYYY-MM-DD')
 
