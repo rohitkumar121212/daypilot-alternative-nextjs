@@ -18,16 +18,22 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
   const [searchTerm, setSearchTerm] = useState('')
   const [bookingIdFilter, setBookingIdFilter] = useState('')
   const [enquiryIdFilter, setEnquiryIdFilter] = useState('')
-  const [startDate, setStartDate] = useState(dayjs().format('YYYY-MM-DD'))
+  const [startDate, setStartDate] = useState<string | null>(null)
   const [daysToShow, setDaysToShow] = useState(30)
 
+  // Set startDate exactly once after user loads — keeps it null until then so
+  // useSchedulerData doesn't fire a wasted call with the wrong date.
   useEffect(() => {
     if (!user) return
-    if (user?.admin_details?.pms_settings?.one_day_before_calendar === 'True') {
-      setStartDate(dayjs().subtract(1, 'day').format('YYYY-MM-DD'))
-      console.log('One day before calendar enabled, setting start date to yesterday:', dayjs().subtract(1, 'day').format('YYYY-MM-DD'))
-    }
+    setStartDate(
+      user?.admin_details?.pms_settings?.one_day_before_calendar === 'True'
+        ? dayjs().subtract(1, 'day').format('YYYY-MM-DD')
+        : dayjs().format('YYYY-MM-DD')
+    )
   }, [user])
+
+  // Safe fallback for components that render before startDate is resolved
+  const effectiveStartDate = startDate ?? dayjs().format('YYYY-MM-DD')
 
   const {
     resources, setResources,
@@ -37,12 +43,12 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
     isLoading,
     refresh,
     applySSEEvent,
-  } = useSchedulerData({ startDate, daysToShow, enabled: !isUserLoading })
+  } = useSchedulerData({ startDate: effectiveStartDate, daysToShow, enabled: !isUserLoading && startDate !== null })
 
-  const sseEndDate = dayjs(startDate).add(daysToShow, 'day').format('YYYY-MM-DD')
+  const sseEndDate = dayjs(effectiveStartDate).add(daysToShow, 'day').format('YYYY-MM-DD')
 
   useSSEBookings({
-    startDate,
+    startDate: effectiveStartDate,
     endDate: sseEndDate,
     onEvent: applySSEEvent,
     enabled: !isLoading,
@@ -119,7 +125,7 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
   }, [bookings])
 
   // ─── Frontend availability (global + building-wise) ──────────────────────
-  const dates = useMemo(() => generateDateRange(daysToShow, startDate), [daysToShow, startDate])
+  const dates = useMemo(() => generateDateRange(daysToShow, effectiveStartDate), [daysToShow, effectiveStartDate])
 
   const { frontendOccupancyByDate, frontendAvailabilityByParent } = useFrontendAvailability(
     resources,
@@ -225,7 +231,7 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
                 onBookingRightClick={handleBookingRightClick}
                 onResourceRightClick={handleResourceRightClick}
                 onResourcesChange={setResources}
-                startDate={startDate}
+                startDate={effectiveStartDate}
                 daysToShow={daysToShow}
                 cellWidth={70}
                 rowHeight={40}
