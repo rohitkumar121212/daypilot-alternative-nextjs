@@ -40,7 +40,6 @@ export async function getUserDetails() {
   try {
     const response = await fetch(`${BASE_URL}/aps-api/v1/users/details/private`, {
       headers,
-      credentials: 'include',
       cache: 'no-store'
     })
 
