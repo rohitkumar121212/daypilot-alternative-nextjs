@@ -1,8 +1,10 @@
+import { requireAuth } from '@/lib/auth'
 import ReservationChart from "@/components/ReservationChart/ReservationChart";
 
-const PMS = () => {
+const PMS = async () => {
+    await requireAuth('/pms-calendar')
+
     return (
-        // <div className="h-[600px] w-[95%] mx-auto border border-gray-300 rounded-lg shadow-md mt-2">
         <div>
             <ReservationChart />
         </div>
