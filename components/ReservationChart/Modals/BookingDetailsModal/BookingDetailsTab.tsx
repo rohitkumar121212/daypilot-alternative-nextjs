@@ -94,10 +94,11 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose, onOpenCheckInMod
         />
       </div> */}
       {/* Other Details */}
-      {/* <div className='pt-4 border-t border-gray-300'>
+      <div className='pt-4 border-t border-gray-300'>
         <h3 className="text-lg font-semibold text-gray-800 mb-1 pb-2">Other Details</h3>
         <BookingNotes booking={booking} />
-      </div> */}
+      </div>
+      
       {/* CTA */}
       <div className='border-t border-gray-300 pt-4 flex flex-wrap gap-3'>
         {/* <a
