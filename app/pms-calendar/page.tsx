@@ -1,15 +1,13 @@
-export const dynamic = 'force-dynamic'
-
-import { requireAuth } from '@/lib/auth'
+import AuthGuard from '@/components/AuthGuard'
 import ReservationChart from "@/components/ReservationChart/ReservationChart";
 
-const PMS = async () => {
-    await requireAuth('/pms-calendar')
-
+const PMS = () => {
     return (
-        <div>
-            <ReservationChart />
-        </div>
+        <AuthGuard>
+            <div>
+                <ReservationChart />
+            </div>
+        </AuthGuard>
     )
 };
 
