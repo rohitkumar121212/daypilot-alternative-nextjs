@@ -24,11 +24,23 @@ export async function getUserDetails() {
     }
   } else {
     const cookieStore = await cookies()
-    const sessionCookie = cookieStore.get('session')
-    console.log('[getUserDetails] Production session cookie present:', !!sessionCookie?.value)
-    if (sessionCookie) {
-      headers['Cookie'] = `session=${sessionCookie.value}`
+    const allCookies = cookieStore.getAll()
+    console.log('[getUserDetails] Available cookies:', allCookies.map(c => c.name))
+
+    // Primary auth: access_token Bearer (matches all production proxy routes)
+    const accessToken = cookieStore.get('access_token')?.value
+    if (accessToken) {
+      headers['Authorization'] = `Bearer ${accessToken}`
     }
+
+    // Fallback: session cookie (Django session-based auth)
+    const sessionCookie = cookieStore.get('session')?.value
+    if (sessionCookie) {
+      headers['Cookie'] = `session=${sessionCookie}`
+    }
+
+    console.log('[getUserDetails] Production access_token present:', !!accessToken)
+    console.log('[getUserDetails] Production session cookie present:', !!sessionCookie)
   }
 
   console.log('[getUserDetails] Outgoing headers:', JSON.stringify({
