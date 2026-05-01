@@ -6,7 +6,7 @@ interface BookingHeaderProps {
   bookingId: string;
   propertyName: string;
   propertyAddress: string;
-  status: "checked-in" | "checked-out" | "pending" | "cancelled";
+  status: string;
   onBack?: () => void;
   onPrint?: () => void;
   onEdit?: () => void;
@@ -33,6 +33,11 @@ const statusConfig = {
     className: "bg-red-50 text-red-700 border-red-200",
     icon: null,
   },
+  reserved: {
+    label: "Reserved",
+    className: "bg-blue-50 text-blue-700 border-blue-200",
+    icon: null,
+  },
 };
 
 const BookingHeader = ({
@@ -44,7 +49,7 @@ const BookingHeader = ({
   onPrint,
   onEdit,
 }: BookingHeaderProps) => {
-  const statusInfo = statusConfig[status];
+  const statusInfo = statusConfig[status.toLowerCase() as keyof typeof statusConfig];
 
   return (
     <div className="flex items-start justify-between mb-8">

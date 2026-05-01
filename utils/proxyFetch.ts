@@ -14,6 +14,22 @@ const PROXY_PATTERNS: Array<{ pattern: RegExp; proxy: string }> = [
     pattern: /^\/aps-api\/v1\/reservations\/details\/(\d+)$/,
     proxy: '/api/proxy/reservations/$1',
   },
+  {
+    pattern: /^\/aps-api\/v1\/reserved-parking\/(.*)/,
+    proxy: '/api/proxy/reserved-parking/$1',
+  },
+  {
+    pattern: /^\/aps-api\/v1\/guestapp-service-response\/(.*)/,
+    proxy: '/api/proxy/guestapp-service-response/$1',
+  },
+  {
+    pattern: /^\/api\/aperfect10\/pms\/fetch-cases\/(\d+)$/,
+    proxy: '/api/proxy/fetch-cases/$1',
+  },
+  {
+    pattern: /^\/aps-api\/v1\/booked-revenue-splits\/(.*)/,
+    proxy: '/api/proxy/booked-revenue-splits/$1',
+  },
 ]
 
 export async function proxyFetch(url: string, options: RequestInit = {}) {

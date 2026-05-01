@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 
-export type TabKey = "overview" | "payments" | "guest" | "support" | "additional-info";
+export type TabKey = "overview" | "payments" | "guest" | "services" | "support" | "additional-info";
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: "overview", label: "Overview" },
   { key: "payments", label: "Payments" },
   { key: "guest", label: "Guest" },
+  { key: "services", label: "Services" },
   { key: "support", label: "Support" },
   { key: "additional-info", label: "Additional Information" },
 ];
