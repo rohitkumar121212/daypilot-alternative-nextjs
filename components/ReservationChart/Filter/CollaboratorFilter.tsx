@@ -16,16 +16,15 @@ interface CollaboratorFilterProps {
 
 const CollaboratorFilter = ({ collaborators, currentUserId, onRefreshData }: CollaboratorFilterProps) => {
 
+  const [collaboratorsList, setCollaboratorsList] = useState<Collaborator[]>(collaborators)
   const [selectedCollaborator, setSelectedCollaborator] = useState<Collaborator | null>(() => {
-    return collaborators.find(
-      (c) => c.id === Number(currentUserId)
-    ) || null
+    return collaborators.find((c) => c.id === Number(currentUserId)) || null
   })
 
   // Handle collaborator change with API call and data refresh
   const handleCollaboratorChange = async (collaboratorId: string) => {
     try {
-      const collaborator = collaborators.find(
+      const collaborator = collaboratorsList.find(
         (c) => c.id === parseInt(collaboratorId)
       )
       
@@ -86,7 +85,7 @@ const CollaboratorFilter = ({ collaborators, currentUserId, onRefreshData }: Col
         value={selectedCollaborator?.id || ''}
         onChange={(e) => handleCollaboratorChange(e.target.value)}
       >
-        {collaborators.map((collaborator) => (
+        {collaboratorsList.map((collaborator) => (
           <option key={collaborator.id} value={collaborator.id}>
             {`${collaborator.name} - ${collaborator.email}`}
           </option>
