@@ -25,6 +25,8 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose, onOpenCheckInMod
   const isTodayStart = dayjs(booking?.booking_details?.start).isSame(dayjs(), "day")
   const isTempReserve = booking?.booking_details?.booking_type === 'temp_reserve' ? true : false
   const isDoNotReserve = booking?.booking_details?.booking_type === 'do_not_reserve' ? true : false
+  const hasContent = (val?: string) => !!val && val !== 'NA'
+  const showOtherDetails = hasContent(booking?.booking_details?.booking_notes) || hasContent(booking?.booking_details?.ota_notes)
 
   const handleConvertToBooking = async () => {
     if (isConverting) return
@@ -94,29 +96,34 @@ const BookingDetailsTab = ({ booking, onCancelBooking, onClose, onOpenCheckInMod
         />
       </div> */}
       {/* Other Details */}
-      <div className='pt-4 border-t border-gray-300'>
-        <h3 className="text-lg font-semibold text-gray-800 mb-1 pb-2">Other Details</h3>
-        <BookingNotes booking={booking} />
-      </div>
+      {showOtherDetails && (
+        <div className='pt-4 border-t border-gray-300'>
+          <h3 className="text-lg font-semibold text-gray-800 mb-1 pb-2">Other Details</h3>
+          <div className='flex gap-4'>
+            {hasContent(booking?.booking_details?.booking_notes) && <BookingNotes content={booking?.booking_details?.booking_notes} heading='Booking Notes' booking_id={booking?.booking_details?.booking_key}/>}
+            {hasContent(booking?.booking_details?.ota_notes) && <BookingNotes content={booking?.booking_details?.ota_notes} heading='OTA Notes' booking_id={booking?.booking_details?.booking_key}/>}
+          </div>
+        </div>
+      )}
       
       {/* CTA */}
       <div className='border-t border-gray-300 pt-4 flex flex-wrap gap-3'>
-        {/* <a
-          href={`/aperfect-pms/booking/${booking?.booking_details?.booking_key}/view-details`}
+        <a
+          href={`https://aperfectstay.ai/aperfect-pms/booking/${booking?.booking_details?.booking_key}/view-details`}
           target="_blank"
           rel="noopener noreferrer"
           // className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition cursor-pointer inline-block"
           className='btn btn-primary-with-bg'
         >
           View Details
-        </a> */}
-        {booking && (
+        </a>
+        {/* {booking && (
           <Link href={`/aperfect-pms/booking/${booking?.booking_details?.booking_key}/view-details`}
            className='btn btn-primary-with-bg '
            >
             View Details
           </Link>
-        )}
+        )} */}
         {/* {(<button 
             onClick={()=>{}}
             className="ml-3 px-4 py-2 border text-red-500 rounded-md hover:bg-gray-100 transition cursor-pointer"
