@@ -14,6 +14,7 @@ interface FloatingAutocompleteProps {
   error?: string
   required?: boolean
   disabled?: boolean
+  lettersOnly?: boolean
 }
 
 const FloatingAutocomplete = ({
@@ -27,7 +28,8 @@ const FloatingAutocomplete = ({
   secondaryDisplayKey,
   error,
   required = false,
-  disabled = false
+  disabled = false,
+  lettersOnly = false
 }: FloatingAutocompleteProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
@@ -58,7 +60,8 @@ const FloatingAutocomplete = ({
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value)
+    const newValue = lettersOnly ? e.target.value.replace(/[0-9]/g, '') : e.target.value
+    onChange(newValue)
     setIsOpen(true)
   }
 

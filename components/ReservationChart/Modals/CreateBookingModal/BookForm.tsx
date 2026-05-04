@@ -113,6 +113,7 @@ const BookForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
         secondaryDisplayKey="data-string"
         error={errors.guestName}
         required
+        lettersOnly
       />
 
       <FloatingInput
