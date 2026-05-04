@@ -46,7 +46,9 @@ export function useSchedulerData({ startDate, daysToShow, enabled = true }: UseS
     const resourcesUrl = `https://aperfectstay.ai/api/aps-pms/apts/private`
     const bookingsUrl = `https://aperfectstay.ai/api/aps-pms/reservations/private?start=${startDate}&end=${endDate}`
     const availabilityUrl = `https://aperfectstay.ai/api/aps-pms/buildings/avail/private?start=${startDate}&end=${endDate}`
-    const collaboratorUrl = 'https://aperfectstay.ai/aps-api/v1/collaborators/'
+    const collaboratorUrl = process.env.NODE_ENV === 'development'
+      ? '/api/proxy/collaborator'
+      : 'https://aperfectstay.ai/aps-api/v1/collaborators/'
 
     // ⚡ Fast requests first — show data before availability loads
     const [{ data: resourcesJson }, { data: bookingsJson }, { data: collaboratorJson }] = await Promise.all([
