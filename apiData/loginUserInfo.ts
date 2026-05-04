@@ -9,9 +9,10 @@ interface LoginUserInfoResponseInterface {
 
 export async function getLoginUserInfo(): Promise<LoginUserInfoResponseInterface> {
     try {
-        const url = process.env.NODE_ENV === 'development'
-            ? '/api/proxy/user-details'
-            : 'https://aperfectstay.ai/aps-api/v1/users/details/private'
+        // const url = process.env.NODE_ENV === 'development'
+        //     ? '/api/proxy/user-details'
+        //     : 'https://aperfectstay.ai/aps-api/v1/users/details/private'
+        const url = 'https://aperfectstay.ai/aps-api/v1/users/details/private' 
         const response = await fetchUtils.get<LoginUserInfoResponseInterface>(url)
         return response.data;
     } catch (error) {

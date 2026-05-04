@@ -113,6 +113,8 @@ const BookForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
         secondaryDisplayKey="data-string"
         error={errors.guestName}
         required
+        lettersOnly
+        showDropdownIcon
       />
 
       <FloatingInput
@@ -143,6 +145,7 @@ const BookForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
           suggestions={accountOptions}
           filterKey="label"
           displayKey="label"
+          showDropdownIcon
         />
       )}
 
@@ -166,6 +169,7 @@ const BookForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
         suggestions={taxOptions}
         filterKey="label"
         displayKey="label"
+        showDropdownIcon
       />)}
 
       <FloatingInput
@@ -183,6 +187,7 @@ const BookForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
         suggestions={nationalityOptions}
         filterKey="label"
         displayKey="label"
+        showDropdownIcon
       />
 
       <FloatingInput

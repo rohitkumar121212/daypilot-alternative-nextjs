@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { proxyFetch } from '@/utils/proxyFetch'
+import { fetchUtils } from '@/utils/fetchUtils'
 
 export const useBookingModalData = (isOpen: boolean) => {
   const [caseAccounts, setCaseAccounts] = useState([])
@@ -13,10 +13,10 @@ export const useBookingModalData = (isOpen: boolean) => {
       setIsLoadingData(true)
       
       Promise.all([
-        proxyFetch('/aps-api/v1/case-accounts/'),
-        proxyFetch('/aps-api/v1/guests/'),
-        proxyFetch('/aps-api/v1/taxsets/'),
-        fetch('https://aperfectstay.ai/aps-api/v1/constants/').then(res => res.json())
+        fetchUtils.get('https://aperfectstay.ai/aps-api/v1/case-accounts/').then(res => res.data),
+        fetchUtils.get('https://aperfectstay.ai/aps-api/v1/guests/').then(res => res.data), 
+        fetchUtils.get('https://aperfectstay.ai/aps-api/v1/taxsets/').then(res => res.data),
+        fetchUtils.get('https://aperfectstay.ai/aps-api/v1/constants/').then(res => res.data),
       ])
         .then(([caseAccountsData, guestsData, taxSetsData, constantsData]) => {
           // Transform accounts and taxsets to match FloatingAutocomplete format
