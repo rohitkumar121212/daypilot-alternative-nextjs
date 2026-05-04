@@ -15,6 +15,7 @@ interface FloatingAutocompleteProps {
   required?: boolean
   disabled?: boolean
   lettersOnly?: boolean
+  showDropdownIcon?: boolean
 }
 
 const FloatingAutocomplete = ({
@@ -29,7 +30,8 @@ const FloatingAutocomplete = ({
   error,
   required = false,
   disabled = false,
-  lettersOnly = false
+  lettersOnly = false,
+  showDropdownIcon = false
 }: FloatingAutocompleteProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
@@ -79,6 +81,7 @@ const FloatingAutocomplete = ({
         onBlur={() => setIsFocused(false)}
         disabled={disabled}
         className={`peer w-full p-2 px-4 border rounded-md outline-none transition-all
+          ${showDropdownIcon ? 'pr-8' : ''}
           ${disabled ? 'bg-gray-50 cursor-not-allowed' : 'bg-white'}
           ${
             error
@@ -86,6 +89,18 @@ const FloatingAutocomplete = ({
               : isFocused ? "border-blue-500 ring-2 ring-blue-100" : "border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           }`}
       />
+      {showDropdownIcon && (
+        <div className="absolute right-3 top-3 pointer-events-none">
+          <svg
+            className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      )}
 
       <label
         className={`absolute left-3 px-1 bg-white transition-all pointer-events-none
