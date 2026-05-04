@@ -2,10 +2,7 @@
 const isDevelopment = process.env.NODE_ENV === 'development'
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://aperfectstay.ai'
 
-const PROXY_ROUTES: Record<string, string> = {
-  '/aps-api/v1/case-accounts/': '/api/proxy/case-accounts',
-  '/aps-api/v1/guests/': '/api/proxy/guests',
-}
+const PROXY_ROUTES: Record<string, string> = {}
 
 const PROXY_PATTERNS: Array<{ pattern: RegExp; proxy: string }> = [
   {
