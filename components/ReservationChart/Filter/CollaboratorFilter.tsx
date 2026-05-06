@@ -12,10 +12,9 @@ interface CollaboratorFilterProps {
   collaborators: Collaborator[],
   currentUserId: string,
   onRefreshData?: () => void
-  onCollaboratorChange: (id: string | number) => void
 }
 
-const CollaboratorFilter = ({ collaborators, currentUserId, onRefreshData, onCollaboratorChange }: CollaboratorFilterProps) => {
+const CollaboratorFilter = ({ collaborators, currentUserId, onRefreshData }: CollaboratorFilterProps) => {
 
   const [collaboratorsList, setCollaboratorsList] = useState<Collaborator[]>(collaborators)
   const [selectedCollaborator, setSelectedCollaborator] = useState<Collaborator | null>(() => {
@@ -61,7 +60,6 @@ const CollaboratorFilter = ({ collaborators, currentUserId, onRefreshData, onCol
       // Update local state
       setSelectedCollaborator(collaborator)
       
-      onCollaboratorChange(collaborator.id)
       onRefreshData?.()
       
     } catch (error) {
