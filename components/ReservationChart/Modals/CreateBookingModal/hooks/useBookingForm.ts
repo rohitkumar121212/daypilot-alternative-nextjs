@@ -129,7 +129,7 @@ export const useBookingForm = (isOpen: boolean, booking: any, modalData: any) =>
     // Validate based on booking type
     if (formData.bookingType === 'block') {
       if (!formData.dnrReason) newErrors.dnrReason = 'Reason is required'
-      if (!formData.dnrNotes) newErrors.dnrNotes = 'Notes are required'
+      if (!formData.dnrNotes.trim()) newErrors.dnrNotes = 'Notes are required'
     } else if (formData.bookingType === 'hold') {
       if (!formData.checkIn) newErrors.checkIn = 'Check-in is required'
       if (!formData.checkOut) newErrors.checkOut = 'Check-out is required'
@@ -137,7 +137,7 @@ export const useBookingForm = (isOpen: boolean, booking: any, modalData: any) =>
     } else if (formData.bookingType === 'book') {
       if (!formData.checkIn) newErrors.checkIn = 'Check-in is required'
       if (!formData.checkOut) newErrors.checkOut = 'Check-out is required'
-      if (!formData.guestName) newErrors.guestName = 'Name is required'
+      if (!formData.guestName.trim()) newErrors.guestName = 'Name is required'
       if (!formData.phone) newErrors.phone = 'Phone is required'
       if (!formData.totalPrice) newErrors.totalPrice = 'Rent per night is required'
       if (!formData.commission) newErrors.commission = 'Commission is required'
