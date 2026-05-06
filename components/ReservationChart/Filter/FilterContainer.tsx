@@ -20,10 +20,9 @@ interface FilterContainerProps {
   onEnquiryIdChange: (enquiryId: string) => void;
   bookings: any[];
   collaborators: any[];
-  onCollaboratorChange: (id: string | number) => void;
 }
 
-const FilterContainer = ({ onSearchChange, onBookingIdChange, onDateChange, onDaysChange, onEnquiryIdChange, bookings, collaborators, onCollaboratorChange }: FilterContainerProps) => {
+const FilterContainer = ({ onSearchChange, onBookingIdChange, onDateChange, onDaysChange, onEnquiryIdChange, bookings, collaborators }: FilterContainerProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [colorsModalOpen, setColorsModalOpen] = useState(false);
   const { user } = useUser()
@@ -56,7 +55,7 @@ const FilterContainer = ({ onSearchChange, onBookingIdChange, onDateChange, onDa
               Refresh Window
             </a>
           </div>)} */}
-          {collaborators && collaborators?.length>1 ?<CollaboratorFilter collaborators={collaborators} currentUserId={currentUserId} onRefreshData={refreshData} onCollaboratorChange={onCollaboratorChange}/> : null}
+          {collaborators && collaborators?.length>1 ?<CollaboratorFilter collaborators={collaborators} currentUserId={currentUserId} onRefreshData={refreshData}/> : null}
           <SearchApartmentFilter onSearchChange={onSearchChange} />
           {/* <BookingIdFilter onBookingIdChange={onBookingIdChange} bookings={bookings} />
           <EnquiryIdFilter onEnquiryIdChange={onEnquiryIdChange} bookings={bookings} /> */}
