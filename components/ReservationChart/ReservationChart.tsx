@@ -20,6 +20,7 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
   const [enquiryIdFilter, setEnquiryIdFilter] = useState('')
   const [startDate, setStartDate] = useState<string | null>(null)
   const [daysToShow, setDaysToShow] = useState(30)
+  const [selectedCollaboratorId, setSelectedCollaboratorId] = useState<string | number | undefined>(undefined)
 
   // Set startDate exactly once after user loads — keeps it null until then so
   // useSchedulerData doesn't fire a wasted call with the wrong date.
@@ -35,6 +36,8 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
   // Safe fallback for components that render before startDate is resolved
   const effectiveStartDate = startDate ?? dayjs().format('YYYY-MM-DD')
 
+  const collaboratorUserId = selectedCollaboratorId ?? user?.user_details?.id
+
   const {
     resources, setResources,
     bookings, setBookings,
@@ -43,7 +46,7 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
     isLoading,
     refresh,
     applySSEEvent,
-  } = useSchedulerData({ startDate: effectiveStartDate, daysToShow, enabled: !isUserLoading && startDate !== null })
+  } = useSchedulerData({ startDate: effectiveStartDate, daysToShow, enabled: !isUserLoading && startDate !== null, userId: collaboratorUserId })
 
   const sseEndDate = dayjs(effectiveStartDate).add(daysToShow, 'day').format('YYYY-MM-DD')
 
@@ -216,6 +219,7 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
               onDaysChange={setDaysToShow}
               bookings={bookings}
               collaborators={collaborators}
+              onCollaboratorChange={setSelectedCollaboratorId}
             />
             <div className="flex-1 min-h-0 w-full shadow-md">
               <Scheduler
