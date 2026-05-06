@@ -10,6 +10,10 @@ interface User {
   role: string
   avatar?: string
   permissions?: string[]
+  user_details?: {
+    id: string
+    [key: string]: any
+  }
   company_logo_details?: {
     id: string
     url: string

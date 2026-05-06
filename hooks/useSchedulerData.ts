@@ -8,6 +8,7 @@ interface UseSchedulerDataParams {
   startDate: string
   daysToShow: number
   enabled?: boolean
+  userId?: string | number
 }
 
 interface UseSchedulerDataResult {
@@ -33,7 +34,7 @@ function normalizeBooking(raw: any) {
   }
 }
 
-export function useSchedulerData({ startDate, daysToShow, enabled = true }: UseSchedulerDataParams): UseSchedulerDataResult {
+export function useSchedulerData({ startDate, daysToShow, enabled = true, userId }: UseSchedulerDataParams): UseSchedulerDataResult {
   const [resources, setResources] = useState<any[]>([])
   const [bookings, setBookings] = useState<any[]>([])
   const [collaborators, setCollaborators] = useState<any[]>([])
@@ -47,8 +48,8 @@ export function useSchedulerData({ startDate, daysToShow, enabled = true }: UseS
     const bookingsUrl = `https://aperfectstay.ai/api/aps-pms/reservations/private?start=${startDate}&end=${endDate}`
     const availabilityUrl = `https://aperfectstay.ai/api/aps-pms/buildings/avail/private?start=${startDate}&end=${endDate}`
     const collaboratorUrl = process.env.NODE_ENV === 'development'
-      ? '/api/proxy/collaborator'
-      : 'https://aperfectstay.ai/aps-api/v1/collaborators/'
+      ? `/api/proxy/collaborator${userId ? `?userId=${userId}` : ''}`
+      : `https://aperfectstay.ai/aps-api/v1/collaborators/${userId ? `?userId=${userId}` : ''}`
 
     // ⚡ Fast requests first — show data before availability loads
     const [{ data: resourcesJson }, { data: bookingsJson }, { data: collaboratorJson }] = await Promise.all([
@@ -83,7 +84,7 @@ export function useSchedulerData({ startDate, daysToShow, enabled = true }: UseS
         if (!isCancelled()) setAvailability(availabilityJson?.data || null)
       })
       .catch((err: any) => console.error('Failed to load availability data', err))
-  }, [startDate, daysToShow])
+  }, [startDate, daysToShow, userId])
 
   // Auto-fetch when startDate or daysToShow changes, but only once user has loaded
   useEffect(() => {

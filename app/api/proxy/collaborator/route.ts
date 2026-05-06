@@ -16,7 +16,11 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const response = await fetch('https://aperfectstay.ai/aps-api/v1/collaborators/', {
+    const { searchParams } = new URL(request.url)
+    const userId = searchParams.get('userId')
+    const backendUrl = `https://aperfectstay.ai/aps-api/v1/collaborators/${userId ? `?userId=${userId}` : ''}`
+
+    const response = await fetch(backendUrl, {
       headers,
     })
 
