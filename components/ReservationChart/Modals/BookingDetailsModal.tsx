@@ -4,11 +4,12 @@ import Tabs from '@/components/common/Tabs'
 import BookingDetailsTab from '../Modals/BookingDetailsModal/BookingDetailsTab'
 import CreateCaseTab from '../Modals/BookingDetailsModal/CreateCaseTab'
 import CreateTaskTab from '../Modals/BookingDetailsModal/CreateTaskTab'
-import AddPaymentTab from '../Modals/BookingDetailsModal/AddPaymentTab'
 import SharePaymentLinkTab from '../Modals/BookingDetailsModal/SharePaymentLinkTab'
+import AddPaymentTab from '../Modals/BookingDetailsModal/AddPaymentTab'
 
 import {formatBookingType} from '@/utils/common'
-import { apiFetch } from '@/utils/apiRequest'
+import { fetchUtils } from '@/utils/fetchUtils'
+import { useUser } from '@/contexts/UserContext'
 
 interface BookingDetailsModalProps {
   isOpen: boolean
@@ -45,12 +46,10 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
     setActiveTab(initialTab)
 
     Promise.all([
-      apiFetch('/aps-api/v1/cases/users'),
-      fetch('https://aperfectstay.ai/aps-api/v1/constants/reservation', {
-        credentials: 'include'
-      }).then(res => res.json())
+      fetchUtils.get('https://aperfectstay.ai/aps-api/v1/cases/users'),
+      fetchUtils.get('https://aperfectstay.ai/aps-api/v1/constants/reservation')
     ])
-      .then(([assignToUsersData, reservationConstantsData]) => {
+      .then(([{ data: assignToUsersData }, { data: reservationConstantsData }]) => {
         // if needed later
         // setUsers(usersData?.data)
         console.log('Assign to users data:', assignToUsersData)
@@ -67,20 +66,24 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
 
   }, [isOpen, initialTab])
 
+  const { isSquareUser } = useUser()
+
   if (!isOpen || !booking) return null
 
   const bookingType = booking?.booking_details?.booking_type
-  
+
   // Define tabs based on booking type
   const allTabs = [
     { id: 'details', label: 'Booking Details', types: ['reserve', 'temp_reserve', 'do_not_reserve', 'old_reserve'] },
     { id: 'case', label: 'Create New Case', types: ['reserve', 'do_not_reserve', 'old_reserve'] },
     { id: 'task', label: 'Create New Task', types: ['reserve', 'do_not_reserve', 'old_reserve'] },
-    // { id: 'payment', label: 'Add Payment', types: ['reserve', 'old_reserve'] },
+    { id: 'payment', label: 'Add Payment', types: ['reserve', 'old_reserve'] },
     { id: 'share', label: 'Share Payment Link', types: ['reserve', 'old_reserve'] }
   ]
-  
-  const tabs = allTabs.filter(tab => tab.types.includes(bookingType))
+
+  const tabs = allTabs
+    .filter(tab => tab.types.includes(bookingType))
+    .filter(tab => !(tab.id === 'payment' && isSquareUser))
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -95,8 +98,8 @@ const BookingDetailsModal = ({ isOpen, booking, onClose, initialTab = 'details',
         return <CreateCaseTab reservationConstants={reservationConstants} bookingDetails={booking?.booking_details} assignToUsers={assignToUsers} onClose={onClose}/>
       case 'task':
         return <CreateTaskTab reservationConstants={reservationConstants} bookingDetails={booking?.booking_details} onClose={onClose}/>
-      // case 'payment':
-      //   return <AddPaymentTab bookingId={booking?.booking_id} onClose={onClose} reservationConstants={reservationConstants} bookingDetails={booking?.booking_details}/>
+      case 'payment':
+        return <AddPaymentTab bookingId={booking?.booking_id} onClose={onClose} reservationConstants={reservationConstants} bookingDetails={booking?.booking_details}/>
       case 'share':
         return <SharePaymentLinkTab 
                   totalAmount={Number(booking?.booking_details?.price)} 

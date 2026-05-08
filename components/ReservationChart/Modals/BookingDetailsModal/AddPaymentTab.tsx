@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { fetchUtils } from '@/utils/fetchUtils'
 import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
@@ -50,18 +51,10 @@ const AddPaymentTab = ({ bookingId, onClose, reservationConstants, bookingDetail
     if (formData.receipt) formPayload.append('receipt_img', formData.receipt)
     
     try {
-      const isDevelopment = process.env.NODE_ENV === 'development'
-      const url = isDevelopment
+      const url = process.env.NODE_ENV === 'development'
         ? '/api/proxy/add-payment'
         : 'https://aperfectstay.ai/api/aperfect-pms/add-new-booking-payment'
-      
-      const response = await fetch(url, {
-        method: 'POST',
-        body: formPayload,
-        credentials: 'include',
-      })
-
-      const data = await response.json()
+      const { data } = await fetchUtils.post(url, formPayload)
       console.log('Payment added successfully:', data)
       
       if (data.success) {

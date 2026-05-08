@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import dayjs from 'dayjs'
 import FloatingInput from '@/components/common/FloatingInput'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
-import { apiFetch } from '@/utils/apiRequest'
+import { fetchUtils } from '@/utils/fetchUtils'
 import { useDataRefresh } from '@/contexts/DataRefreshContext'
 
 const CancelCheckInModal = ({ isOpen, booking, resources, onCancel, onClose }) => {
@@ -43,21 +43,10 @@ const CancelCheckInModal = ({ isOpen, booking, resources, onCancel, onClose }) =
     }
 
     try {
-      const isDevelopment = process.env.NODE_ENV === 'development'
-      const url = isDevelopment
+      const url = process.env.NODE_ENV === 'development'
         ? '/api/proxy/cancel-checkin'
-        : 'https://aperfectstay.ai/api/aperfect-pms/cancel-checkin '
-      
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-        credentials: 'include',
-      })
-
-      const data = await response.json()
+        : 'https://aperfectstay.ai/api/aperfect-pms/cancel-checkin'
+      const { data } = await fetchUtils.post(url, payload)
       
       if (data.success) {
         const bookingId = data.data?.reservation_id

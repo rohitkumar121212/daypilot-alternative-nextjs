@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import dayjs from 'dayjs'
 import { FloatingInput } from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
-import { apiFetch } from '@/utils/apiRequest'
+import { fetchUtils } from '@/utils/fetchUtils'
 import { useUser } from '@/hooks/useUser'
 import { useDataRefresh } from '@/contexts/DataRefreshContext'
 
@@ -42,15 +42,7 @@ const SplitBookingModal = ({ isOpen, booking, resources, onSplit, onClose }) => 
     }
     
     try {
-      const apartmentInfoUrl = `https://aperfectstay.ai/api/aperfectstay/own-stock-apartments/pms`
-      const apartmentResponse = await apiFetch(apartmentInfoUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-        credentials: 'include',
-      })
+      const { data: apartmentResponse } = await fetchUtils.post('https://aperfectstay.ai/api/aperfectstay/own-stock-apartments/pms', payload)
       const apartmentData = apartmentResponse?.data
       const updatedApartmentData = apartmentData?.apartment_abbr?.map((parent) => ({
         label: parent,
@@ -88,21 +80,10 @@ const SplitBookingModal = ({ isOpen, booking, resources, onSplit, onClose }) => 
     console.log('Splitting booking with payload:', payload)
 
     try {
-      const isDevelopment = process.env.NODE_ENV === 'development'
-      const url = isDevelopment
+      const url = process.env.NODE_ENV === 'development'
         ? '/api/proxy/split-booking'
         : 'https://aperfectstay.ai/api/pms-enqire-split-booking'
-      
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-        credentials: 'include',
-      })
-
-      const data = await response.json()
+      const { data } = await fetchUtils.post(url, payload)
       console.log('Split booking response:', data)
       
       if (data.success) {

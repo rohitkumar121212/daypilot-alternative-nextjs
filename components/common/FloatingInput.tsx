@@ -39,6 +39,11 @@ export function FloatingInput({
     if (type === 'number' && parseFloat(newValue) < 0) {
       return
     }
+
+    // Allow only digits and leading + for tel inputs
+    if (type === 'tel') {
+      newValue = newValue.replace(/[^0-9+]/g, '')
+    }
     
     // Trim spaces for text inputs (but not for special types where spaces might be meaningful)
     // if (type === 'text' || type === 'email' || type === 'url') {

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { fetchUtils } from '@/utils/fetchUtils'
 import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
@@ -66,18 +67,10 @@ const CreateTaskTab = ({ bookingDetails, reservationConstants, onClose }: Create
     if (formData.image) formPayload.append('images', formData.image)
     
     try {
-      const isDevelopment = process.env.NODE_ENV === 'development'
-      const url = isDevelopment
+      const url = process.env.NODE_ENV === 'development'
         ? '/api/proxy/create-task'
         : 'https://aperfectstay.ai/api/aperfect10/pms/create-new-task'
-      
-      const response = await fetch(url, {
-        method: 'POST',
-        body: formPayload,
-        credentials: 'include',
-      })
-
-      const data = await response.json()
+      const { data } = await fetchUtils.post(url, formPayload)
       console.log('Task created successfully:', data)
       
       // if (data.success) {

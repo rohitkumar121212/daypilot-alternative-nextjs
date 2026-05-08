@@ -104,6 +104,8 @@ const HoldForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
         filterKey="guest_name"
         displayKey="guest_name"
         secondaryDisplayKey="data-string"
+        lettersOnly
+        showDropdownIcon
       />
 
       <FloatingInput
@@ -131,6 +133,7 @@ const HoldForm = ({ formData, handleChange, dayCount, constants, errors = {}, se
           suggestions={accountOptions}
           filterKey="label"
           displayKey="label"
+          showDropdownIcon
         />
       )}
 

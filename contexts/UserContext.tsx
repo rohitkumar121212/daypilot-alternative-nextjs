@@ -1,6 +1,6 @@
 'use client'
 
-import { proxyFetch } from '@/utils/proxyFetch'
+import { fetchUtils } from '@/utils/fetchUtils'
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode, useMemo } from 'react'
 
 interface User {
@@ -10,11 +10,21 @@ interface User {
   role: string
   avatar?: string
   permissions?: string[]
+  user_details?: {
+    id: string
+    [key: string]: any
+  }
   company_logo_details?: {
     id: string
     url: string
   }
-  // Add other user properties as needed
+  admin_details?: {
+    property_settings?: {
+      one_day_before_calendar?: string
+      [key: string]: any
+    }
+    [key: string]: any
+  }
 }
 
 interface UserContextType {
@@ -43,7 +53,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       setIsLoading(true)
       setError(null)
 
-      const data = await proxyFetch('/aps-api/v1/users/details/private')
+      const { data } = await fetchUtils.get('https://aperfectstay.ai/aps-api/v1/users/details/private')
       setUser(data?.data || null)
       if(data?.data?.user_details?.email==='stay@thesqua.re' || data?.data?.user_details?.email==='apsdemo2023@gmail.com'){
         setIsSquareUser(true)

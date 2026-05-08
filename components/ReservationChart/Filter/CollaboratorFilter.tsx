@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { apiFetch } from '@/utils/apiRequest'
+import { fetchUtils } from '@/utils/fetchUtils'
 
 type Collaborator = {
   id: number
@@ -16,16 +16,15 @@ interface CollaboratorFilterProps {
 
 const CollaboratorFilter = ({ collaborators, currentUserId, onRefreshData }: CollaboratorFilterProps) => {
 
+  const [collaboratorsList, setCollaboratorsList] = useState<Collaborator[]>(collaborators)
   const [selectedCollaborator, setSelectedCollaborator] = useState<Collaborator | null>(() => {
-    return collaborators.find(
-      (c) => c.id === Number(currentUserId)
-    ) || null
+    return collaborators.find((c) => c.id === Number(currentUserId)) || null
   })
 
   // Handle collaborator change with API call and data refresh
   const handleCollaboratorChange = async (collaboratorId: string) => {
     try {
-      const collaborator = collaborators.find(
+      const collaborator = collaboratorsList.find(
         (c) => c.id === parseInt(collaboratorId)
       )
       
@@ -38,21 +37,10 @@ const CollaboratorFilter = ({ collaborators, currentUserId, onRefreshData }: Col
       }
       
       try{
-        const isDevelopment = process.env.NODE_ENV === 'development'
-        const url = isDevelopment
+        const url = process.env.NODE_ENV === 'development'
           ? '/api/proxy/collab-admin-session'
           : 'https://aperfectstay.ai/collab_admin_session/'
-        
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
-          credentials: 'include',
-        })
-
-        const data = await response.json()
+        const { data } = await fetchUtils.post(url, payload)
         console.log('Collaborator admin session updated successfully:', data)
         
         if (data.success) {
@@ -72,8 +60,6 @@ const CollaboratorFilter = ({ collaborators, currentUserId, onRefreshData }: Col
       // Update local state
       setSelectedCollaborator(collaborator)
       
-      // Trigger data refresh
-      console.log('Triggering data refresh after collaborator change...')
       onRefreshData?.()
       
     } catch (error) {
@@ -97,7 +83,7 @@ const CollaboratorFilter = ({ collaborators, currentUserId, onRefreshData }: Col
         value={selectedCollaborator?.id || ''}
         onChange={(e) => handleCollaboratorChange(e.target.value)}
       >
-        {collaborators.map((collaborator) => (
+        {collaboratorsList.map((collaborator) => (
           <option key={collaborator.id} value={collaborator.id}>
             {`${collaborator.name} - ${collaborator.email}`}
           </option>

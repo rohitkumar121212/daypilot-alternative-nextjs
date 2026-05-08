@@ -1,5 +1,5 @@
 'use client';
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import dayjs from 'dayjs';
 import { Scheduler } from '@/components/scheduler';
 import FilterContainer from './Filter/FilterContainer';
@@ -11,13 +11,31 @@ import { useContextMenuState } from '@/hooks/useContextMenuState';
 import { useUser } from '@/hooks/useUser'
 import { generateDateRange } from '@/components/scheduler/utils/dateUtils'
 import { useFrontendAvailability } from '@/components/scheduler/hooks/useFrontendAvailability';
+import { useSSEBookings } from '@/hooks/useSSEBookings'
 
 const ReservationChart = ({ className = '', style = {} }: { className?: string; style?: React.CSSProperties }) => {
+  const { user, isSquareUser, isLoading: isUserLoading } = useUser()
   const [searchTerm, setSearchTerm] = useState('')
   const [bookingIdFilter, setBookingIdFilter] = useState('')
   const [enquiryIdFilter, setEnquiryIdFilter] = useState('')
-  const [startDate, setStartDate] = useState(dayjs().format('YYYY-MM-DD'))
+  const [startDate, setStartDate] = useState<string | null>(null)
   const [daysToShow, setDaysToShow] = useState(30)
+
+  // Set startDate exactly once after user loads — keeps it null until then so
+  // useSchedulerData doesn't fire a wasted call with the wrong date.
+  useEffect(() => {
+    if (!user) return
+    setStartDate(
+      user?.admin_details?.pms_settings?.one_day_before_calendar === 'True'
+        ? dayjs().subtract(1, 'day').format('YYYY-MM-DD')
+        : dayjs().format('YYYY-MM-DD')
+    )
+  }, [user])
+
+  // Safe fallback for components that render before startDate is resolved
+  const effectiveStartDate = startDate ?? dayjs().format('YYYY-MM-DD')
+
+  const collaboratorUserId = user?.user_details?.id
 
   const {
     resources, setResources,
@@ -26,9 +44,17 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
     availability,
     isLoading,
     refresh,
-  } = useSchedulerData({ startDate, daysToShow })
+    applySSEEvent,
+  } = useSchedulerData({ startDate: effectiveStartDate, daysToShow, enabled: !isUserLoading && startDate !== null, userId: collaboratorUserId })
 
-  const { isSquareUser } = useUser()
+  const sseEndDate = dayjs(effectiveStartDate).add(daysToShow, 'day').format('YYYY-MM-DD')
+
+  useSSEBookings({
+    startDate: effectiveStartDate,
+    endDate: sseEndDate,
+    onEvent: applySSEEvent,
+    enabled: !isLoading,
+  })
 
   // ─── Modal + context menu state ───────────────────────────────────────────
   const { activeModal, openModal, closeModal } = useModalState()
@@ -101,7 +127,7 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
   }, [bookings])
 
   // ─── Frontend availability (global + building-wise) ──────────────────────
-  const dates = useMemo(() => generateDateRange(daysToShow, startDate), [daysToShow, startDate])
+  const dates = useMemo(() => generateDateRange(daysToShow, effectiveStartDate), [daysToShow, effectiveStartDate])
 
   const { frontendOccupancyByDate, frontendAvailabilityByParent } = useFrontendAvailability(
     resources,
@@ -177,6 +203,12 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
               </div>
             </div>
           )}
+          {!isLoading && (
+            <div className="absolute top-2 right-3 z-40 flex items-center gap-1.5 rounded-full bg-white/90 px-2.5 py-1 shadow-sm ring-1 ring-green-200 text-xs font-medium text-green-700">
+              <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+              Live
+            </div>
+          )}
           <div className="flex-1 min-h-0 border-b-2 border-gray-300 flex flex-col">
             <FilterContainer
               onSearchChange={setSearchTerm}
@@ -201,7 +233,7 @@ const ReservationChart = ({ className = '', style = {} }: { className?: string; 
                 onBookingRightClick={handleBookingRightClick}
                 onResourceRightClick={handleResourceRightClick}
                 onResourcesChange={setResources}
-                startDate={startDate}
+                startDate={effectiveStartDate}
                 daysToShow={daysToShow}
                 cellWidth={70}
                 rowHeight={40}

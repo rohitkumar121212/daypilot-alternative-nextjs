@@ -7,6 +7,7 @@ const HeaderNavigationList = ({ user }: HeaderNavigationListProps) => {
     const baseDomain="https://aperfectstay.ai"
 
     const isChannexEnabled = user?.admin_details?.channex_enabled
+    const isPmsLegacyEnabled = user?.user_details?.user_type?.includes('pms_legacy_toggle')
   
     const menuItems = [
         { label: 'aPerfect Housekeeping', url: `${baseDomain}/aperfect10/gsadmin` },
@@ -55,17 +56,17 @@ const HeaderNavigationList = ({ user }: HeaderNavigationListProps) => {
             { label: 'aPerfect Docs: Inspections', url: `${baseDomain}/aperfect10/gsadmin` },
             { label: 'Channel Manager', url: `${baseDomain}/aperfect-pms/settings` },
             { label: 'Nuki Smart Locks', url: `${baseDomain}/aperfect10/smart-locks/all-properties` },
-            { label: 'Reserve Parking', url: `${baseDomain}/manage-parking-in-building` }
+            { label: 'Reserve Parking', url: `${baseDomain}/manage-parking-in-buildings` }
         ]
         },
         { 
         label: 'Manage', 
         hasDropdown: true,
         dropdownItems: [
-            { label: 'Advanced Search', url: `${baseDomain}/aperfect-pms/advanced-search` },
+            { label: 'Advanced Search', url: `${baseDomain}/aperfect-pms/advance-search` },
             { label: 'Add Agents/Clients', url: `${baseDomain}/aperfect10/cases/account/edit-all` },
             { label: 'Xero Invoice Search', url: `${baseDomain}/aperfect-pms/search-xero-invoice` },
-            { label: 'Consolidated Invoice', url: `${baseDomain}/aperfect-pms/consolidated-invoice` },
+            { label: 'Consolidated Invoice', url: `${baseDomain}/aperfect-pms/consolidated-invoicing` },
             { label: 'Apartment Availability Guide', url: `${baseDomain}/aperfect-pms/weekly-availability-report` },
             { label: 'Expense Management', url: `${baseDomain}/aperfect-pms/expense-table` },
             { label: 'Damages Tracker', url: `${baseDomain}/aperfect10/damages/dashboard` },
@@ -77,6 +78,7 @@ const HeaderNavigationList = ({ user }: HeaderNavigationListProps) => {
             { label: 'Lost and Found', url: `${baseDomain}/lost-and-found` },
             { label: 'Generate Payment Link', url: `${baseDomain}/aperfect-pms/add-payment` },
             { label: 'Settings', url: `${baseDomain}/aperfect-pms/settings` },
+            ...(isPmsLegacyEnabled ? [{ label: 'Old PMS', url: `${baseDomain}/aperfect-pms?legacy=1` }] : []),
         ]
         }
     ]
