@@ -1,9 +1,9 @@
 "use client";
 
+import { Invoice } from "@/components/view-details/InvoicesSection";
 import { proxyFetch } from "@/utils/proxyFetch";
 import { ExternalLink, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Invoice } from "@/components/view-details/InvoicesSection";
 
 interface ApiPaymentHistoryEntry {
   accepted_per: string;
@@ -33,6 +33,7 @@ interface RevenueSplit {
 
 interface PaymentsTabProps {
   bookingId: string | number;
+  currency: string | number
   paymentDetails: {
     additional_services_amount: number;
     balance?: number;
@@ -105,23 +106,47 @@ const PaymentsTab = ({
   paymentHistory,
   invoices = [],
   applicableTaxes = [],
+  currency
 }: PaymentsTabProps) => {
   const [rvRows, setRvRows] = useState<RevenueSplit[]>([]);
   const [rvMeta, setRvMeta] = useState<{ full_rev: string; realized_rev: string; rel_split_count: number; split_count: number } | null>(null);
   const [rvLoading, setRvLoading] = useState(true);
 
+  // useEffect(() => {
+  //   const fetchRevenue = async () => {
+  //     try {
+  //       const res = await proxyFetch(`/aps-api/v1/booked-revenue-splits/?b_id=${bookingId}`);
+  //       const raw = res?.data ?? {};
+  //       const rows: RevenueSplit[] = Object.values(raw) as RevenueSplit[];
+  //       setRvRows(rows);
+  //       setRvMeta({
+  //         full_rev: res?.full_rev ?? "0",
+  //         realized_rev: res?.realized_rev ?? "0",
+  //         rel_split_count: Number(res?.rel_split_count ?? 0),
+  //         split_count: Number(res?.split_count ?? 0),
+  //       });
+  //     } catch {
+  //       setRvRows([]);
+  //     } finally {
+  //       setRvLoading(false);
+  //     }
+  //   };
+  //   fetchRevenue();
+  // }, [bookingId]);
+
   useEffect(() => {
     const fetchRevenue = async () => {
       try {
-        const res = await proxyFetch(`/aps-api/v1/booked-revenue-splits/?b_id=${bookingId}`);
-        const raw = res?.data ?? {};
+        const res = await fetch(`/booking-details/revenue-realization.json`);
+        const json = await res.json();
+        const raw = json?.data?.data ?? {};
         const rows: RevenueSplit[] = Object.values(raw) as RevenueSplit[];
         setRvRows(rows);
         setRvMeta({
-          full_rev: res?.full_rev ?? "0",
-          realized_rev: res?.realized_rev ?? "0",
-          rel_split_count: Number(res?.rel_split_count ?? 0),
-          split_count: Number(res?.split_count ?? 0),
+          full_rev: json?.data?.full_rev ?? "0",
+          realized_rev: json?.data?.realized_rev ?? "0",
+          rel_split_count: Number(json?.data?.rel_split_count ?? 0),
+          split_count: Number(json?.data?.split_count ?? 0),
         });
       } catch {
         setRvRows([]);
@@ -130,9 +155,8 @@ const PaymentsTab = ({
       }
     };
     fetchRevenue();
-  }, [bookingId]);
+  }, []);
 
-  const currency = paymentDetails.currency || "£";
 
   const roomTariff =
     (Number(paymentDetails.room_tariff) || 0) > 0
@@ -296,66 +320,65 @@ const PaymentsTab = ({
 
       {/* ── Revenue Realization ── */}
       <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base font-bold text-slate-900">Revenue Realization</h2>
-            {rvMeta && (
-              <span className="text-xs text-slate-500">
-                {rvMeta.rel_split_count} / {rvMeta.split_count} realized &middot;&nbsp;
-                {currency}{rvMeta.realized_rev} of {currency}{rvMeta.full_rev}
-              </span>
-            )}
-          </div>
-          {rvLoading ? (
-            <p className="text-sm text-slate-400 text-center py-6">
-              <Loader2 className="w-4 h-4 animate-spin inline mr-2" />Loading...
-            </p>
-          ) : rvRows.length === 0 ? (
-            <p className="text-sm text-slate-400 text-center py-6">No revenue realization data</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-slate-100">
-                    <TH>#</TH>
-                    <TH>Date of Realization</TH>
-                    <TH>Nights</TH>
-                    <TH>Booked Revenue</TH>
-                    <TH>Realized</TH>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rvRows.map((row, i) => {
-                    const isRealized = (row.revenue_realized ?? "").toLowerCase() === "yes";
-                    return (
-                      <tr key={i} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50 transition-colors">
-                        <TD className="text-slate-500">{i + 1}</TD>
-                        <TD className="text-slate-800 whitespace-nowrap">{row.date_of_realization ?? "—"}</TD>
-                        <TD>{row.nights ?? 0} nights</TD>
-                        <TD className="font-medium text-slate-800">{currency}{row.booked_revenue ?? "0"}</TD>
-                        <td className="py-3 pr-4">
-                          <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border ${
-                            isRealized
-                              ? "bg-emerald-100 text-emerald-700 border-emerald-200"
-                              : "bg-amber-100 text-amber-700 border-amber-200"
-                          }`}>
-                            {row.revenue_realized ?? "Pending"}
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                  {rvMeta && (
-                    <tr className="border-t-2 border-slate-200 bg-slate-50">
-                      <td className="py-3 pr-4 text-sm font-semibold text-slate-700" colSpan={3}>Total</td>
-                      <TD className="font-semibold text-slate-700">{currency}{rvMeta.full_rev}</TD>
-                      <TD className="font-semibold text-emerald-700">{currency}{rvMeta.realized_rev}</TD>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-base font-bold text-slate-900">Revenue Realization</h2>
+          {rvMeta && (
+            <span className="text-xs text-slate-500">
+              {rvMeta.rel_split_count} / {rvMeta.split_count} realized &middot;&nbsp;
+              {currency}{rvMeta.realized_rev} of {currency}{rvMeta.full_rev}
+            </span>
           )}
         </div>
+        {rvLoading ? (
+          <p className="text-sm text-slate-400 text-center py-6">
+            <Loader2 className="w-4 h-4 animate-spin inline mr-2" />Loading...
+          </p>
+        ) : rvRows.length === 0 ? (
+          <p className="text-sm text-slate-400 text-center py-6">No revenue realization data</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-slate-100">
+                  <TH>#</TH>
+                  <TH>Date of Realization</TH>
+                  <TH>Nights</TH>
+                  <TH>Booked Revenue</TH>
+                  <TH>Realized</TH>
+                </tr>
+              </thead>
+              <tbody>
+                {rvRows.map((row, i) => {
+                  const isRealized = (row.revenue_realized ?? "").toLowerCase() === "yes";
+                  return (
+                    <tr key={i} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50 transition-colors">
+                      <TD className="text-slate-500">{i + 1}</TD>
+                      <TD className="text-slate-800 whitespace-nowrap">{row.date_of_realization ?? "—"}</TD>
+                      <TD>{row.nights ?? 0} nights</TD>
+                      <TD className="font-medium text-slate-800">{currency}{row.booked_revenue ?? "0"}</TD>
+                      <td className="py-3 pr-4">
+                        <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border ${isRealized
+                          ? "bg-emerald-100 text-emerald-700 border-emerald-200"
+                          : "bg-amber-100 text-amber-700 border-amber-200"
+                          }`}>
+                          {row.revenue_realized ?? "Pending"}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+                {rvMeta && (
+                  <tr className="border-t-2 border-slate-200 bg-slate-50">
+                    <td className="py-3 pr-4 text-sm font-semibold text-slate-700" colSpan={3}>Total</td>
+                    <TD className="font-semibold text-slate-700">{currency}{rvMeta.full_rev}</TD>
+                    <TD className="font-semibold text-emerald-700">{currency}{rvMeta.realized_rev}</TD>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
 
       {/* ── Xero Invoices ── */}
       {invoices.length > 0 && (
@@ -381,7 +404,7 @@ const PaymentsTab = ({
                   const invNo = inv.INV_no ?? inv.id ?? "—";
                   const amount =
                     Number.parseFloat((inv.Amount ?? "").toString().replace(/,/g, "")) || 0;
-                  const cur = inv.currency === "GBP" ? "£" : (inv.currency || currency);
+                  const cur = currency
                   return (
                     <tr key={i} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50 transition-colors">
                       <TD className="font-semibold text-slate-800">{invNo}</TD>

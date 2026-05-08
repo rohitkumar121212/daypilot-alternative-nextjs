@@ -1,7 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GuestInformation, { GuestDetails } from "@/components/view-details/GuestInformation";
+
+interface InspectionItem {
+  "data-string": string;
+  inspection_id: string;
+}
 
 interface AdditionalGuest {
   [key: string]: unknown;
@@ -37,12 +42,25 @@ const GuestTab = ({
   checkInTime,
   checkOut,
   checkOutTime,
-  recentInspections = [],
   rewards,
   onGuestSave,
 }: GuestTabProps) => {
   const [rewardProgram, setRewardProgram] = useState(rewards?.value_field_1 ?? "");
   const [rewardNotes, setRewardNotes] = useState(rewards?.value_field_2 ?? "");
+  const [inspections, setInspections] = useState<InspectionItem[]>([]);
+
+  useEffect(() => {
+    const fetchInspections = async () => {
+      try {
+        const res = await fetch(`/booking-details/inspection-list.json`);
+        const json = await res.json();
+        setInspections(json?.data?.inspection_list ?? []);
+      } catch {
+        setInspections([]);
+      }
+    };
+    fetchInspections();
+  }, []);
 
   const checkInDisplay = formatDisplay(checkIn, checkInTime);
   const checkOutDisplay = formatDisplay(checkOut, checkOutTime);
@@ -148,18 +166,16 @@ const GuestTab = ({
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
               Latest Inspection
             </p>
-            {recentInspections.length === 0 ? (
+            {inspections.length === 0 ? (
               <p className="text-sm text-slate-400">No inspections recorded</p>
             ) : (
               <>
                 <select className="w-full text-sm text-slate-700 border border-slate-200 rounded-lg px-3 py-2 bg-white outline-none focus:border-blue-300 mb-2">
-                  {recentInspections.map((insp, i) => {
-                    const label = String(
-                      insp.label ?? insp.title ?? insp.name ??
-                      `${insp.property ?? ""} — ${insp.date ?? ""}`
-                    );
-                    return <option key={i} value={i}>{label}</option>;
-                  })}
+                  {inspections.map((insp) => (
+                    <option key={insp.inspection_id} value={insp.inspection_id}>
+                      {insp["data-string"]}
+                    </option>
+                  ))}
                 </select>
                 <button className="text-xs text-blue-500 hover:text-blue-700 font-medium transition-colors">
                   Show all inspections

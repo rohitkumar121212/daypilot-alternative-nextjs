@@ -1,0 +1,50 @@
+{
+ "data": {
+   "data": {
+     "1": {
+       "background_color": "#5cab71",
+       "booked_revenue": "16,650",
+       "date_of_realization": "20 Mar, 2024",
+       "nights": 90,
+       "revenue_realized": "Yes"
+     },
+     "2": {
+       "background_color": "#5cab71",
+       "booked_revenue": "16,650",
+       "date_of_realization": "18 Jun, 2024",
+       "nights": 90,
+       "revenue_realized": "Yes"
+     },
+     "3": {
+       "background_color": "#5cab71",
+       "booked_revenue": "16,650",
+       "date_of_realization": "16 Sep, 2024",
+       "nights": 90,
+       "revenue_realized": "Yes"
+     },
+     "4": {
+       "background_color": "#5cab71",
+       "booked_revenue": "16,650",
+       "date_of_realization": "15 Dec, 2024",
+       "nights": 90,
+       "revenue_realized": "Yes"
+     },
+     "5": {
+       "background_color": "#5cab71",
+       "booked_revenue": "2,960",
+       "date_of_realization": "15 Mar, 2025",
+       "nights": 16,
+       "revenue_realized": "Yes"
+     }
+   },
+   "duaration": 376,
+   "full_rev": "69,560",
+   "isSuccess": "true",
+   "realized_rev": "69,560",
+   "rel_split_count": 5,
+   "split_count": 5
+ },
+ "error": "",
+ "message": "success",
+ "success": true
+}

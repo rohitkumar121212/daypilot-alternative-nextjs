@@ -1,0 +1,16 @@
+{
+ "data": {
+   "isSuccess": "true",
+   "len": 3,
+   "response_list": [
+     {
+       "created_at": "03-02-2026",
+       "id": "/guest/response/details/6204718328053760",
+       "type": "Parking"
+     }
+   ]
+ },
+ "error": "",
+ "message": "success",
+ "success": true
+}

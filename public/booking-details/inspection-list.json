@@ -1,0 +1,34 @@
+{
+  "data": {
+    "inspection_list": [
+      {
+        "data-string": "Moses Cidal - 14-02-2024 12:00",
+        "inspection_id": "6199527277068288"
+      },
+      {
+        "data-string": "Ana Ciobanu - 18-03-2024 18:25",
+        "inspection_id": "6349464954470400"
+      },
+      {
+        "data-string": "Small Janel Reuben Jones - 19-03-2024 17:45",
+        "inspection_id": "5677028365828096"
+      },
+      {
+        "data-string": "Leah Luton - 29-04-2026 08:51",
+        "inspection_id": "6306795279613952"
+      },
+      {
+        "data-string": "Alexandra Buga - 29-04-2026 19:44",
+        "inspection_id": "6068205282918400"
+      },
+      {
+        "data-string": "Michael Marques - 04-05-2026 15:07",
+        "inspection_id": "6446024764686336"
+      }
+    ],
+    "isSuccess": "true"
+  },
+  "error": "",
+  "message": "success",
+  "success": true
+}

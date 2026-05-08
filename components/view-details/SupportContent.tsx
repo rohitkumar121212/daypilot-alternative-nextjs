@@ -220,12 +220,14 @@ const MaintenanceCard = ({ tasks = [] }: { tasks?: Row[] }) => (
 
 const PmsFormsCard = ({
   pmsFormsAndEmails,
+  emailTemplatesOverride,
 }: {
   pmsFormsAndEmails: SupportContentProps["pmsFormsAndEmails"];
+  emailTemplatesOverride?: Row[];
 }) => {
   const [search, setSearch] = useState("");
 
-  const templates = pmsFormsAndEmails.available_email_templates;
+  const templates = emailTemplatesOverride ?? pmsFormsAndEmails.available_email_templates;
   const forms = pmsFormsAndEmails.available_pms_forms;
   const responses = pmsFormsAndEmails.pms_form_responses;
 
@@ -257,14 +259,24 @@ const PmsFormsCard = ({
             <div className="space-y-2 mb-5">
               {forms.map((form, i) => {
                 const name = str(form.name ?? form.title ?? form.form_name);
+                const emailUrl = str(form.email_url ?? "");
+                const copyLink = str(form.copy_link_id ?? form.copy_link ?? "");
                 return (
                   <div key={i} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
                     <span className="text-sm text-slate-800">{name}</span>
                     <div className="flex items-center gap-2 shrink-0">
-                      <button className="flex items-center gap-1 text-xs text-blue-500 hover:text-blue-700 font-medium transition-colors">
+                      <a
+                        href={emailUrl !== "—" ? emailUrl : undefined}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-xs text-blue-500 hover:text-blue-700 font-medium transition-colors"
+                      >
                         <Mail className="w-3 h-3" /> Email
-                      </button>
-                      <button className="flex items-center gap-1 text-xs text-slate-500 hover:text-slate-700 font-medium transition-colors">
+                      </a>
+                      <button
+                        onClick={() => copyLink !== "—" && navigator.clipboard.writeText(copyLink)}
+                        className="flex items-center gap-1 text-xs text-slate-500 hover:text-slate-700 font-medium transition-colors"
+                      >
                         <Copy className="w-3 h-3" /> Copy link
                       </button>
                     </div>
@@ -278,12 +290,32 @@ const PmsFormsCard = ({
           {responses.length === 0 ? (
             <p className="text-sm text-slate-400">No responses yet</p>
           ) : (
-            <div className="space-y-1">
-              {responses.map((r, i) => (
-                <div key={i} className="text-sm text-slate-700">
-                  {str(r.form_name ?? r.name)} — {str(r.submitted_at ?? r.date)}
-                </div>
-              ))}
+            <div className="space-y-2">
+              {responses.map((r, i) => {
+                const name = str(r.form_name ?? r.name);
+                const date = str(r.created_at ?? r.submitted_at ?? r.date);
+                const url = str(r.view_new_tab_url ?? r.url ?? "");
+                return (
+                  <div key={i} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
+                    <div>
+                      <p className="text-sm text-slate-800">{name}</p>
+                      {date !== "—" && (
+                        <p className="text-xs text-slate-400 mt-0.5">{date}</p>
+                      )}
+                    </div>
+                    {url !== "—" && (
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-blue-500 hover:text-blue-700 font-medium whitespace-nowrap ml-3"
+                      >
+                        View →
+                      </a>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
@@ -314,7 +346,7 @@ const PmsFormsCard = ({
                 {visibleTemplates.map((t, i) => {
                   const name = str(t.name ?? t.title ?? t.template_name);
                   const subtitle = str(t.subtitle ?? t.type ?? t.category ?? t.recipient ?? "");
-                  const isShared = t.shared === true || t.is_shared === true;
+                  const isShared = t.shared === true || t.is_shared === true || String(t.status ?? "").includes("green");
                   const sharedDate = str(t.shared_date ?? t.shared_at ?? "");
                   return (
                     <div key={i} className="flex items-start justify-between py-2.5 border-b border-slate-50 last:border-0">
@@ -330,18 +362,28 @@ const PmsFormsCard = ({
                             <span className="text-xs font-semibold bg-emerald-100 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full whitespace-nowrap">
                               Shared{sharedDate !== "—" ? ` · ${sharedDate}` : ""}
                             </span>
-                            <button className="text-xs text-blue-500 hover:text-blue-700 font-medium whitespace-nowrap">
+                            <a
+                              href={str(t.url ?? "#")}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-blue-500 hover:text-blue-700 font-medium whitespace-nowrap"
+                            >
                               Share again →
-                            </button>
+                            </a>
                           </>
                         ) : (
                           <>
                             <span className="text-xs font-semibold bg-slate-100 text-slate-500 border border-slate-200 px-2 py-0.5 rounded-full whitespace-nowrap">
                               Not Shared
                             </span>
-                            <button className="text-xs text-blue-500 hover:text-blue-700 font-medium whitespace-nowrap">
+                            <a
+                              href={str(t.url ?? "#")}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-blue-500 hover:text-blue-700 font-medium whitespace-nowrap"
+                            >
                               Share →
-                            </button>
+                            </a>
                           </>
                         )}
                       </div>
@@ -372,23 +414,42 @@ const SupportContent = ({
 }: SupportContentProps) => {
   const [cases, setCases] = useState<SupportContentProps["cases"] | null>(null);
   const [casesLoading, setCasesLoading] = useState(true);
+  const [emailTemplates, setEmailTemplates] = useState<Row[]>([]);
+
+  // useEffect(() => {
+  //   const fetchCases = async () => {
+  //     try {
+  //       const res = await proxyFetch(
+  //         `/api/aperfect10/pms/fetch-cases/${bookingId}`,
+  //         { method: "POST" }
+  //       );
+  //       if (res?.isSuccess && res?.data) {
+  //         // console.log("res---- ", res.data?.apartment_wise_cases?.guest_related)
+  //         setCases({
+  //           guest_related: res.data.guest_and_booking_wise_cases ?? [],
+  //           apartment_related: res.data.apartment_wise_cases ?? [],
+  //         });
+  //       } else {
+  //         setCases(fallbackCases);
+  //       }
+  //     } catch {
+  //       setCases(fallbackCases);
+  //     } finally {
+  //       setCasesLoading(false);
+  //     }
+  //   };
+  //   fetchCases();
+  // }, [bookingId]);
 
   useEffect(() => {
     const fetchCases = async () => {
       try {
-        const res = await proxyFetch(
-          `/api/aperfect10/pms/fetch-cases/${bookingId}`,
-          { method: "POST" }
-        );
-        if (res?.isSuccess && res?.data) {
-          // console.log("res---- ", res.data?.apartment_wise_cases?.guest_related)
-          setCases({
-            guest_related: res.data.guest_and_booking_wise_cases ?? [],
-            apartment_related: res.data.apartment_wise_cases ?? [],
-          });
-        } else {
-          setCases(fallbackCases);
-        }
+        const res = await fetch(`/booking-details/fetch-cases.json`);
+        const json = await res.json();
+        setCases({
+          guest_related: json?.data?.data?.guest_and_booking_wise_cases ?? [],
+          apartment_related: json?.data?.data?.apartment_wise_cases ?? [],
+        });
       } catch {
         setCases(fallbackCases);
       } finally {
@@ -396,14 +457,51 @@ const SupportContent = ({
       }
     };
     fetchCases();
-  }, [bookingId]);
+  }, []);
+
+  // useEffect(() => {
+  //   const fetchEmailTemplates = async () => {
+  //     try {
+  //       const res = await proxyFetch(
+  //         `/api/aperfect10/pms/email-templates/${bookingId}`,
+  //         { method: "GET" }
+  //       );
+  //       if (res?.isSuccess && res?.data) {
+  //         setEmailTemplates(Object.values(res.data) as Row[]);
+  //       }
+  //     } catch {
+  //       // fallback to prop
+  //     }
+  //   };
+  //   fetchEmailTemplates();
+  // }, [bookingId]);
+
+  useEffect(() => {
+    const fetchEmailTemplates = async () => {
+      try {
+        const res = await fetch(`/booking-details/pms-email-templates.json`);
+        const json = await res.json();
+        if (json?.data) {
+          setEmailTemplates(Object.values(json.data) as Row[]);
+        }
+      } catch {
+        // fallback to prop
+      }
+    };
+    fetchEmailTemplates();
+  }, []);
+
+
 
   return (
     <div className="space-y-5">
-      {console.log("cases---- ", cases)}
+      {/* {console.log("cases---- ", cases)} */}
       <CasesCard cases={cases ?? fallbackCases} loading={casesLoading} />
       <MaintenanceCard tasks={maintenanceTasks} />
-      <PmsFormsCard pmsFormsAndEmails={pmsFormsAndEmails} />
+      <PmsFormsCard
+        pmsFormsAndEmails={pmsFormsAndEmails}
+        emailTemplatesOverride={emailTemplates.length > 0 ? emailTemplates : undefined}
+      />
     </div>
   );
 };

@@ -1,0 +1,179 @@
+{
+   "data": {
+       "data": {
+           "apartment_wise_cases": [
+               {
+                   "apartment": "101 ALA",
+                   "id": 6737697316012032,
+                   "owner": "maintenance team",
+                   "status": "closed",
+                   "title": "Apartment - 101 ALA // Light Bulb",
+                   "updated_at": "23-03-2024 13:32",
+                   "url": "/aperfect10/issues/6737697316012032"
+               },
+               {
+                   "apartment": "101 ALA",
+                   "id": 6747095509762048,
+                   "owner": "guestservices_admin",
+                   "status": "closed",
+                   "title": "Apartment - 101 ALA // dishwasher pods",
+                   "updated_at": "22-03-2024 14:39",
+                   "url": "/aperfect10/issues/6747095509762048"
+               },
+               {
+                   "apartment": "101 ALA",
+                   "id": 5224469138243584,
+                   "owner": "maintenance team",
+                   "status": "closed",
+                   "title": "Apartment - 101 ALA // intercom not working",
+                   "updated_at": "29-04-2024 09:10",
+                   "url": "/aperfect10/issues/5224469138243584"
+               },
+               {
+                   "apartment": "101 ALA",
+                   "id": 6699702022045696,
+                   "owner": "guestservices_admin",
+                   "status": "closed",
+                   "title": "Apartment - 101 ALA // door maintenance ",
+                   "updated_at": "16-04-2024 16:02",
+                   "url": "/aperfect10/issues/6699702022045696"
+               },
+               {
+                   "apartment": "101 ALA",
+                   "id": 5204334331559936,
+                   "owner": "Guestservices thesqua.re",
+                   "status": "closed",
+                   "title": "Apartment - 101 ALA // mailbox key",
+                   "updated_at": "06-04-2024 10:23",
+                   "url": "/aperfect10/issues/5204334331559936"
+               },
+               {
+                   "apartment": "101 ALA",
+                   "id": 4560143729557504,
+                   "owner": "guestservices_admin",
+                   "status": "closed",
+                   "title": "Apartment - 101 ALA // shower bulb ",
+                   "updated_at": "08-04-2024 16:32",
+                   "url": "/aperfect10/issues/4560143729557504"
+               },
+               {
+                   "apartment": "101 ALA",
+                   "id": 4536171973574656,
+                   "owner": "guestservices_admin",
+                   "status": "closed",
+                   "title": "Apartment - 101 ALA // mouse issue",
+                   "updated_at": "21-05-2024 13:05",
+                   "url": "/aperfect10/issues/4536171973574656"
+               },
+               {
+                   "apartment": "101 ALA",
+                   "id": 5559033425559552,
+                   "owner": "maintenance team",
+                   "status": "closed",
+                   "title": "Apartment - 101 ALA // Door Issue ",
+                   "updated_at": "23-05-2024 08:31",
+                   "url": "/aperfect10/issues/5559033425559552"
+               },
+               {
+                   "apartment": "101 ALA",
+                   "id": 5495474905677824,
+                   "owner": "Kehinda Ward",
+                   "status": "closed",
+                   "title": "Apartment - 101 ALA // Oven stopped working",
+                   "updated_at": "01-10-2024 12:00",
+                   "url": "/aperfect10/issues/5495474905677824"
+               },
+               {
+                   "apartment": "101 ALA",
+                   "id": 5617291318263808,
+                   "owner": "maintenance team",
+                   "status": "closed",
+                   "title": "Apartment - 101 ALA // Dishwasher Issue",
+                   "updated_at": "08-10-2024 14:21",
+                   "url": "/aperfect10/issues/5617291318263808"
+               }
+           ],
+           "guest_and_booking_wise_cases": [
+               {
+                   "apartment": "101 ALA",
+                   "id": 5336260694507520,
+                   "owner": "maintenance team",
+                   "status": "closed",
+                   "title": "Apartment - 101 ALA // Extra FOB request ",
+                   "updated_at": "24-03-2024 13:51",
+                   "url": "/aperfect10/issues/5336260694507520"
+               },
+               {
+                   "apartment": "101 ALA",
+                   "id": 5109736024309760,
+                   "owner": "Guestservices thesqua.re",
+                   "status": "closed",
+                   "title": "Apartment - 101 ALA // Dishwasher coming out",
+                   "updated_at": "14-09-2024 09:35",
+                   "url": "/aperfect10/issues/5109736024309760"
+               },
+               {
+                   "apartment": "101 ALA",
+                   "id": 4601285212897280,
+                   "owner": "Guestservices thesqua.re",
+                   "status": "closed",
+                   "title": "Apartment - 101 ALA // Unauthorised Visit | 0447299",
+                   "updated_at": "11-06-2024 13:41",
+                   "url": "/aperfect10/issues/4601285212897280"
+               },
+               {
+                   "apartment": "101 ALA",
+                   "id": 6084244809973760,
+                   "owner": "maintenance team",
+                   "status": "closed",
+                   "title": "Apartment - 101 ALA // intercom not working",
+                   "updated_at": "25-06-2024 12:54",
+                   "url": "/aperfect10/issues/6084244809973760"
+               },
+               {
+                   "apartment": "101 ALA",
+                   "id": 5900246783623168,
+                   "owner": "Cristian Oprea",
+                   "status": "closed",
+                   "title": "Apartment - 101 ALA // Washing Machine door issue",
+                   "updated_at": "01-10-2024 12:04",
+                   "url": "/aperfect10/issues/5900246783623168"
+               },
+               {
+                   "apartment": "101 ALA",
+                   "id": 6673031525040128,
+                   "owner": "Guestservices thesqua.re",
+                   "status": "closed",
+                   "title": "Apartment - 101 ALA // Unauthorised Visit",
+                   "updated_at": "09-09-2024 07:10",
+                   "url": "/aperfect10/issues/6673031525040128"
+               },
+               {
+                   "apartment": "101 ALA",
+                   "id": 4748729074581504,
+                   "owner": "Housekeeping thesqua.re",
+                   "status": "closed",
+                   "title": "Apartment - 101 ALA // kettle to be replaced ",
+                   "updated_at": "09-09-2024 07:00",
+                   "url": "/aperfect10/issues/4748729074581504"
+               },
+               {
+                   "apartment": "101 ALA",
+                   "id": 5751534258225152,
+                   "owner": "Guestservices thesqua.re",
+                   "status": "closed",
+                   "title": "Apartment - 101 ALA // 0447299 // NEW KEYS",
+                   "updated_at": "21-01-2025 14:15",
+                   "url": "/aperfect10/issues/5751534258225152"
+               }
+           ],
+           "len_of_apartment_wise_cases": 10,
+           "len_of_guest_and_booking_wise_cases": 8
+       },
+       "isSuccess": true,
+       "message": "Success"
+   },
+   "error": "",
+   "message": "success",
+   "success": true
+}

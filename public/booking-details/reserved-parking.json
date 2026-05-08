@@ -1,0 +1,47 @@
+{
+ "data": {
+   "isSuccess": "true",
+   "len": 7,
+   "response_list": [
+     {
+       "end_date": "31/12/2025",
+       "name": "210 CHH",
+       "notes": "",
+       "parking_id": "5524216663244800",
+       "reserved_by": "Md Shahab Mohsin  Ali Khan",
+       "start_date": "03/10/2025",
+       "url": "/manage-parking-in-buildings"
+     },
+     {
+       "end_date": "01/03/2026",
+       "name": "210 CHH",
+       "notes": "WN70 ZVD",
+       "parking_id": "5084926513774592",
+       "reserved_by": "",
+       "start_date": "12/02/2026",
+       "url": "/manage-parking-in-buildings"
+     },
+     {
+       "end_date": "08/03/2026",
+       "name": "210 CHH",
+       "notes": "WN70 ZVD",
+       "parking_id": "4504160415252480",
+       "reserved_by": "",
+       "start_date": "02/03/2026",
+       "url": "/manage-parking-in-buildings"
+     },
+     {
+       "end_date": "16/03/2026",
+       "name": "210 CHH",
+       "notes": "WN70 ZVD",
+       "parking_id": "4738956076777472",
+       "reserved_by": "Abhishek Misra ",
+       "start_date": "09/03/2026",
+       "url": "/manage-parking-in-buildings"
+     }
+   ]
+ },
+ "error": "",
+ "message": "success",
+ "success": true
+}

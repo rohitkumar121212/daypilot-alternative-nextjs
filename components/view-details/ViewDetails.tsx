@@ -5,204 +5,16 @@ import BookingHeader from "@/components/view-details/BookingHeader";
 import BookingTabs, { TabKey } from "@/components/view-details/BookingTabs";
 import CostBreakdown from "@/components/view-details/CostBreakdown";
 import GuestTab from "@/components/view-details/GuestTab";
-import InvoicesSection, { Invoice } from "@/components/view-details/InvoicesSection";
+import InvoicesSection from "@/components/view-details/InvoicesSection";
 import PaymentsTab from "@/components/view-details/PaymentsTab";
 import ServicesTab from "@/components/view-details/ServicesTab";
 import StayAndPricing from "@/components/view-details/StayAndPricing";
 import SupportContent from "@/components/view-details/SupportContent";
 import SupportTab from "@/components/view-details/SupportTab";
+import type { BookingData, ViewDetailsComponentProps } from "@/components/view-details/types";
 import { useUser } from "@/hooks/useUser";
 import { proxyFetch } from "@/utils/proxyFetch";
 import { useEffect, useState } from "react";
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-interface BookingData {
-  booking_details: {
-    account: string;
-    apartment: unknown[];
-    booker_email: string;
-    booker_name: string;
-    booking_created_at: string;
-    booking_reference: string;
-    booking_room_index: string;
-    booking_status: string;
-    cancellation_policy: string;
-    channel_manager_id: string;
-    channel_manager_ota_reservation_code: string;
-    channel_manager_system_id: string;
-    channel_manager_unique_id: string;
-    channel_ota_name: string;
-    do_not_move: boolean;
-    duration: number;
-    email: string;
-    enquiry_app_id: string;
-    enquiry_manager: string;
-    force_overbook: string;
-    guest_arrival: string;
-    guest_departure: string;
-    lead_source: string;
-    meal_plan: unknown[];
-    name: string;
-    phone: string | null;
-    sales_channel: string;
-    sales_person: string;
-    salesforce_id: string;
-    salesforce_log_no: string;
-  };
-  booking_header: {
-    apartment_address: string;
-    apartment_name: string;
-    booking_id: number | null;
-    booking_reference: string;
-    enquiry_app_id: string;
-    propertyAddress: string;
-    propertyName: string;
-    status: string;
-  };
-  cost_break_down: {
-    accommodation_amount: number;
-    extra_services_amount: number;
-    ratePerNight: number;
-    taxAmount: number;
-    totalAmount: number;
-    totalNights: number;
-  };
-  guest_details: {
-    address: string;
-    created_at: string;
-    email: string;
-    full_name: string;
-    goki_code: string;
-    guest_id: string;
-    guest_keys: number;
-    occupancy: { adults: string; children: string };
-    old_checkin_date: string;
-    old_checkout_date: string;
-    phone: string;
-    prearrival_form_completed: boolean;
-    representative_name: string;
-  };
-  additional_guests: Record<string, unknown>[];
-  rewards: {
-    value_field_1: string;
-    value_field_2: string;
-  };
-  revenue_realization: {
-    rows: Record<string, unknown>[];
-    totals: {
-      count_realized: number;
-      total_booked: number;
-      total_nights: number;
-      total_realized: number;
-    };
-  };
-  invoices: Invoice[];
-  payment_details: {
-    additional_services_amount: number;
-    balance: number;
-    cancellation_charges: number;
-    canellation_commission: number;
-    commission_amount: number;
-    commission_percentage: number;
-    currency: string;
-    discount_amount: number;
-    exclusive_tax_amount: number;
-    inclusive_tax_amount: number;
-    is_booking_cancelled_with_charges: boolean;
-    other_charges: number;
-    other_discount: number;
-    ratePerNight: number;
-    revenue_against_cancellation: number;
-    room_tariff: number;
-    security_deposit_amount: number;
-    taxAmount: number;
-    totalAmount: number;
-    totalNights: number;
-    total_paid_amount: number;
-  };
-  applicable_taxes: unknown[];
-  payment_history: Array<{
-    accepted_per: string;
-    amount: number;
-    created_at: string;
-    key: number;
-    mode: string;
-    notes: string;
-    receipt_img: string;
-    receipt_pdf: string;
-    ref_num: string;
-    reservation_history_id: number;
-    time: string;
-  }>;
-  stay_and_pricing: {
-    checkIn: string;
-    checkInTime: string;
-    checkOut: string;
-    checkOutTime: string;
-    currency: string;
-    ratePerNight: number;
-    taxAmount: number;
-    totalAmount: number;
-    totalNights: number;
-  };
-  additional_information: {
-    booking_notes: string;
-    meal_plan: Record<string, unknown> | unknown[];
-    messages: { messages: unknown[]; total: number } | unknown[];
-    ota_notes: string;
-    policies: string | unknown[];
-    preferences: { preferences: unknown[]; total: number } | unknown[];
-    smoking_preference: string;
-    tasks: { tasks: Record<string, unknown>[]; total: number } | Record<string, unknown>[];
-    guest_preferences: { guest_preferences: unknown[]; total: number } | unknown[];
-  };
-  extra_services: Record<string, unknown>[];
-  support: {
-    cases: {
-      apartment_related: Record<string, unknown>[];
-      guest_related: Record<string, unknown>[];
-    };
-    electricity_usage: {
-      meter_data_present: boolean;
-      readings: unknown[];
-    };
-    enquiry_manager: string;
-    guest_app_orders: Record<string, unknown>[];
-    guest_parking: Record<string, unknown>[];
-    maintenance_tasks: Record<string, unknown>[];
-    service_recovery_requests: Record<string, unknown>[];
-  };
-  sync_status: {
-    enquiry_app_sync_state: string;
-    salesforce_sync_state: string;
-    staah_sync_state: string;
-  };
-  enquiry_app_logs: {
-    enquiry_app_logs: unknown[];
-    staah_logs: unknown[];
-  };
-  property_context: {
-    cases_logs: unknown[];
-    maintenance_logs: unknown[];
-    property_name: string;
-    recent_inspections: Record<string, unknown>[];
-  };
-  pms_forms_and_emails: {
-    available_email_templates: unknown[];
-    available_pms_forms: unknown[];
-    pms_form_responses: unknown[];
-  };
-  attachments: unknown[];
-  alerts: {
-    apartment_lease_end_date: string | null;
-    custom_alerts: string[];
-  };
-}
-
-interface ViewDetailsComponentProps {
-  bookingId: string | number;
-}
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -213,9 +25,15 @@ const ViewDetailsComponent = ({ bookingId }: ViewDetailsComponentProps) => {
 
   const { user } = useUser()
 
+  // const fetchData = async () => {
+  //   const apiResponse = await proxyFetch(`/aps-api/v1/reservations/details/${bookingId}`);
+  //   setViewDetailsData(apiResponse.data);
+  // };
+
   const fetchData = async () => {
-    const apiResponse = await proxyFetch(`/aps-api/v1/reservations/details/${bookingId}`);
-    setViewDetailsData(apiResponse.data);
+    const response = await fetch(`/booking-details/main-booking.json`);
+    const json = await response.json();
+    setViewDetailsData(json.data);
   };
 
   useEffect(() => {
@@ -234,6 +52,7 @@ const ViewDetailsComponent = ({ bookingId }: ViewDetailsComponentProps) => {
     payment_history = [],
     guest_details,
     additional_guests = [],
+    all_additional_guests = [],
     extra_services = [],
     additional_information,
     support = {
@@ -256,10 +75,11 @@ const ViewDetailsComponent = ({ bookingId }: ViewDetailsComponentProps) => {
       available_pms_forms: [],
       pms_form_responses: [],
     },
+    pms_forms_responses,
+    available_pms_forms = [],
   } = viewDetailsData;
 
-  const currency = user?.admin_details?.selected_currency || '£'
-
+  const currency = user?.admin_details?.selected_currency === 'GBP' ? '£' : user?.admin_details?.selected_currency;
   const balance =
     Number(payment_details.balance) !== 0
       ? Number(payment_details.balance)
@@ -289,7 +109,7 @@ const ViewDetailsComponent = ({ bookingId }: ViewDetailsComponentProps) => {
 
             {/* LEFT (2/3) — Stay & Pricing, Booking Details */}
             <div className="col-span-2 space-y-5">
-
+              {/* {console.log("stay and pricing --- ", stay_and_pricing)} */}
               <StayAndPricing
                 checkIn={stay_and_pricing.checkIn}
                 checkOut={stay_and_pricing.checkOut}
@@ -314,12 +134,20 @@ const ViewDetailsComponent = ({ bookingId }: ViewDetailsComponentProps) => {
 
               <CostBreakdown
                 accommodationAmount={Number(cost_break_down.accommodation_amount) || 0}
+                totalNights ={Number(cost_break_down.totalNights) || 0}
+                ratePerNight ={Number(cost_break_down.ratePerNight) || 0}
+                taxInclusive ={Number(cost_break_down.inclusive_tax_amount) || 0}
+                securityDepositAmount ={Number(cost_break_down.security_deposit_amount) || 0}
+                commissionPercentage ={Number(cost_break_down.commission_percentage) || 0}
+                commissionAmount ={Number(cost_break_down.commission_amount) || 0}
+                exclusiveTaxAmount ={Number(cost_break_down.exclusive_tax_amount) || 0}
+                totalTaxAmount ={Number(cost_break_down.total_taxAmount) || 0}
                 extraServicesAmount={Number(cost_break_down.extra_services_amount) || 0}
                 taxAmount={Number(cost_break_down.taxAmount) || 0}
-                discount={Number(payment_details.discount_amount) || 0}
+                discount={Number(cost_break_down.discount_amount) || 0}
                 totalAmount={Number(cost_break_down.totalAmount) || 0}
-                amountPaid={Number(payment_details.total_paid_amount) || 0}
-                balance={balance}
+                amountPaid={Number(cost_break_down.total_paid_amount) || 0}
+                balancedAmount={Number(cost_break_down.balanced_amount) || 0}
                 currency={currency}
               />
 
@@ -335,7 +163,8 @@ const ViewDetailsComponent = ({ bookingId }: ViewDetailsComponentProps) => {
             paymentDetails={payment_details}
             paymentHistory={payment_history}
             invoices={invoices}
-            applicableTaxes={(viewDetailsData.applicable_taxes ?? []) as Record<string, unknown>[]}
+            applicableTaxes={(viewDetailsData.all_applicable_taxes?.applicable_taxes ?? viewDetailsData.applicable_taxes ?? []) as Record<string, unknown>[]}
+            currency={currency}
           />
         )}
 
@@ -343,7 +172,7 @@ const ViewDetailsComponent = ({ bookingId }: ViewDetailsComponentProps) => {
         {activeTab === "guest" && (
           <GuestTab
             guestDetails={guest_details}
-            additionalGuests={additional_guests}
+            additionalGuests={all_additional_guests.length > 0 ? all_additional_guests : additional_guests}
             checkIn={stay_and_pricing.checkIn}
             checkInTime={stay_and_pricing.checkInTime}
             checkOut={stay_and_pricing.checkOut}
@@ -378,7 +207,11 @@ const ViewDetailsComponent = ({ bookingId }: ViewDetailsComponentProps) => {
             maintenanceTasks={support.maintenance_tasks}
             serviceRecoveryRequests={support.service_recovery_requests}
             propertyContext={property_context}
-            pmsFormsAndEmails={pms_forms_and_emails}
+            pmsFormsAndEmails={{
+              ...pms_forms_and_emails,
+              available_pms_forms: available_pms_forms.length > 0 ? available_pms_forms : pms_forms_and_emails.available_pms_forms,
+              pms_form_responses: pms_forms_responses?.pms_forms ?? pms_forms_and_emails.pms_form_responses,
+            }}
           />
         )}
 

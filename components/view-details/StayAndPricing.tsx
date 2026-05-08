@@ -2,6 +2,8 @@
 
 import { useUser } from '@/hooks/useUser';
 import { Check, Pencil, X } from "lucide-react";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useState } from "react";
 interface StayAndPricingProps {
   checkIn: string;
@@ -25,11 +27,16 @@ interface StayAndPricingProps {
   }) => void;
 }
 
+dayjs.extend(customParseFormat);
+
 // ── Date helpers ──────────────────────────────────────────────────────────────
 
 const toISO = (display: string): string => {
-  const d = new Date(display);
-  return isNaN(d.getTime()) ? "" : d.toISOString().split("T")[0];
+  // API returns DD-MM-YYYY; parse explicitly to avoid JS treating it as MM-DD-YYYY
+  const d = dayjs(display, "DD-MM-YYYY", true);
+  if (d.isValid()) return d.format("YYYY-MM-DD");
+  const fallback = dayjs(display);
+  return fallback.isValid() ? fallback.format("YYYY-MM-DD") : "";
 };
 
 const toDDMMYYYY = (iso: string): string => {
@@ -50,9 +57,7 @@ const toDisplayShort = (iso: string): string => {
 };
 
 const nightsBetween = (from: string, to: string): number => {
-  const a = new Date(from + "T00:00:00");
-  const b = new Date(to + "T00:00:00");
-  const diff = Math.round((b.getTime() - a.getTime()) / 86_400_000);
+  const diff = dayjs(to).diff(dayjs(from), "day");
   return diff > 0 ? diff : 0;
 };
 
@@ -223,14 +228,14 @@ const StayAndPricing = ({
             <EditableField label="Adults" value={String(adults ?? "")} onChange={() => { }} type="number" />
             <EditableField label="Children" value={String(children ?? "")} onChange={() => { }} type="number" />
             <EditableField label="Meal Plan" value={mealPlan} onChange={() => { }} />
-            <EditableField label="Force Overbook" value={forceOverbook} onChange={() => { }} />
+            {/* <EditableField label="Force Overbook" value={forceOverbook} onChange={() => { }} /> */}
           </>
         ) : (
           <>
             <Field label="Adults" value={adults ?? "—"} />
             <Field label="Children" value={children ?? "—"} />
             <Field label="Meal Plan" value={mealPlan || "NA"} faded={!mealPlan} />
-            <Field label="Force Overbook" value={forceOverbook || "—"} faded={!forceOverbook} />
+            {/* <Field label="Force Overbook" value={forceOverbook || "—"} faded={!forceOverbook} /> */}
           </>
         )}
       </div>
@@ -254,9 +259,9 @@ const StayAndPricing = ({
       )}
 
       {/* Footer link */}
-      <button className="text-xs text-rose-500 hover:text-rose-700 font-medium transition-colors">
+      {/* <button className="text-xs text-rose-500 hover:text-rose-700 font-medium transition-colors">
         View rate calculation &rarr;
-      </button>
+      </button> */}
     </div>
   );
 };

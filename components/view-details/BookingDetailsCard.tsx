@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import { Pencil, Check, X } from "lucide-react";
+import { proxyFetch } from "@/utils/proxyFetch";
 
 export interface BookingDetailsData {
   account: string;
+  apartment: { id: number; name: string } | null;
   booker_email: string;
   booker_name: string;
   booking_created_at: string;
@@ -96,6 +98,8 @@ const BookingDetailsCard = ({
 }: BookingDetailsCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  const [accounts, setAccounts] = useState<{ id: string | number; name: string }[]>([]);
+  const [accountsLoading, setAccountsLoading] = useState(false);
 
   const [form, setForm] = useState({
     channel_ota_name: bookingDetails.channel_ota_name,
@@ -114,7 +118,25 @@ const BookingDetailsCard = ({
   const set = (k: keyof typeof form) => (v: string) =>
     setForm((p) => ({ ...p, [k]: v }));
 
-  const handleEdit = () => { setSnapshot(form); setIsEditing(true); };
+  const handleEdit = async () => {
+    setSnapshot(form);
+    setIsEditing(true);
+    setAccountsLoading(true);
+    try {
+      const res = await proxyFetch(`/aps-api/v1/case-accounts/?response_version=1`);
+      console.log(res,"response ----------------")
+      const list: Record<string, unknown>[] = res?.data?.account_list ?? [];
+      const normalised = list.map((a) => ({
+        id: String(a.account_id ?? ""),
+        name: String(a["data-string"] ?? a.account_id ?? ""),
+      }));
+      setAccounts(normalised);
+    } catch {
+      // keep empty — field stays as free-text fallback
+    } finally {
+      setAccountsLoading(false);
+    }
+  };
   const handleCancel = () => { setForm(snapshot); setIsEditing(false); };
   const handleSave = () => { setIsEditing(false); onSave?.(form); };
 
@@ -174,9 +196,34 @@ const BookingDetailsCard = ({
         {isEditing
           ? <EditField label="Sales Person" value={form.sales_person} onChange={set("sales_person")} />
           : <LabelField label="Sales Person">{form.sales_person || "—"}</LabelField>}
-        {isEditing
-          ? <EditField label="Account" value={form.account} onChange={set("account")} />
-          : <LabelField label="Account">{form.account || "—"}</LabelField>}
+        {isEditing ? (
+          <div className="min-w-0">
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Account</p>
+            {accountsLoading ? (
+              <div className="text-xs text-slate-400 py-2">Loading accounts…</div>
+            ) : accounts.length > 0 ? (
+              <select
+                value={form.account}
+                onChange={(e) => set("account")(e.target.value)}
+                className="w-full text-sm font-semibold rounded-lg px-2.5 py-1.5 border border-slate-200 outline-none focus:border-rose-400 focus:ring-1 focus:ring-rose-50 bg-white text-slate-800 transition-all"
+              >
+                <option value="">— Select Account —</option>
+                {accounts.map((a) => (
+                  <option key={a.id} value={a.name}>{a.name}</option>
+                ))}
+              </select>
+            ) : (
+              <input
+                type="text"
+                value={form.account}
+                onChange={(e) => set("account")(e.target.value)}
+                className="w-full text-sm font-semibold rounded-lg px-2.5 py-1.5 border border-slate-200 outline-none focus:border-rose-400 focus:ring-1 focus:ring-rose-50 bg-white text-slate-800 transition-all"
+              />
+            )}
+          </div>
+        ) : (
+          <LabelField label="Account">{form.account || "—"}</LabelField>
+        )}
 
         {/* Row 3: Booker Name / Booker Email / Lead Source */}
         {isEditing
@@ -188,6 +235,15 @@ const BookingDetailsCard = ({
         {isEditing
           ? <EditField label="Lead Source" value={form.lead_source} onChange={set("lead_source")} />
           : <LabelField label="Lead Source">{form.lead_source || "—"}</LabelField>}
+
+        {/* Row: Apartment Name / Apartment ID */}
+        <LabelField label="Apartment Name">
+          {bookingDetails.apartment?.name || "—"}
+        </LabelField>
+        <LabelField label="Apartment ID">
+          {bookingDetails.apartment?.id ? String(bookingDetails.apartment.id) : "—"}
+        </LabelField>
+        <div />
 
         {/* Row 4: Cancellation Policy / Do Not Move / Created */}
         {isEditing
@@ -214,7 +270,7 @@ const BookingDetailsCard = ({
           <LabelField label="Channel Mgr System ID">{bookingDetails.channel_manager_system_id || "—"}</LabelField>
           <LabelField label="Channel Mgr Unique ID">{bookingDetails.channel_manager_unique_id || "—"}</LabelField>
           <LabelField label="OTA Reservation Code">{bookingDetails.channel_manager_ota_reservation_code || "—"}</LabelField>
-          <LabelField label="Duration">{bookingDetails.duration ? `${bookingDetails.duration} nights` : "—"}</LabelField>
+          {/* <LabelField label="Duration">{bookingDetails.duration ? `${bookingDetails.duration} nights` : "—"}</LabelField> */}
           <LabelField label="Force Overbook">{bookingDetails.force_overbook || "—"}</LabelField>
         </div>
       )}

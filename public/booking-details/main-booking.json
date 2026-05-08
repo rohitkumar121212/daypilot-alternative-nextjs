@@ -1,0 +1,516 @@
+{
+  "data": {
+    "additional_information": {
+      "booking_notes": "\u003Cp\u003EPlease not this is Meet &amp; Greet for this Guest\u003C/p\u003E\u003Cp\u003E\u003Cbr data-mce-bogus=\"1\"\u003E\u003C/p\u003E\u003Cp\u003EETA// TBC\u003C/p\u003E\u003Cp\u003E\u003Cbr data-mce-bogus=\"1\"\u003E\u003C/p\u003E\u003Cp\u003EContact details&nbsp; &nbsp;// TBC&nbsp;\u003C/p\u003E",
+      "guest_preferences": {
+        "guest_preferences": [],
+        "total": 0
+      },
+      "meal_plan": {},
+      "messages": {
+        "messages": [],
+        "total": 0
+      },
+      "ota_notes": "None\u003Cbr\u003E\u003Chr\u003E",
+      "policies": "",
+      "preferences": {
+        "preferences": [],
+        "total": 0
+      },
+      "smoking_preference": "",
+      "tasks": {
+        "tasks": [
+          {
+            "icon_url": "https://aperfectstay.ai/static/images/pms/yellow-dot.png",
+            "id": 0,
+            "priority": 2,
+            "tag": "Important",
+            "tag_raw": "Important",
+            "text": "Meet & Greet"
+          }
+        ],
+        "total": 1
+      }
+    },
+    "all_additional_guests": [
+      {
+        "email": "sam@gmail.com",
+        "name": "SAM",
+        "nationality": "Adult",
+        "phone": "8527419635"
+      },
+      {
+        "email": "jas@gmail.com",
+        "name": "Jas",
+        "nationality": "Adult",
+        "phone": "1234567890"
+      },
+      {
+        "email": "-",
+        "name": "SAM",
+        "nationality": "Toddler",
+        "phone": "12"
+      }
+    ],
+    "all_applicable_taxes": {
+      "applicable_taxes": [
+        {
+          "amount": 513.6,
+          "name": "VAT/Tax",
+          "type": "VAT"
+        }
+      ],
+      "can_add_tax": true,
+      "has_tax_set": true,
+      "source": "channex"
+    },
+    "available_pms_forms": [
+      {
+        "copy_link_id": "https://aperfectstay.ai/aperfect-pms-form/5451678715215872/booking/6203749527715840",
+        "email_url": "/aperfect-pms/form/5451678715215872/share-via-email/booking/6203749527715840",
+        "form_id": 5451678715215872,
+        "form_name": "Pre-Arrival Details Form"
+      }
+    ],
+    "booking_details": {
+      "account": "Icon Relocation-Master Account",
+      "apartment": {
+        "id": 5389177243828224,
+        "name": "2802 LP TT"
+      },
+      "booker_email": "propertysupport@iconrelocation.com",
+      "booker_name": "Icon Relocation-Master Account",
+      "booking_created_at": "02/03/2026 17:17",
+      "booking_room_index": "0",
+      "booking_status": "Reserved",
+      "cancellation_policy": "",
+      "channel_manager_id": "eb6e640c-daa2-45c4-b238-7e0800ff25aa",
+      "channel_manager_ota_reservation_code": "0712425",
+      "channel_manager_system_id": "287baf4a-37ba-45f9-a79c-57a64b57015b",
+      "channel_manager_unique_id": "TSQ-0712425",
+      "channel_ota_name": "The Square",
+      "do_not_move": true,
+      "duration": 57,
+      "email": "network@thesqua.re",
+      "enquiry_app_id": "0712425",
+      "enquiry_manager": "Andrian Gontea",
+      "force_overbook": "Disabled",
+      "guest_arrival": "05-06-2026",
+      "guest_departure": "01-08-2026",
+      "lead_source": "Corporate / Agent - Existing Business (after first month)",
+      "meal_plan": [],
+      "name": "TBC-ICON-7199 TBC-ICON-7199",
+      "phone": null,
+      "sales_channel": "Relocation",
+      "sales_person": "Claudette Singh",
+      "salesforce_id": "a07S200000nx7eG",
+      "salesforce_log_no": "251302"
+    },
+    "booking_header": {
+      "apartment_address": "Talisman Tower, 6 Lincoln Plaza, E14 9BU",
+      "apartment_name": "2802 LP TT",
+      "booking_id": 6218239450284032,
+      "booking_reference": 6218239450284032,
+      "enquiry_app_id": "0712425",
+      "propertyAddress": "Talisman Tower, 6 Lincoln Plaza, E14 9BU",
+      "propertyName": "2802 LP TT",
+      "status": "Reserved"
+    },
+    "cost_break_down": {
+      "accommodation_amount": 19038,
+      "additional_services_amount": 0,
+      "cancellation_charges": 0,
+      "canellation_commission": 0,
+      "commission_amount": 1903.8,
+      "commission_percentage": 10,
+      "discount_amount": 0,
+      "exclusive_tax_amount": 0,
+      "extra_services_amount": 0,
+      "inclusive_tax_amount": 0,
+      "is_booking_cancelled_with_charges": false,
+      "ratePerNight": 334,
+      "revenue_against_cancellation": 0,
+      "security_deposit_amount": 0,
+      "totalAmount": 19038,
+      "totalNights": 57,
+      "total_paid_amount": 0,
+      "total_taxAmount": 2257.84
+    },
+    "extra_services": [
+      {
+        "amount": "2266",
+        "booked_by": "mohsin.khan@thesqua.re",
+        "created_at": "10-06-2025 10:19",
+        "id": "1749550759",
+        "invoice_id": "NA",
+        "invoice_pdf_url": "NA",
+        "notes": "Cost to vendor: £6.7\r\nCost to client: £15\r\nOur profit: £8.3 per car\r\nParking Charges—£24.9 + VAT (£24.9 x 91 days = 2266; 2266 x 20% VAT = £2719.2)\r\nParking booked for 3 Cars from 1st Jul to 30th Sep 2025",
+        "payment_method": "Payment Gateway",
+        "payment_status": "paid",
+        "reference_number": "0455675",
+        "service_name": "Parking",
+        "service_type": "ADDITIONAL_SERVICES"
+      },
+      {
+        "amount": "1080",
+        "booked_by": "mohsin.khan@thesqua.re",
+        "created_at": "10-06-2025 10:16",
+        "id": "1749550560",
+        "invoice_id": "NA",
+        "invoice_pdf_url": "NA",
+        "notes": "Pet fees \r\nPer day £12+VAT\r\nPayment till September \r\nNet Profit £1080+VAT",
+        "payment_method": "Payment Gateway",
+        "payment_status": "paid",
+        "reference_number": "0455675",
+        "service_name": "Pet Fee",
+        "service_type": "ADDITIONAL_SERVICES"
+      },
+      {
+        "amount": "360",
+        "booked_by": "akshay.rastogi@thesqua.re",
+        "created_at": "10-12-2024 17:09",
+        "id": "1733850566",
+        "invoice_id": "NA",
+        "invoice_pdf_url": "NA",
+        "notes": "\tPet Fee: £12 + VAT (Payment updated until 31-Mar-2025)",
+        "payment_method": "Credit",
+        "payment_status": "paid",
+        "reference_number": "0447299",
+        "service_name": "Pet Fee",
+        "service_type": "ADDITIONAL_SERVICES"
+      },
+      {
+        "amount": "450",
+        "booked_by": "akshay.rastogi@thesqua.re",
+        "created_at": "06-12-2024 17:40",
+        "id": "1733506845",
+        "invoice_id": "NA",
+        "invoice_pdf_url": "NA",
+        "notes": "Parking: £15 + VAT (Payment updated until 31-Mar-2025)",
+        "payment_method": "Credit",
+        "payment_status": "paid",
+        "reference_number": "0447299",
+        "service_name": "Parking",
+        "service_type": "ADDITIONAL_SERVICES"
+      },
+      {
+        "amount": "1080.0",
+        "booked_by": "rahul.bharati@thesqua.re",
+        "created_at": "25-09-2024 10:52",
+        "id": "1727261532",
+        "invoice_id": "NA",
+        "invoice_pdf_url": "NA",
+        "notes": "Pet Fee: £12 + VAT (Booking extended till 31-03-2025). Updated for 90 Nights extension only.",
+        "payment_method": "Credit",
+        "payment_status": "paid",
+        "reference_number": "0447299",
+        "service_name": "Pet Fee",
+        "service_type": "ADDITIONAL_SERVICES"
+      },
+      {
+        "amount": "2475",
+        "booked_by": "rahul.bharati@thesqua.re",
+        "created_at": "25-08-2024 16:04",
+        "id": "1724601867",
+        "invoice_id": "NA",
+        "invoice_pdf_url": "NA",
+        "notes": "Parking extended till 30-11-2024.",
+        "payment_method": "Credit",
+        "payment_status": "paid",
+        "reference_number": "0447299",
+        "service_name": "Parking",
+        "service_type": "ADDITIONAL_SERVICES"
+      },
+      {
+        "amount": "1980",
+        "booked_by": "rahul.bharati@thesqua.re",
+        "created_at": "25-08-2024 16:02",
+        "id": "1724601753",
+        "invoice_id": "NA",
+        "invoice_pdf_url": "NA",
+        "notes": "Pet Fee: £12 + VAT per night(Stay Extension till 30-11-2024)",
+        "payment_method": "Credit",
+        "payment_status": "paid",
+        "reference_number": "0447299",
+        "service_name": "Pet Fee",
+        "service_type": "ADDITIONAL_SERVICES"
+      },
+      {
+        "amount": "2745.0",
+        "booked_by": "rahul.bharati@thesqua.re",
+        "created_at": "21-03-2024 12:51",
+        "id": "1711025481",
+        "invoice_id": "NA",
+        "invoice_pdf_url": "NA",
+        "notes": "Parking Space: £15 + VAT per night. (Payment updated for 90 nights.)\r\nRest it will be updated post 90 nights.",
+        "payment_method": "Credit",
+        "payment_status": "paid",
+        "reference_number": "0447299",
+        "service_name": "Parking",
+        "service_type": "ADDITIONAL_SERVICES"
+      },
+      {
+        "amount": "1080",
+        "booked_by": "rahul.bharati@thesqua.re",
+        "created_at": "20-03-2024 14:05",
+        "id": "1710943552",
+        "invoice_id": "NA",
+        "invoice_pdf_url": "NA",
+        "notes": "Pet Fee: £12 + VAT per night. (Payment updated for 90 nights.)\r\nRest it will be updated post 90 nights.",
+        "payment_method": "Credit",
+        "payment_status": "paid",
+        "reference_number": "0447299",
+        "service_name": "Pet Fee",
+        "service_type": "ADDITIONAL_SERVICES"
+      },
+      {
+        "amount": "3825.0",
+        "booked_by": "SalesForce",
+        "created_at": "20-03-2024 13:33",
+        "id": "1771496093",
+        "invoice_id": "NA",
+        "invoice_pdf_url": "NA",
+        "notes": "NA",
+        "payment_method": "NA",
+        "payment_status": "paid",
+        "reference_number": "NA",
+        "service_name": "Car parking",
+        "service_type": "ADDITIONAL_SERVICES"
+      },
+      {
+        "amount": "3060.0",
+        "booked_by": "SalesForce",
+        "created_at": "20-03-2024 13:33",
+        "id": "1771496093",
+        "invoice_id": "NA",
+        "invoice_pdf_url": "NA",
+        "notes": "NA",
+        "payment_method": "NA",
+        "payment_status": "paid",
+        "reference_number": "NA",
+        "service_name": "Pet fee",
+        "service_type": "ADDITIONAL_SERVICES"
+      }
+    ],
+    "guest_details": {
+      "address": "",
+      "created_at": "02-03-2026 17:17",
+      "email": "network@thesqua.re",
+      "full_name": "TBC-ICON-7199 TBC-ICON-7199",
+      "goki_code": "",
+      "guest_id": "6419959031791616",
+      "guest_keys": 0,
+      "occupancy": {
+        "adults": "2",
+        "children": "3"
+      },
+      "old_checkin_date": "",
+      "old_checkout_date": "",
+      "phone": "1892600500",
+      "prearrival_form_completed": false,
+      "representative_name": ""
+    },
+    "invoices": [
+      {
+        "Amount": "3484.8",
+        "Edit": "https://go.xero.com/AccountsReceivable/Edit.aspx?InvoiceID=c7301b51-366d-4afd-9736-ed14891bf416",
+        "INV_no": "INV-81118",
+        "Publiclink": "https://in.xero.com/ymsLIuHSPcBOz0KGQNxdfCQxvPIa4ugnSzgDEvWI",
+        "Status": "PAID",
+        "currency": "GBP"
+      },
+      {
+        "Amount": "8297.6",
+        "Edit": "https://go.xero.com/AccountsReceivable/Edit.aspx?InvoiceID=abffefe3-6a1b-429b-997c-28a131c3c526",
+        "INV_no": "INV-81120",
+        "Publiclink": "https://in.xero.com/RtqFtb9W1hVUPSnlBW5eVfJczRXHt06ErhLZ5Apv",
+        "Status": "PAID",
+        "currency": "GBP"
+      },
+      {
+        "Amount": "8084.8",
+        "Edit": "https://go.xero.com/AccountsReceivable/Edit.aspx?InvoiceID=4d77aa3d-4765-4586-a4bf-193f4cac9d28",
+        "INV_no": "INV-81154",
+        "Publiclink": "https://in.xero.com/8cq7LDnywcNlmfmwy9FYMgJWapRhQaaGjJECfR5b",
+        "Status": "PAID",
+        "currency": "GBP"
+      },
+      {
+        "Amount": "7824.0",
+        "Edit": "https://go.xero.com/AccountsReceivable/Edit.aspx?InvoiceID=071fa10a-8710-47c7-a384-ce49bf521c38",
+        "INV_no": "INV-82616",
+        "Publiclink": "https://in.xero.com/DosvJgM8yLo7oWMo7mME7CW8Y6y0UxdTyxmd1mtA",
+        "Status": "PAID",
+        "currency": "GBP"
+      },
+      {
+        "Amount": "8084.8",
+        "Edit": "https://go.xero.com/AccountsReceivable/Edit.aspx?InvoiceID=a980b202-f7ba-4190-92b2-5bd832c83255",
+        "INV_no": "INV-83372",
+        "Publiclink": "https://in.xero.com/OQqQp92lUnkgInuDGayKxVy5UIaa49ZQSa9C5KXr",
+        "Status": "PAID",
+        "currency": "GBP"
+      },
+      {
+        "Amount": "8084.8",
+        "Edit": "https://go.xero.com/AccountsReceivable/Edit.aspx?InvoiceID=3848c264-e59d-4519-b685-d1cbaca73c07",
+        "INV_no": "INV-84830",
+        "Publiclink": "https://in.xero.com/mVAf5V3a6cqePU6Gt8fyG43SdBnHLGAEYgLDppIV",
+        "Status": "PAID",
+        "currency": "GBP"
+      },
+      {
+        "Amount": "4955.2",
+        "Edit": "https://go.xero.com/AccountsReceivable/Edit.aspx?InvoiceID=b9ffd75c-f9d8-4603-b07b-d6802508d95c",
+        "INV_no": "INV-87041",
+        "Publiclink": "https://in.xero.com/rFt9J09JUeyeV9VjReJnaoidFMqoTBvijFAKuYYP",
+        "Status": "PAID",
+        "currency": "GBP"
+      },
+      {
+        "Amount": "2868.8",
+        "Edit": "https://go.xero.com/AccountsReceivable/Edit.aspx?InvoiceID=682c97fa-04f5-425d-8721-0575c74a2202",
+        "INV_no": "INV-87983",
+        "Publiclink": "https://in.xero.com/sJvDwZdsoHDHLcZkh0aQoMpPWEqecZNM9DUGMx0d",
+        "Status": "PAID",
+        "currency": "GBP"
+      },
+      {
+        "Amount": "8084.8",
+        "Edit": "https://go.xero.com/AccountsReceivable/Edit.aspx?InvoiceID=153f5ede-63ea-4c17-83d5-fdf92f7e99aa",
+        "INV_no": "INV-87984",
+        "Publiclink": "https://in.xero.com/i9tzoOUjezMrZyMjfh0F5y1OMBIF3uDKfhR2pJqK",
+        "Status": "PAID",
+        "currency": "GBP"
+      },
+      {
+        "Amount": "7563.2",
+        "Edit": "https://go.xero.com/AccountsReceivable/Edit.aspx?InvoiceID=0fd8347d-ead2-4d4e-8acf-8da3a8b07bc5",
+        "INV_no": "INV-87985",
+        "Publiclink": "https://in.xero.com/Dd0Sk2cQ4MY4CIIAZneam0EQeWE5oZqszwWUm8Sb",
+        "Status": "PAID",
+        "currency": "GBP"
+      },
+      {
+        "Amount": "260.8",
+        "Edit": "https://go.xero.com/AccountsReceivable/Edit.aspx?InvoiceID=578f37bb-9c49-4278-8370-cc2a0411565c",
+        "INV_no": "INV-91391",
+        "Publiclink": "https://in.xero.com/9mWpHifWHWTUlC0b5pSqqKEUUZf6qDM57FI5gjkk",
+        "Status": "PAID",
+        "currency": "GBP"
+      },
+      {
+        "Amount": "8084.8",
+        "Edit": "https://go.xero.com/AccountsReceivable/Edit.aspx?InvoiceID=24371837-66fc-4d8d-bc8a-801be1c11e51",
+        "INV_no": "INV-91392",
+        "Publiclink": "https://in.xero.com/DQqEqoJIWJUnyp010g9LkMGp1MQIKndbqoTxAUlg",
+        "Status": "PAID",
+        "currency": "GBP"
+      },
+      {
+        "Amount": "8084.8",
+        "Edit": "https://go.xero.com/AccountsReceivable/Edit.aspx?InvoiceID=03b84c21-a809-47c1-a274-507a64073c76",
+        "INV_no": "INV-91759",
+        "Publiclink": "https://in.xero.com/B5ITDFGdJUw2fpUzktmWHdPsr66jzy3IFWoXA1gm",
+        "Status": "PAID",
+        "currency": "GBP"
+      },
+      {
+        "Amount": "7302.4",
+        "Edit": "https://go.xero.com/AccountsReceivable/Edit.aspx?InvoiceID=c9d7b7bd-f446-4eda-9352-569f3bb1a29a",
+        "INV_no": "INV-92898",
+        "Publiclink": "https://in.xero.com/X2Y7mZa2ELZoyD8UiDyMqeoS6k8SCyehisqmcXsB",
+        "Status": "PAID",
+        "currency": "GBP"
+      },
+      {
+        "Amount": "4694.4",
+        "Edit": "https://go.xero.com/AccountsReceivable/Edit.aspx?InvoiceID=091d9e94-3493-402b-b377-be00c30ef691",
+        "INV_no": "INV-94945",
+        "Publiclink": "https://in.xero.com/US0jO5tFPuwjJa8DzmLvAxUp2o9cJxxcj4KW56e3",
+        "Status": "PAID",
+        "currency": "GBP"
+      }
+    ],
+    "payment_details": {
+      "additional_services_amount": 0,
+      "cancellation_charges": 0,
+      "canellation_commission": 0,
+      "commission_amount": 1903.8,
+      "commission_percentage": 10,
+      "discount_amount": 0,
+      "exclusive_tax_amount": 0,
+      "inclusive_tax_amount": 0,
+      "is_booking_cancelled_with_charges": false,
+      "ratePerNight": 334,
+      "revenue_against_cancellation": 0,
+      "security_deposit_amount": 0,
+      "taxAmount": 2257.84,
+      "totalAmount": 19038,
+      "totalNights": 57,
+      "total_paid_amount": 0
+    },
+    "payment_history": [
+      {
+        "accepted_per": "RV GRAND ",
+        "amount": 1125,
+        "created_at": "29/04/2026",
+        "key": 1,
+        "mode": "Cash",
+        "notes": "Amont paid through cash !",
+        "receipt_img": "",
+        "receipt_pdf": "",
+        "ref_num": "",
+        "reservation_history_id": 6575129858408448,
+        "time": "06:21:18"
+      },
+      {
+        "accepted_per": "RV GRAND ",
+        "amount": 1125,
+        "created_at": "29/04/2026",
+        "key": 2,
+        "mode": "Cash",
+        "notes": "amont paid through cash !",
+        "receipt_img": "",
+        "receipt_pdf": "",
+        "ref_num": "",
+        "reservation_history_id": 6349254118342656,
+        "time": "06:22:07"
+      }
+    ],
+    "pms_forms_responses": {
+      "has_forms": true,
+      "pms_forms": [
+        {
+          "created_at": "18-09-2025 13:22:49",
+          "form_name": "Pre-Arrival Details Form",
+          "response_id": 5506028953141248,
+          "view_iframe_url": "/aperfect-pms/booking/6203749527715840/sumitted-form-iframe/5506028953141248",
+          "view_new_tab_url": "/aperfect-pms/booking/6203749527715840/sumitted-form/5506028953141248"
+        }
+      ]
+    },
+    "stay_and_pricing": {
+      "checkIn": "05-06-2026",
+      "checkInTime": "00:00",
+      "checkOut": "01-08-2026",
+      "checkOutTime": "00:00",
+      "currency": "",
+      "ratePerNight": 334,
+      "taxAmount": 2257.84,
+      "totalAmount": 19038,
+      "totalNights": 57
+    },
+    "support": {
+      "enquiry_manager": "Andrian Gontea"
+    },
+    "sync_status": {
+      "enquiry_app_sync_state": "Synchronized",
+      "salesforce_sync_state": "Synchronized",
+      "staah_sync_state": "Not Synchronized"
+    }
+  },
+  "error": "",
+  "message": "success",
+  "success": true
+}

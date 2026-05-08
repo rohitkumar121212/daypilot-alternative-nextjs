@@ -1,0 +1,842 @@
+{
+  "data": {
+    "4511324538142720": {
+      "name": "2 PH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4511324538142720/share-via-email/booking/5356846412988416"
+    },
+    "4511473462149120": {
+      "name": "Follow Up 2",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4511473462149120/share-via-email/booking/5356846412988416"
+    },
+    "4534645975678976": {
+      "name": "19 CTR KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4534645975678976/share-via-email/booking/5356846412988416"
+    },
+    "4581824674136064": {
+      "name": "[Automation] - App Downloads & Pre Arrival Form (Email 3)",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4581824674136064/share-via-email/booking/5356846412988416"
+    },
+    "4593118860017664": {
+      "name": "117 DDW KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4593118860017664/share-via-email/booking/5356846412988416"
+    },
+    "4607792892608512": {
+      "name": "101 LH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4607792892608512/share-via-email/booking/5356846412988416"
+    },
+    "4610946950496256": {
+      "name": "206 MT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4610946950496256/share-via-email/booking/5356846412988416"
+    },
+    "4623773932191744": {
+      "name": "Bank Holiday Cleaning - Corporate",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4623773932191744/share-via-email/booking/5356846412988416"
+    },
+    "4623919622389760": {
+      "name": "1010 ALA KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4623919622389760/share-via-email/booking/5356846412988416"
+    },
+    "4650051444932608": {
+      "name": "7 PH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4650051444932608/share-via-email/booking/5356846412988416"
+    },
+    "4651961254150144": {
+      "name": "31 GSS KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4651961254150144/share-via-email/booking/5356846412988416"
+    },
+    "4660959051251712": {
+      "name": "45 AGT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4660959051251712/share-via-email/booking/5356846412988416"
+    },
+    "4666665746825216": {
+      "name": "Follow Up 2",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4666665746825216/share-via-email/booking/5356846412988416"
+    },
+    "4697646404993024": {
+      "name": "17 SJLH Keynest Self Check-In Instructions - Leisure",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4697646404993024/share-via-email/booking/5356846412988416"
+    },
+    "4742544907829248": {
+      "name": "74 AG CY KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4742544907829248/share-via-email/booking/5356846412988416"
+    },
+    "4762213307908096": {
+      "name": "6 KS KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4762213307908096/share-via-email/booking/5356846412988416"
+    },
+    "4765247626805248": {
+      "name": "Check-in Confimation Email (Booker)",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4765247626805248/share-via-email/booking/5356846412988416"
+    },
+    "4786438941966336": {
+      "name": "Guest Review Email 4 [Email Automation]",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4786438941966336/share-via-email/booking/5356846412988416"
+    },
+    "4794270666981376": {
+      "name": "123 BIH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4794270666981376/share-via-email/booking/5356846412988416"
+    },
+    "4797006594703360": {
+      "name": "5 KS KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4797006594703360/share-via-email/booking/5356846412988416"
+    },
+    "4817547390091264": {
+      "name": "18 Lena Gardens Self Check-in Email",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4817547390091264/share-via-email/booking/5356846412988416"
+    },
+    "4817695628328960": {
+      "name": "4 AG CY KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4817695628328960/share-via-email/booking/5356846412988416"
+    },
+    "4817977678495744": {
+      "name": "211 CP KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4817977678495744/share-via-email/booking/5356846412988416"
+    },
+    "4830847455723520": {
+      "name": "113 H CH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4830847455723520/share-via-email/booking/5356846412988416"
+    },
+    "4860067259088896": {
+      "name": "109 LH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4860067259088896/share-via-email/booking/5356846412988416"
+    },
+    "4890748659957760": {
+      "name": "3 KS KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4890748659957760/share-via-email/booking/5356846412988416"
+    },
+    "4890799587196928": {
+      "name": "42 BP KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4890799587196928/share-via-email/booking/5356846412988416"
+    },
+    "4900322611822592": {
+      "name": "10 CTR KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4900322611822592/share-via-email/booking/5356846412988416"
+    },
+    "4903788754239488": {
+      "name": "Apartment Move Template",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4903788754239488/share-via-email/booking/5356846412988416"
+    },
+    "4910691561504768": {
+      "name": "Follow Up 3",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4910691561504768/share-via-email/booking/5356846412988416"
+    },
+    "4913999306031104": {
+      "name": "17 BKH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4913999306031104/share-via-email/booking/5356846412988416"
+    },
+    "4919055715663872": {
+      "name": "10 FS KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4919055715663872/share-via-email/booking/5356846412988416"
+    },
+    "4923376788307968": {
+      "name": "52 AGT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4923376788307968/share-via-email/booking/5356846412988416"
+    },
+    "4925050256883712": {
+      "name": "1402 LP D KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4925050256883712/share-via-email/booking/5356846412988416"
+    },
+    "4981802671276032": {
+      "name": "123 DDE  KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:green'\u003E\u003Cb\u003EShared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4981802671276032/share-via-email/booking/5356846412988416"
+    },
+    "4987441468407808": {
+      "name": "5 SC KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/4987441468407808/share-via-email/booking/5356846412988416"
+    },
+    "5001416852635648": {
+      "name": "Hammersmith (2 / 3 HS) Keynest Self Check-In Instructions – Leisure",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5001416852635648/share-via-email/booking/5356846412988416"
+    },
+    "5005371295924224": {
+      "name": "902 AP KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5005371295924224/share-via-email/booking/5356846412988416"
+    },
+    "5008452708466688": {
+      "name": "37 TT Luna KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5008452708466688/share-via-email/booking/5356846412988416"
+    },
+    "5020889898811392": {
+      "name": "20 SJLH Keynest Self Check-In Instructions - Leisure",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5020889898811392/share-via-email/booking/5356846412988416"
+    },
+    "5037949335896064": {
+      "name": "6 BB KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5037949335896064/share-via-email/booking/5356846412988416"
+    },
+    "5091147779145728": {
+      "name": "18B Lena Gardens Self Check-in Email",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5091147779145728/share-via-email/booking/5356846412988416"
+    },
+    "5097595929100288": {
+      "name": "610 ALA KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5097595929100288/share-via-email/booking/5356846412988416"
+    },
+    "5106721068417024": {
+      "name": "Meet & Greet - Corporate",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5106721068417024/share-via-email/booking/5356846412988416"
+    },
+    "5120023870832640": {
+      "name": "20 TT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5120023870832640/share-via-email/booking/5356846412988416"
+    },
+    "5136391971274752": {
+      "name": "Hammersmith (1 HS) Keynest Self Check-In Instructions – Leisure",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5136391971274752/share-via-email/booking/5356846412988416"
+    },
+    "5139413441970176": {
+      "name": "87 AGT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5139413441970176/share-via-email/booking/5356846412988416"
+    },
+    "5144363022680064": {
+      "name": "626 ALA KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5144363022680064/share-via-email/booking/5356846412988416"
+    },
+    "5158665644408832": {
+      "name": "KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5158665644408832/share-via-email/booking/5356846412988416"
+    },
+    "5164317340073984": {
+      "name": "65 AG CY KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5164317340073984/share-via-email/booking/5356846412988416"
+    },
+    "5168022244294656": {
+      "name": "64 GSS KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5168022244294656/share-via-email/booking/5356846412988416"
+    },
+    "5181096770666496": {
+      "name": "76 CT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5181096770666496/share-via-email/booking/5356846412988416"
+    },
+    "5190254782840832": {
+      "name": "Concierge Services Introductory Email",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5190254782840832/share-via-email/booking/5356846412988416"
+    },
+    "5203247599976448": {
+      "name": "18 SJLH Keynest Self Check-In Instructions - Leisure",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5203247599976448/share-via-email/booking/5356846412988416"
+    },
+    "5236634883719168": {
+      "name": "107 QQ KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5236634883719168/share-via-email/booking/5356846412988416"
+    },
+    "5237829153062912": {
+      "name": "12A CL KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5237829153062912/share-via-email/booking/5356846412988416"
+    },
+    "5244884953858048": {
+      "name": "70 Tyron KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5244884953858048/share-via-email/booking/5356846412988416"
+    },
+    "5272828011085824": {
+      "name": "117 H CH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5272828011085824/share-via-email/booking/5356846412988416"
+    },
+    "5283160871927808": {
+      "name": "1908 LP DT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5283160871927808/share-via-email/booking/5356846412988416"
+    },
+    "5307962530725888": {
+      "name": "Access to Property // Corporate ",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5307962530725888/share-via-email/booking/5356846412988416"
+    },
+    "5355648695926784": {
+      "name": "225 CH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5355648695926784/share-via-email/booking/5356846412988416"
+    },
+    "5356487825162240": {
+      "name": "1401 TT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5356487825162240/share-via-email/booking/5356846412988416"
+    },
+    "5374392772067328": {
+      "name": "705 ALA KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5374392772067328/share-via-email/booking/5356846412988416"
+    },
+    "5396243762118656": {
+      "name": "510 LH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5396243762118656/share-via-email/booking/5356846412988416"
+    },
+    "5397614402994176": {
+      "name": "Access to Property // Direct to guest email",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5397614402994176/share-via-email/booking/5356846412988416"
+    },
+    "5408701957537792": {
+      "name": "27 SJLH Keynest Self Check-In Instructions - Leisure",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5408701957537792/share-via-email/booking/5356846412988416"
+    },
+    "5447553488257024": {
+      "name": "21 AGT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5447553488257024/share-via-email/booking/5356846412988416"
+    },
+    "5447836760014848": {
+      "name": "54 SJLH Keynest Self Check-In Instructions - Leisure",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5447836760014848/share-via-email/booking/5356846412988416"
+    },
+    "5449709796720640": {
+      "name": "2802 LP TT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5449709796720640/share-via-email/booking/5356846412988416"
+    },
+    "5450307924393984": {
+      "name": "[Automation] - App Downloads & Pre Arrival Form (Email 2)",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5450307924393984/share-via-email/booking/5356846412988416"
+    },
+    "5464833134690304": {
+      "name": "Apology Email",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5464833134690304/share-via-email/booking/5356846412988416"
+    },
+    "5481867537022976": {
+      "name": "[Automation] App Downloads & Pre Arrival Form (1st Email)",
+      "status": "\u003Cspan style='color:green'\u003E\u003Cb\u003EShared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5481867537022976/share-via-email/booking/5356846412988416"
+    },
+    "5486104268505088": {
+      "name": "[Automation] - Checkout Corporate (1st Email)",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5486104268505088/share-via-email/booking/5356846412988416"
+    },
+    "5488549857067008": {
+      "name": "24 AGT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5488549857067008/share-via-email/booking/5356846412988416"
+    },
+    "5505792129105920": {
+      "name": "19 Lambs KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5505792129105920/share-via-email/booking/5356846412988416"
+    },
+    "5520865392328704": {
+      "name": "19 CT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5520865392328704/share-via-email/booking/5356846412988416"
+    },
+    "5540004269916160": {
+      "name": "54 H TS KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5540004269916160/share-via-email/booking/5356846412988416"
+    },
+    "5547115587567616": {
+      "name": "APerfectGuest App Downlaod",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5547115587567616/share-via-email/booking/5356846412988416"
+    },
+    "5562775199809536": {
+      "name": "[Automation] - Checkout Leisure (3rd Email)",
+      "status": "\u003Cspan style='color:green'\u003E\u003Cb\u003EShared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5562775199809536/share-via-email/booking/5356846412988416"
+    },
+    "5590211033563136": {
+      "name": "32 SJLH Keynest Self Check-In Instructions - Leisure",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5590211033563136/share-via-email/booking/5356846412988416"
+    },
+    "5597487608889344": {
+      "name": "3 CG KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5597487608889344/share-via-email/booking/5356846412988416"
+    },
+    "5609105294098432": {
+      "name": "604 IS KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5609105294098432/share-via-email/booking/5356846412988416"
+    },
+    "5612307318046720": {
+      "name": "902 AP KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5612307318046720/share-via-email/booking/5356846412988416"
+    },
+    "5637224444985344": {
+      "name": "1108 AP KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5637224444985344/share-via-email/booking/5356846412988416"
+    },
+    "5638377106833408": {
+      "name": "1502 LP JT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5638377106833408/share-via-email/booking/5356846412988416"
+    },
+    "5648754002624512": {
+      "name": "[Automation] - Checkout Leisure (1st Email)",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5648754002624512/share-via-email/booking/5356846412988416"
+    },
+    "5673874365612032": {
+      "name": "505 ALA KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5673874365612032/share-via-email/booking/5356846412988416"
+    },
+    "5681057094434816": {
+      "name": "6 AL KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5681057094434816/share-via-email/booking/5356846412988416"
+    },
+    "5683327865454592": {
+      "name": "119 H CH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5683327865454592/share-via-email/booking/5356846412988416"
+    },
+    "5692522954227712": {
+      "name": "6 SS KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5692522954227712/share-via-email/booking/5356846412988416"
+    },
+    "5693902771191808": {
+      "name": "1 KS KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5693902771191808/share-via-email/booking/5356846412988416"
+    },
+    "5704964976410624": {
+      "name": "56 SJLH Keynest Self Check-In Instructions - Leisure",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5704964976410624/share-via-email/booking/5356846412988416"
+    },
+    "5751556071751680": {
+      "name": "3 PH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5751556071751680/share-via-email/booking/5356846412988416"
+    },
+    "5771564982206464": {
+      "name": "14 SS KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5771564982206464/share-via-email/booking/5356846412988416"
+    },
+    "5774551267934208": {
+      "name": "501 IC KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5774551267934208/share-via-email/booking/5356846412988416"
+    },
+    "5776261185011712": {
+      "name": "721 DH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5776261185011712/share-via-email/booking/5356846412988416"
+    },
+    "5784486132318208": {
+      "name": "No Damage Enquiry Post Check-out",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5784486132318208/share-via-email/booking/5356846412988416"
+    },
+    "5792427383193600": {
+      "name": "618 CC KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5792427383193600/share-via-email/booking/5356846412988416"
+    },
+    "5798665017884672": {
+      "name": "401 MT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5798665017884672/share-via-email/booking/5356846412988416"
+    },
+    "5804069160484864": {
+      "name": "706 DH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5804069160484864/share-via-email/booking/5356846412988416"
+    },
+    "5804129180975104": {
+      "name": "101 ALA KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5804129180975104/share-via-email/booking/5356846412988416"
+    },
+    "5811969618608128": {
+      "name": "121 H CH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5811969618608128/share-via-email/booking/5356846412988416"
+    },
+    "5816943761162240": {
+      "name": "257 Seath KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5816943761162240/share-via-email/booking/5356846412988416"
+    },
+    "5849734222708736": {
+      "name": "Guest Review Email [EMAIL AUTOMATION]",
+      "status": "\u003Cspan style='color:green'\u003E\u003Cb\u003EShared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5849734222708736/share-via-email/booking/5356846412988416"
+    },
+    "5869836543459328": {
+      "name": "310 ALA KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5869836543459328/share-via-email/booking/5356846412988416"
+    },
+    "5872590959673344": {
+      "name": "728 DH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5872590959673344/share-via-email/booking/5356846412988416"
+    },
+    "5881788606971904": {
+      "name": "207 PP KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5881788606971904/share-via-email/booking/5356846412988416"
+    },
+    "5918538754686976": {
+      "name": "703 CP KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5918538754686976/share-via-email/booking/5356846412988416"
+    },
+    "5922906501545984": {
+      "name": "2 KS KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5922906501545984/share-via-email/booking/5356846412988416"
+    },
+    "5934202164871168": {
+      "name": "4 KS KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5934202164871168/share-via-email/booking/5356846412988416"
+    },
+    "5974024230273024": {
+      "name": "[Automation] - Checkout Corporate (2nd Email)",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5974024230273024/share-via-email/booking/5356846412988416"
+    },
+    "5977141162278912": {
+      "name": "[Automation] - Checkout Leisure (2nd Email)",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/5977141162278912/share-via-email/booking/5356846412988416"
+    },
+    "6000493743570944": {
+      "name": "B1 KS KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6000493743570944/share-via-email/booking/5356846412988416"
+    },
+    "6048711537852416": {
+      "name": "908 ALA KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6048711537852416/share-via-email/booking/5356846412988416"
+    },
+    "6056171250122752": {
+      "name": "27 DM KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6056171250122752/share-via-email/booking/5356846412988416"
+    },
+    "6062609984913408": {
+      "name": "37 Luna KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6062609984913408/share-via-email/booking/5356846412988416"
+    },
+    "6108050898288640": {
+      "name": "209 CH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6108050898288640/share-via-email/booking/5356846412988416"
+    },
+    "6160417147584512": {
+      "name": "Apartment Access",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6160417147584512/share-via-email/booking/5356846412988416"
+    },
+    "6172763217723392": {
+      "name": "40 SJLH Keynest Self Check-In Instructions - Leisure",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6172763217723392/share-via-email/booking/5356846412988416"
+    },
+    "6179992372248576": {
+      "name": "61 BP KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6179992372248576/share-via-email/booking/5356846412988416"
+    },
+    "6183801605586944": {
+      "name": "1402 LP JT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6183801605586944/share-via-email/booking/5356846412988416"
+    },
+    "6191157508833280": {
+      "name": "109 CH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6191157508833280/share-via-email/booking/5356846412988416"
+    },
+    "6192392915910656": {
+      "name": "321 Luna KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6192392915910656/share-via-email/booking/5356846412988416"
+    },
+    "6211315261505536": {
+      "name": "[Automation] - Checkout Corporate (3rd Email)",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6211315261505536/share-via-email/booking/5356846412988416"
+    },
+    "6239563333763072": {
+      "name": "B2 KS KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6239563333763072/share-via-email/booking/5356846412988416"
+    },
+    "6246315383062528": {
+      "name": "Meet & Greet - New",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6246315383062528/share-via-email/booking/5356846412988416"
+    },
+    "6246981782470656": {
+      "name": "1606 MLG KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6246981782470656/share-via-email/booking/5356846412988416"
+    },
+    "6247775856492544": {
+      "name": "210 CHH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6247775856492544/share-via-email/booking/5356846412988416"
+    },
+    "6265313348812800": {
+      "name": "108 AGT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6265313348812800/share-via-email/booking/5356846412988416"
+    },
+    "6269365449129984": {
+      "name": "1 SH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6269365449129984/share-via-email/booking/5356846412988416"
+    },
+    "6278913468661760": {
+      "name": "30 SJLH Keynest Self Check-In Instructions - Leisure",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6278913468661760/share-via-email/booking/5356846412988416"
+    },
+    "6297790415110144": {
+      "name": "1202 MT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6297790415110144/share-via-email/booking/5356846412988416"
+    },
+    "6310285688176640": {
+      "name": "Guest Review Email 3 [Email Automation]",
+      "status": "\u003Cspan style='color:green'\u003E\u003Cb\u003EShared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6310285688176640/share-via-email/booking/5356846412988416"
+    },
+    "6326860659032064": {
+      "name": "Phone System Not Working",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6326860659032064/share-via-email/booking/5356846412988416"
+    },
+    "6333678381694976": {
+      "name": "604 Luna KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6333678381694976/share-via-email/booking/5356846412988416"
+    },
+    "6336159035686912": {
+      "name": "301 EC KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6336159035686912/share-via-email/booking/5356846412988416"
+    },
+    "6364771311943680": {
+      "name": "Follow Up 1",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6364771311943680/share-via-email/booking/5356846412988416"
+    },
+    "6366742194421760": {
+      "name": "52 SJLH Keynest Self Check-In Instructions - Leisure",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6366742194421760/share-via-email/booking/5356846412988416"
+    },
+    "6396645689262080": {
+      "name": "46 BP KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6396645689262080/share-via-email/booking/5356846412988416"
+    },
+    "6399453767401472": {
+      "name": "1202 MT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6399453767401472/share-via-email/booking/5356846412988416"
+    },
+    "6401315708076032": {
+      "name": "45 SJLH Keynest Self Check-In Instructions - Leisure",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6401315708076032/share-via-email/booking/5356846412988416"
+    },
+    "6405976928288768": {
+      "name": "Meet & Greet - Leisure",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6405976928288768/share-via-email/booking/5356846412988416"
+    },
+    "6440267390386176": {
+      "name": "302 CH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6440267390386176/share-via-email/booking/5356846412988416"
+    },
+    "6443974567919616": {
+      "name": "13 TT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6443974567919616/share-via-email/booking/5356846412988416"
+    },
+    "6444785508286464": {
+      "name": "21 SJLH Keynest Self Check-In Instructions - Leisure",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6444785508286464/share-via-email/booking/5356846412988416"
+    },
+    "6447102671454208": {
+      "name": "305 IS KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6447102671454208/share-via-email/booking/5356846412988416"
+    },
+    "6460093320134656": {
+      "name": "Extension Reminder ",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6460093320134656/share-via-email/booking/5356846412988416"
+    },
+    "6469545519742976": {
+      "name": "226 CC KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6469545519742976/share-via-email/booking/5356846412988416"
+    },
+    "6487101299228672": {
+      "name": "107 H CH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6487101299228672/share-via-email/booking/5356846412988416"
+    },
+    "6498010219413504": {
+      "name": "51 SJLH Keynest Self Check-In Instructions - Leisure",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6498010219413504/share-via-email/booking/5356846412988416"
+    },
+    "6513358078476288": {
+      "name": "6 CG KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6513358078476288/share-via-email/booking/5356846412988416"
+    },
+    "6572132256448512": {
+      "name": "41 CR KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6572132256448512/share-via-email/booking/5356846412988416"
+    },
+    "6574234483556352": {
+      "name": "1709 LP DT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6574234483556352/share-via-email/booking/5356846412988416"
+    },
+    "6588234228301824": {
+      "name": "Guest Review Email 2 [Email Automation]",
+      "status": "\u003Cspan style='color:green'\u003E\u003Cb\u003EShared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6588234228301824/share-via-email/booking/5356846412988416"
+    },
+    "6594506418814976": {
+      "name": "16 AGT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6594506418814976/share-via-email/booking/5356846412988416"
+    },
+    "6595470236319744": {
+      "name": "33 TT Luna KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6595470236319744/share-via-email/booking/5356846412988416"
+    },
+    "6610794075652096": {
+      "name": "1 PH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6610794075652096/share-via-email/booking/5356846412988416"
+    },
+    "6611648908361728": {
+      "name": "98 TS KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6611648908361728/share-via-email/booking/5356846412988416"
+    },
+    "6614925708361728": {
+      "name": "4 SC KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6614925708361728/share-via-email/booking/5356846412988416"
+    },
+    "6623858015600640": {
+      "name": "50 BP KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6623858015600640/share-via-email/booking/5356846412988416"
+    },
+    "6625559938334720": {
+      "name": "2010 LP DT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6625559938334720/share-via-email/booking/5356846412988416"
+    },
+    "6636953370886144": {
+      "name": "Check-in Confimation Email (Guest)",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6636953370886144/share-via-email/booking/5356846412988416"
+    },
+    "6703320614830080": {
+      "name": "31 Lambs KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6703320614830080/share-via-email/booking/5356846412988416"
+    },
+    "6708402282561536": {
+      "name": "139 AGT KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6708402282561536/share-via-email/booking/5356846412988416"
+    },
+    "6733723044151296": {
+      "name": "421 Luna KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6733723044151296/share-via-email/booking/5356846412988416"
+    },
+    "6734296640389120": {
+      "name": "108 LH KeyNest - Self check-in",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6734296640389120/share-via-email/booking/5356846412988416"
+    },
+    "6752190156767232": {
+      "name": "Review and Rating Emails",
+      "status": "\u003Cspan style='color:red'\u003E\u003Cb\u003ENot Shared\u003C/b\u003E\u003C/span\u003E",
+      "url": "/aperfect-pms/email-template/6752190156767232/share-via-email/booking/5356846412988416"
+    }
+  },
+  "error": "",
+  "message": "Email Templates Fetched Successfully.",
+  "success": true
+}
