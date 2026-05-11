@@ -40,7 +40,6 @@ export default function RootLayout({
             <ErrorModal />
           </UserProvider>
         </ErrorProvider>
-        <div id="google_translate_element" style={{ display: "none" }} />
         <Script
           src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
           strategy="afterInteractive"

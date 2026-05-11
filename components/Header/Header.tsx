@@ -4,7 +4,6 @@ import { useUser } from '@/contexts/UserContext'
 import HeaderLogo from './HeaderLogo'
 import HeaderNavigationList from './HeaderNavigationList'
 import HeaderUserInfo from './HeaderUserInfo'
-import LanguageSwitcher from '../common/LanguageSwitcher/LanguageSwitcher'
 
 const Header = () => {
   const { user, isLoading, error } = useUser()
@@ -17,10 +16,7 @@ const Header = () => {
           <HeaderLogo />
           <HeaderNavigationList user={user} />
           <div className="flex items-center gap-3 shrink-0">
-            <div translate="no">
-                  <LanguageSwitcher />
-            </div>
-            {/* <div id="google_translate_element" /> */}
+            <div id="google_translate_element" />
             <HeaderUserInfo user={user} />
           </div>
         </div>
