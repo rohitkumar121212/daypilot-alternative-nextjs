@@ -33,8 +33,13 @@ export function FloatingInput({
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (type === 'file') {
+      onChange(e)
+      return
+    }
+
     let newValue = e.target.value
-    
+
     // Prevent negative numbers for number inputs
     if (type === 'number' && parseFloat(newValue) < 0) {
       return
