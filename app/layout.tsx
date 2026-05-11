@@ -5,6 +5,7 @@ import Header from "@/components/Header/Header";
 import { UserProvider } from "@/contexts/UserContext";
 import { ErrorProvider } from "@/contexts/ErrorContext";
 import ErrorModal from "@/components/common/ErrorModal";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +40,25 @@ export default function RootLayout({
             <ErrorModal />
           </UserProvider>
         </ErrorProvider>
+        <div id="google_translate_element" style={{ display: "none" }} />
+        <Script
+          src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+          strategy="afterInteractive"
+        />
+
+        <Script id="google-translate-init" strategy="afterInteractive">
+          {`
+            function googleTranslateElementInit() {
+              new google.translate.TranslateElement(
+                {
+                  pageLanguage: 'en',
+                  autoDisplay: false
+                },
+                'google_translate_element'
+              );
+            }
+          `}
+        </Script>
       </body>
     </html>
   );
