@@ -7,6 +7,7 @@ import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
 import LoadingOverlay from '@/components/ReservationChart/Modals/CreateBookingModal/components/LoadingOverlay'
+import ImageUploadField from '@/components/common/ImageUploadField'
 
 interface CreateCaseTabProps {
   reservationConstants: any,
@@ -25,7 +26,7 @@ const CreateCaseTab = ({ reservationConstants, bookingDetails, assignToUsers, on
     origin: '',
     priority: '',
     assignTo: '',
-    image: null as File | null,
+    images: [] as File[],
     description: '',
   })
 
@@ -68,7 +69,7 @@ const CreateCaseTab = ({ reservationConstants, bookingDetails, assignToUsers, on
     // formPayload.append('user_id_unassigned', '557982301238062')
     formPayload.append('description', formData.description)
     // formPayload.append('save', 'Create Task')
-    if (formData.image) formPayload.append('images', formData.image)
+    formData.images.forEach(img => formPayload.append('images', img))
     console.log('Form payload:', Object.fromEntries(formPayload.entries()))
     try {
       const url = process.env.NODE_ENV === 'development'
@@ -105,12 +106,6 @@ const CreateCaseTab = ({ reservationConstants, bookingDetails, assignToUsers, on
     }
   }
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFormData({ ...formData, image: e.target.files[0] })
-    }
-  }
-  
   return (
     <div className="space-y-4 relative h-full">
       <LoadingOverlay isLoading={isLoading} />
@@ -191,10 +186,9 @@ const CreateCaseTab = ({ reservationConstants, bookingDetails, assignToUsers, on
           // required
         />)
         }
-        <FloatingInput 
-          label="Attach Image" 
-          type="file" 
-          onChange={handleImageChange}
+        <ImageUploadField
+          label="Attach Images"
+          onChange={(files) => setFormData({ ...formData, images: files })}
         />
       </div>
       <div>
