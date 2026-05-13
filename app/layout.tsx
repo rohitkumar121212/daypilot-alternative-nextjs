@@ -57,9 +57,9 @@ export default function RootLayout({
             function googleTranslateElementInit() {
               if (window.__gtUserReady) {
                 if (window.__gtLang && window.__gtLang !== 'en') {
-                  document.cookie = 'googtrans=/en/' + window.__gtLang + '; path=/';
+                  document.cookie = 'googtrans=/en/' + window.__gtLang + '; path=/; domain=.aperfectstay.ai';
                 } else {
-                  document.cookie = 'googtrans=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+                  document.cookie = 'googtrans=; path=/; domain=.aperfectstay.ai; expires=Thu, 01 Jan 1970 00:00:00 GMT';
                 }
                 window.__initGT();
               } else {
