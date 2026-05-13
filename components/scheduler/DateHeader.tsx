@@ -63,6 +63,7 @@ const DateHeader = memo(({ date, cellWidth = 100, totalAvailability = null, fron
             className={`text-xs font-semibold mt-1 rounded-lg text-center text-white p-1 ${
               isHighOccupancyFrontend ? 'bg-red-500':'bg-green-500'
             }`}
+            translate="no"
           >
             {frontendAvailability.available}/{frontendAvailability.total}
           </div>

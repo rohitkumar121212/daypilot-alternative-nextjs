@@ -92,7 +92,7 @@ const DateCell = memo(({
         </div>
       )} */}
       {frontendAvailability !== null && frontendAvailability !== undefined && (
-        <div className={`text-xs font-semibold ${frontendAvailabilityInfo.color} ml-1`}>
+        <div className={`text-xs font-semibold ${frontendAvailabilityInfo.color} ml-1`} translate="no">
           {frontendAvailability.available}/{frontendAvailability.total}
         </div>
       )}

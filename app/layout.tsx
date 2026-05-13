@@ -5,6 +5,7 @@ import Header from "@/components/Header/Header";
 import { UserProvider } from "@/contexts/UserContext";
 import { ErrorProvider } from "@/contexts/ErrorContext";
 import ErrorModal from "@/components/common/ErrorModal";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +40,34 @@ export default function RootLayout({
             <ErrorModal />
           </UserProvider>
         </ErrorProvider>
+        <Script
+          src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+          strategy="afterInteractive"
+        />
+
+        <Script id="google-translate-init" strategy="afterInteractive">
+          {`
+            window.__initGT = function() {
+              new google.translate.TranslateElement(
+                { pageLanguage: 'en', autoDisplay: false },
+                'google_translate_element'
+              );
+            };
+
+            function googleTranslateElementInit() {
+              if (window.__gtUserReady) {
+                if (window.__gtLang && window.__gtLang !== 'en') {
+                  document.cookie = 'googtrans=/en/' + window.__gtLang + '; path=/';
+                } else {
+                  document.cookie = 'googtrans=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+                }
+                window.__initGT();
+              } else {
+                window.__gtScriptReady = true;
+              }
+            }
+          `}
+        </Script>
       </body>
     </html>
   );

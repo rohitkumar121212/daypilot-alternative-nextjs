@@ -1,6 +1,15 @@
 'use client'
 
 import { fetchUtils } from '@/utils/fetchUtils'
+
+declare global {
+  interface Window {
+    __gtLang?: string
+    __gtUserReady?: boolean
+    __gtScriptReady?: boolean
+    __initGT?: () => void
+  }
+}
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode, useMemo } from 'react'
 
 interface User {
@@ -59,6 +68,22 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         setIsSquareUser(true)
       } else {
         setIsSquareUser(false)
+      }
+
+      // TODO: remove once backend sends correct selected_language
+      // if (data?.data?.admin_details) {
+      //   data.data.admin_details.selected_language = 'en'
+      // }
+      const lang = data?.data?.admin_details?.selected_language
+      window.__gtLang = lang || 'en'
+      window.__gtUserReady = true
+      if (window.__gtScriptReady && window.__initGT) {
+        if (lang && lang !== 'en') {
+          document.cookie = `googtrans=/en/${lang}; path=/`
+        } else {
+          document.cookie = 'googtrans=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+        }
+        window.__initGT()
       }
 
     } catch (err) {

@@ -15,7 +15,10 @@ const Header = () => {
         <div className="flex items-center justify-between px-6 py-3">
           <HeaderLogo />
           <HeaderNavigationList user={user} />
-          <HeaderUserInfo user={user} />
+          <div className="flex items-center gap-3 shrink-0">
+            <div id="google_translate_element" />
+            <HeaderUserInfo user={user} />
+          </div>
         </div>
       </header>
     </>
