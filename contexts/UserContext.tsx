@@ -79,9 +79,9 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       window.__gtUserReady = true
       if (window.__gtScriptReady && window.__initGT) {
         if (lang && lang !== 'en') {
-          document.cookie = `googtrans=/en/${lang}; path=/`
+          document.cookie = `googtrans=/en/${lang}; path=/; domain=.aperfectstay.ai`
         } else {
-          document.cookie = 'googtrans=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+          document.cookie = 'googtrans=; path=/; domain=.aperfectstay.ai; expires=Thu, 01 Jan 1970 00:00:00 GMT'
         }
         window.__initGT()
       }
