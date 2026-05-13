@@ -48,13 +48,19 @@ export default function RootLayout({
         <Script id="google-translate-init" strategy="afterInteractive">
           {`
             function googleTranslateElementInit() {
-              new google.translate.TranslateElement(
-                {
-                  pageLanguage: 'en',
-                  autoDisplay: false
-                },
-                'google_translate_element'
-              );
+              if (window.__gtUserReady) {
+                if (window.__gtLang && window.__gtLang !== 'en') {
+                  document.cookie = 'googtrans=/en/' + window.__gtLang + '; path=/';
+                } else {
+                  document.cookie = 'googtrans=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+                }
+                new google.translate.TranslateElement(
+                  { pageLanguage: 'en', autoDisplay: false },
+                  'google_translate_element'
+                );
+              } else {
+                window.__gtScriptReady = true;
+              }
             }
           `}
         </Script>
