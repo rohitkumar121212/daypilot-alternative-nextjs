@@ -7,6 +7,7 @@ declare global {
     __gtLang?: string
     __gtUserReady?: boolean
     __gtScriptReady?: boolean
+    __initGT?: () => void
   }
 }
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode, useMemo } from 'react'
@@ -76,16 +77,13 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       const lang = data?.data?.admin_details?.selected_language
       window.__gtLang = lang || 'en'
       window.__gtUserReady = true
-      if (window.__gtScriptReady) {
+      if (window.__gtScriptReady && window.__initGT) {
         if (lang && lang !== 'en') {
           document.cookie = `googtrans=/en/${lang}; path=/`
         } else {
           document.cookie = 'googtrans=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
         }
-        new (window as any).google.translate.TranslateElement(
-          { pageLanguage: 'en', autoDisplay: false },
-          'google_translate_element'
-        )
+        window.__initGT()
       }
 
     } catch (err) {

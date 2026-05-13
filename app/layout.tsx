@@ -47,6 +47,13 @@ export default function RootLayout({
 
         <Script id="google-translate-init" strategy="afterInteractive">
           {`
+            window.__initGT = function() {
+              new google.translate.TranslateElement(
+                { pageLanguage: 'en', autoDisplay: false },
+                'google_translate_element'
+              );
+            };
+
             function googleTranslateElementInit() {
               if (window.__gtUserReady) {
                 if (window.__gtLang && window.__gtLang !== 'en') {
@@ -54,10 +61,7 @@ export default function RootLayout({
                 } else {
                   document.cookie = 'googtrans=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
                 }
-                new google.translate.TranslateElement(
-                  { pageLanguage: 'en', autoDisplay: false },
-                  'google_translate_element'
-                );
+                window.__initGT();
               } else {
                 window.__gtScriptReady = true;
               }

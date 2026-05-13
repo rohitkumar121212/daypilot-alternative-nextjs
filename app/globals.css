@@ -204,3 +204,11 @@
   border-color: #9ca3af !important;
   outline: none !important;
 }
+/* Hide Google Translate top banner */
+body > div.skiptranslate {
+  display: none !important;
+}
+
+body {
+  top: 0px !important;
+}
