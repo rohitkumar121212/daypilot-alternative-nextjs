@@ -14,6 +14,7 @@ export interface Invoice {
 
 interface InvoicesSectionProps {
   invoices: Invoice[];
+  onViewPayments?: () => void;
 }
 
 const getStatusStyle = (rawStatus?: string) => {
@@ -26,7 +27,8 @@ const getStatusStyle = (rawStatus?: string) => {
   return "bg-slate-100 text-slate-600 border border-slate-200";
 };
 
-const InvoicesSection = ({ invoices }: InvoicesSectionProps) => {
+const InvoicesSection = ({ invoices, onViewPayments }: InvoicesSectionProps) => {
+  const visibleInvoices = invoices.slice(0, 5);
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
       {/* Header */}
@@ -40,10 +42,10 @@ const InvoicesSection = ({ invoices }: InvoicesSectionProps) => {
 
       {/* List */}
       <div className="space-y-0">
-        {invoices.length === 0 ? (
+        {visibleInvoices.length === 0 ? (
           <p className="text-sm text-slate-400 py-6 text-center">No invoices found.</p>
         ) : (
-          invoices.map((inv) => {
+          visibleInvoices.map((inv) => {
             const amount = Number.parseFloat(
               (inv?.Amount ?? "").toString().replace(/,/g, "")
             ) || 0;
@@ -53,7 +55,7 @@ const InvoicesSection = ({ invoices }: InvoicesSectionProps) => {
             return (
               <div
                 key={invNo}
-                className="flex items-center justify-between py-3.5 border-b border-slate-100 last:border-0 group cursor-pointer hover:bg-slate-50/60 rounded-lg px-2 -mx-2 transition-colors"
+                className="flex items-center justify-between py-3.5 border-b border-slate-100 last:border-0 group  hover:bg-slate-50/60 rounded-lg px-2 -mx-2 transition-colors"
               >
                 {/* Left: INV number + amount */}
                 <div>
@@ -80,8 +82,11 @@ const InvoicesSection = ({ invoices }: InvoicesSectionProps) => {
 
       {/* Footer link */}
       {invoices.length > 0 && (
-        <div className="mt-4 pt-3 border-t border-slate-100">
-          <button className="text-xs text-rose-500 hover:text-rose-700 font-medium transition-colors">
+        <div className="mt-4 pt-3 border-t border-slate-100 ">
+          <button
+            onClick={onViewPayments}
+            className="text-xs text-rose-500 hover:text-rose-700 font-medium transition-colors cursor-pointer"
+          >
             View full invoice log in Payments &rarr;
           </button>
         </div>

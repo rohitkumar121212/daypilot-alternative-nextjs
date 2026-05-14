@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 export type TabKey = "overview" | "payments" | "guest" | "services" | "support" | "additional-info";
 
 const TABS: { key: TabKey; label: string }[] = [
@@ -19,10 +17,7 @@ interface BookingTabsProps {
 }
 
 const BookingTabs = ({ activeTab = "overview", onTabChange }: BookingTabsProps) => {
-  const [selected, setSelected] = useState<TabKey>(activeTab);
-
   const handleClick = (key: TabKey) => {
-    setSelected(key);
     onTabChange?.(key);
   };
 
@@ -33,13 +28,13 @@ const BookingTabs = ({ activeTab = "overview", onTabChange }: BookingTabsProps) 
           <button
             key={key}
             onClick={() => handleClick(key)}
-            className={`relative pb-3 text-sm font-medium transition-colors ${selected === key
+            className={`relative pb-3 text-sm font-medium transition-colors cursor-pointer ${activeTab === key
                 ? "text-rose-500"
                 : "text-slate-400 hover:text-slate-700"
               }`}
           >
             {label}
-            {selected === key && (
+            {activeTab === key && (
               <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-rose-500 rounded-full" />
             )}
           </button>

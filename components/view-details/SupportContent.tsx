@@ -1,6 +1,8 @@
 "use client";
 
 import { proxyFetch } from "@/utils/proxyFetch";
+import CreateNewCaseModal from "@/components/view-details/Modals/CreateNewCaseModal";
+import CreateNewTaskModal from "@/components/view-details/Modals/CreateNewTaskModal";
 import { Copy, Loader2, Mail, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -8,6 +10,7 @@ type Row = Record<string, unknown>;
 
 interface SupportContentProps {
   bookingId: string | number;
+  bookingDetails?: any;
   cases: {
     apartment_related: Row[];
     guest_related: Row[];
@@ -64,9 +67,11 @@ const TD = ({ children, className = "" }: { children: React.ReactNode; className
 const CasesCard = ({
   cases,
   loading,
+  onCreateCase,
 }: {
   cases?: SupportContentProps["cases"];
   loading?: boolean;
+  onCreateCase?: () => void;
 }) => {
   const guestRelated = cases?.guest_related ?? [];
   const apartmentRelated = cases?.apartment_related ?? [];
@@ -75,7 +80,10 @@ const CasesCard = ({
     <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
       <div className="flex items-center justify-between mb-5">
         <h2 className="text-base font-bold text-slate-900">Associated Cases</h2>
-        <button className="flex items-center gap-1.5 text-xs font-semibold text-white bg-violet-600 hover:bg-violet-700 px-3 py-1.5 rounded-lg transition-colors">
+        <button
+          onClick={onCreateCase}
+          className="flex items-center gap-1.5 text-xs font-semibold text-white bg-violet-600 hover:bg-violet-700 px-3 py-1.5 rounded-lg transition-colors"
+        >
           🔥 Create New Case
         </button>
       </div>
@@ -167,11 +175,14 @@ const CasesCard = ({
 
 // ── Maintenance Tasks ─────────────────────────────────────────────────────────
 
-const MaintenanceCard = ({ tasks = [] }: { tasks?: Row[] }) => (
+const MaintenanceCard = ({ tasks = [], onCreateTask }: { tasks?: Row[]; onCreateTask?: () => void }) => (
   <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
     <div className="flex items-center justify-between mb-5">
       <h2 className="text-base font-bold text-slate-900">Associated Maintenance Tasks</h2>
-      <button className="flex items-center gap-1.5 text-xs font-semibold text-white bg-violet-600 hover:bg-violet-700 px-3 py-1.5 rounded-lg transition-colors">
+      <button
+        onClick={onCreateTask}
+        className="flex items-center gap-1.5 text-xs font-semibold text-white bg-violet-600 hover:bg-violet-700 px-3 py-1.5 rounded-lg transition-colors"
+      >
         🔧 Create New Task
       </button>
     </div>
@@ -408,6 +419,7 @@ const PmsFormsCard = ({
 
 const SupportContent = ({
   bookingId,
+  bookingDetails,
   cases: fallbackCases,
   maintenanceTasks,
   pmsFormsAndEmails,
@@ -415,6 +427,8 @@ const SupportContent = ({
   const [cases, setCases] = useState<SupportContentProps["cases"] | null>(null);
   const [casesLoading, setCasesLoading] = useState(true);
   const [emailTemplates, setEmailTemplates] = useState<Row[]>([]);
+  const [showCreateCaseModal, setShowCreateCaseModal] = useState(false);
+  const [showCreateTaskModal, setShowCreateTaskModal] = useState(false);
 
   // useEffect(() => {
   //   const fetchCases = async () => {
@@ -495,12 +509,25 @@ const SupportContent = ({
 
   return (
     <div className="space-y-5">
-      {/* {console.log("cases---- ", cases)} */}
-      <CasesCard cases={cases ?? fallbackCases} loading={casesLoading} />
-      <MaintenanceCard tasks={maintenanceTasks} />
+      <CasesCard
+        cases={cases ?? fallbackCases}
+        loading={casesLoading}
+        onCreateCase={() => setShowCreateCaseModal(true)}
+      />
+      <MaintenanceCard tasks={maintenanceTasks} onCreateTask={() => setShowCreateTaskModal(true)} />
       <PmsFormsCard
         pmsFormsAndEmails={pmsFormsAndEmails}
         emailTemplatesOverride={emailTemplates.length > 0 ? emailTemplates : undefined}
+      />
+      <CreateNewCaseModal
+        isOpen={showCreateCaseModal}
+        onClose={() => setShowCreateCaseModal(false)}
+        bookingDetails={bookingDetails}
+      />
+      <CreateNewTaskModal
+        isOpen={showCreateTaskModal}
+        onClose={() => setShowCreateTaskModal(false)}
+        bookingDetails={bookingDetails}
       />
     </div>
   );

@@ -1,8 +1,8 @@
 "use client";
 
 import { Invoice } from "@/components/view-details/InvoicesSection";
-import { proxyFetch } from "@/utils/proxyFetch";
-import { ExternalLink, Loader2 } from "lucide-react";
+import AddPaymentModal from "@/components/view-details/Modals/AddPaymentModal";
+import { Check, ExternalLink, Loader2, Pencil, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface ApiPaymentHistoryEntry {
@@ -32,7 +32,10 @@ interface RevenueSplit {
 }
 
 interface PaymentsTabProps {
+  sectionKey?: string;
   bookingId: string | number;
+  bookingKey?: string;
+  bookedBy?: string;
   currency: string | number
   paymentDetails: {
     additional_services_amount: number;
@@ -71,7 +74,7 @@ interface PaymentsTabProps {
   };
 }
 
-const fmt = (n: number | undefined | null, cur = "£") =>
+const fmt = (n: number | undefined | null, cur: string | number = "£") =>
   `${cur}${(Number(n) || 0).toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 const Field = ({ label, value }: { label: string; value: React.ReactNode }) => (
@@ -91,6 +94,16 @@ const TD = ({ children, className = "" }: { children: React.ReactNode; className
   <td className={`py-3 pr-4 text-sm text-slate-700 ${className}`}>{children}</td>
 );
 
+const EditField = ({ label, value, onChange, prefix = "" }: { label: string; value: string; onChange: (v: string) => void; prefix?: string }) => (
+  <div>
+    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-0.5">{label}</p>
+    <div className="relative">
+      {prefix && <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-400">{prefix}</span>}
+      <input type="number" value={value} onChange={e => onChange(e.target.value)} className={`w-full text-sm font-semibold rounded-lg ${prefix ? "pl-6" : "px-2.5"} pr-2.5 py-1.5 border border-slate-200 outline-none focus:border-rose-400 bg-white text-slate-800`} />
+    </div>
+  </div>
+);
+
 const getInvStatusStyle = (s?: string) => {
   const v = (s || "").toUpperCase();
   if (v === "PAID") return "bg-emerald-100 text-emerald-700 border-emerald-200";
@@ -101,7 +114,10 @@ const getInvStatusStyle = (s?: string) => {
 };
 
 const PaymentsTab = ({
+  sectionKey = "payment_details",
   bookingId,
+  bookingKey,
+  bookedBy,
   paymentDetails,
   paymentHistory,
   invoices = [],
@@ -111,6 +127,39 @@ const PaymentsTab = ({
   const [rvRows, setRvRows] = useState<RevenueSplit[]>([]);
   const [rvMeta, setRvMeta] = useState<{ full_rev: string; realized_rev: string; rel_split_count: number; split_count: number } | null>(null);
   const [rvLoading, setRvLoading] = useState(true);
+
+  const [showAddPayment, setShowAddPayment] = useState(false);
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [form, setForm] = useState({
+    ratePerNight: String(paymentDetails.ratePerNight || ""),
+    other_charges: String(paymentDetails.other_charges || ""),
+    security_deposit_amount: String(paymentDetails.security_deposit_amount || ""),
+    revenue_against_cancellation: String(paymentDetails.revenue_against_cancellation || ""),
+    totalAmount: String(paymentDetails.totalAmount || ""),
+    total_paid_amount: String(paymentDetails.total_paid_amount || ""),
+    discount_amount: String(paymentDetails.discount_amount || ""),
+  });
+  const [snapshot, setSnapshot] = useState(form);
+
+  const set = (k: keyof typeof form) => (v: string) => setForm((p) => ({ ...p, [k]: v }));
+  const handleEdit = () => { setSnapshot(form); setIsEditing(true); };
+  const handleCancel = () => { setForm(snapshot); setIsEditing(false); };
+  const handleSave = () => {
+    setIsEditing(false);
+    const payload = {
+      [sectionKey]: {
+        rent_amt_per_night: parseFloat(form.ratePerNight) || 0,
+        other_charges: parseFloat(form.other_charges) || 0,
+        security_deposit_amount: parseFloat(form.security_deposit_amount) || 0,
+        revenue_against_cancellation: parseFloat(form.revenue_against_cancellation) || 0,
+        totalAmount: parseFloat(form.totalAmount) || 0,
+        total_paid_amount: parseFloat(form.total_paid_amount) || 0,
+        discount_amount: parseFloat(form.discount_amount) || 0,
+      },
+    };
+    console.log("Payment Details API Payload -->", payload);
+  };
 
   // useEffect(() => {
   //   const fetchRevenue = async () => {
@@ -158,13 +207,15 @@ const PaymentsTab = ({
   }, []);
 
 
-  const roomTariff =
-    (Number(paymentDetails.room_tariff) || 0) > 0
+  const roomTariff = isEditing
+    ? Number(form.ratePerNight) * Number(paymentDetails.totalNights)
+    : (Number(paymentDetails.room_tariff) || 0) > 0
       ? Number(paymentDetails.room_tariff)
       : Number(paymentDetails.ratePerNight) * Number(paymentDetails.totalNights);
 
-  const balance =
-    Number(paymentDetails.balance) !== 0
+  const balance = isEditing
+    ? Number(form.totalAmount) - Number(form.total_paid_amount)
+    : Number(paymentDetails.balance) !== 0
       ? Number(paymentDetails.balance)
       : Number(paymentDetails.totalAmount) - Number(paymentDetails.total_paid_amount);
 
@@ -184,15 +235,33 @@ const PaymentsTab = ({
               <button className="text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 px-3 py-1.5 rounded-lg transition-colors">
                 ⇄ Currency Converter
               </button>
-              <button className="text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg transition-colors">
-                + Add Payment
-              </button>
+              {isEditing ? (
+                <>
+                  <button onClick={handleCancel} className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-200 transition-colors cursor-pointer">
+                    <X className="w-3 h-3" />Cancel
+                  </button>
+                  <button onClick={handleSave} className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-white bg-rose-500 hover:bg-rose-600 rounded-lg transition-colors cursor-pointer">
+                    <Check className="w-3 h-3" />Save
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button onClick={handleEdit} className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-rose-500 bg-rose-50 hover:bg-rose-100 rounded-lg border border-rose-100 transition-colors cursor-pointer">
+                    <Pencil className="w-3 h-3" />Edit
+                  </button>
+                  <button onClick={() => setShowAddPayment(true)} className="text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg transition-colors">
+                    + Add Payment
+                  </button>
+                </>
+              )}
             </div>
           </div>
 
           {/* Fields */}
           <div className="grid grid-cols-3 gap-x-8 gap-y-4 mb-5">
-            <Field label="Rent / Night" value={fmt(paymentDetails.ratePerNight, currency)} />
+            {isEditing
+              ? <EditField label="Rent / Night" value={form.ratePerNight} onChange={set("ratePerNight")} prefix={String(currency)} />
+              : <Field label="Rent / Night" value={fmt(Number(form.ratePerNight), currency)} />}
             <Field label="Duration" value={`${Number(paymentDetails.totalNights) || 0} Nights`} />
             <div>
               <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Room Tariff</p>
@@ -200,15 +269,23 @@ const PaymentsTab = ({
             </div>
 
             <Field label="Add-Ons" value={fmt(paymentDetails.additional_services_amount, currency)} />
-            <Field label="Other Charges" value={fmt(paymentDetails.other_charges, currency)} />
+            {isEditing
+              ? <EditField label="Other Charges" value={form.other_charges} onChange={set("other_charges")} prefix={String(currency)} />
+              : <Field label="Other Charges" value={fmt(Number(form.other_charges), currency)} />}
             <Field label="Total Tax(es)" value={fmt(paymentDetails.taxAmount, currency)} />
 
             <Field label="Commission %" value={`${Number(paymentDetails.commission_percentage) || 0}%`} />
             <Field label="Commission Payable" value={fmt(paymentDetails.commission_amount, currency)} />
-            <Field label="Security Deposit" value={fmt(paymentDetails.security_deposit_amount, currency)} />
+            {isEditing
+              ? <EditField label="Security Deposit" value={form.security_deposit_amount} onChange={set("security_deposit_amount")} prefix={String(currency)} />
+              : <Field label="Security Deposit" value={fmt(Number(form.security_deposit_amount), currency)} />}
 
-            <Field label="Revenue vs Cancellation" value={fmt(paymentDetails.revenue_against_cancellation, currency)} />
-            <Field label="Discount" value={fmt(paymentDetails.discount_amount, currency)} />
+            {isEditing
+              ? <EditField label="Revenue vs Cancellation" value={form.revenue_against_cancellation} onChange={set("revenue_against_cancellation")} prefix={String(currency)} />
+              : <Field label="Revenue vs Cancellation" value={fmt(Number(form.revenue_against_cancellation), currency)} />}
+            {isEditing
+              ? <EditField label="Discount" value={form.discount_amount} onChange={set("discount_amount")} prefix={String(currency)} />
+              : <Field label="Discount" value={fmt(Number(form.discount_amount), currency)} />}
             <Field label="Other Discount" value={fmt(paymentDetails.other_discount, currency)} />
           </div>
 
@@ -217,11 +294,25 @@ const PaymentsTab = ({
           <div className="grid grid-cols-3 gap-x-8 mb-4">
             <div>
               <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Total</p>
-              <p className="text-xl font-bold text-slate-900">{fmt(paymentDetails.totalAmount, currency)}</p>
+              {isEditing ? (
+                <div className="relative">
+                  <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-400">{String(currency)}</span>
+                  <input type="number" value={form.totalAmount} onChange={e => set("totalAmount")(e.target.value)} className="w-full text-sm font-semibold rounded-lg pl-6 pr-2.5 py-1.5 border border-slate-200 outline-none focus:border-rose-400 bg-white text-slate-800" />
+                </div>
+              ) : (
+                <p className="text-xl font-bold text-slate-900">{fmt(Number(form.totalAmount), currency)}</p>
+              )}
             </div>
             <div>
               <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Amount Paid</p>
-              <p className="text-xl font-bold text-emerald-600">{fmt(paymentDetails.total_paid_amount, currency)}</p>
+              {isEditing ? (
+                <div className="relative">
+                  <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-400">{String(currency)}</span>
+                  <input type="number" value={form.total_paid_amount} onChange={e => set("total_paid_amount")(e.target.value)} className="w-full text-sm font-semibold rounded-lg pl-6 pr-2.5 py-1.5 border border-slate-200 outline-none focus:border-rose-400 bg-white text-slate-800" />
+                </div>
+              ) : (
+                <p className="text-xl font-bold text-emerald-600">{fmt(Number(form.total_paid_amount), currency)}</p>
+              )}
             </div>
             <div>
               <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Balance</p>
@@ -269,7 +360,7 @@ const PaymentsTab = ({
       <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-base font-bold text-slate-900">Booking Payment History</h2>
-          <button className="text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 px-3 py-1.5 rounded-lg transition-colors">
+          <button onClick={() => setShowAddPayment(true)} className="text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 px-3 py-1.5 rounded-lg transition-colors">
             + Add Payment
           </button>
         </div>
@@ -379,6 +470,16 @@ const PaymentsTab = ({
           </div>
         )}
       </div>
+
+      {/* ── Add Payment Modal ── */}
+      {showAddPayment && (
+        <AddPaymentModal
+          bookingId={bookingId}
+          bookingKey={bookingKey}
+          bookedBy={bookedBy}
+          onClose={() => setShowAddPayment(false)}
+        />
+      )}
 
       {/* ── Xero Invoices ── */}
       {invoices.length > 0 && (

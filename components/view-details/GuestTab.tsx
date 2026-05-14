@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import GuestInformation, { GuestDetails } from "@/components/view-details/GuestInformation";
+import AddNewGuestModal from "@/components/view-details/Modals/AddNewGuestModal";
 
 interface InspectionItem {
   "data-string": string;
@@ -48,6 +49,8 @@ const GuestTab = ({
   const [rewardProgram, setRewardProgram] = useState(rewards?.value_field_1 ?? "");
   const [rewardNotes, setRewardNotes] = useState(rewards?.value_field_2 ?? "");
   const [inspections, setInspections] = useState<InspectionItem[]>([]);
+  const [showAddGuest, setShowAddGuest] = useState(false);
+  const [localGuests, setLocalGuests] = useState<AdditionalGuest[]>(additionalGuests);
 
   useEffect(() => {
     const fetchInspections = async () => {
@@ -66,6 +69,7 @@ const GuestTab = ({
   const checkOutDisplay = formatDisplay(checkOut, checkOutTime);
 
   return (
+    <>
     <div className="grid grid-cols-3 gap-6">
 
       {/* ── LEFT (col-span-2) ── */}
@@ -83,7 +87,10 @@ const GuestTab = ({
         <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-base font-bold text-slate-900">Additional Guests</h2>
-            <button className="text-xs font-semibold text-white bg-violet-600 hover:bg-violet-700 px-3 py-1.5 rounded-lg transition-colors">
+            <button
+              onClick={() => setShowAddGuest(true)}
+              className="text-xs font-semibold text-white bg-violet-600 hover:bg-violet-700 px-3 py-1.5 rounded-lg transition-colors"
+            >
               + Add Guest
             </button>
           </div>
@@ -100,14 +107,14 @@ const GuestTab = ({
                 </tr>
               </thead>
               <tbody>
-                {additionalGuests.length === 0 ? (
+                {localGuests.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="py-6 text-center text-sm text-slate-400">
                       No additional guests
                     </td>
                   </tr>
                 ) : (
-                  additionalGuests.map((g, i) => (
+                  localGuests.map((g, i) => (
                     <tr key={i} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/40">
                       <td className="py-3 pr-4 text-sm font-medium text-slate-800">
                         {String(g.full_name ?? g.name ?? "—")}
@@ -219,6 +226,14 @@ const GuestTab = ({
 
       </div>
     </div>
+
+    {showAddGuest && (
+      <AddNewGuestModal
+        onClose={() => setShowAddGuest(false)}
+        onSave={(guest) => setLocalGuests((prev) => [...prev, guest])}
+      />
+    )}
+    </>
   );
 };
 

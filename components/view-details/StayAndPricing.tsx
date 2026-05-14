@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useState } from "react";
 interface StayAndPricingProps {
+  sectionKey?: string;
   checkIn: string;
   checkOut: string;
   checkInTime?: string;
@@ -18,12 +19,15 @@ interface StayAndPricingProps {
   mealPlan?: string;
   forceOverbook?: string;
   currency?: string;
-  onSave?: (data: {
+  onSave?: (section: string, data: {
     checkIn: string;
     checkOut: string;
     checkInTime: string;
     checkOutTime: string;
     ratePerNight: number;
+    mealPlan: string;
+    adults: number;
+    children: number;
   }) => void;
 }
 
@@ -80,31 +84,10 @@ const Field = ({
   </div>
 );
 
-const EditableField = ({
-  label,
-  value,
-  onChange,
-  type = "text",
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  type?: string;
-}) => (
-  <div>
-    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">{label}</p>
-    <input
-      type={type}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="w-full text-sm font-semibold rounded-lg px-2.5 py-1.5 border border-slate-200 outline-none focus:border-rose-400 focus:ring-1 focus:ring-rose-50 bg-white text-slate-800 transition-all"
-    />
-  </div>
-);
-
 // ─────────────────────────────────────────────────────────────────────────────
 
 const StayAndPricing = ({
+  sectionKey = "stay_and_pricing",
   checkIn,
   checkOut,
   checkInTime = "",
@@ -128,6 +111,9 @@ const StayAndPricing = ({
     checkInTime,
     checkOutTime,
     ratePerNight: String(ratePerNight),
+    mealPlan: mealPlan ?? "",
+    adults: String(adults ?? ""),
+    children: String(children ?? ""),
   });
   const [snapshot, setSnapshot] = useState(form);
 
@@ -138,13 +124,18 @@ const StayAndPricing = ({
   const handleCancel = () => { setForm(snapshot); setIsEditing(false); };
   const handleSave = () => {
     setIsEditing(false);
-    onSave?.({
-      checkIn: form.checkIn,
-      checkOut: form.checkOut,
-      checkInTime: form.checkInTime,
-      checkOutTime: form.checkOutTime,
-      ratePerNight: parseFloat(form.ratePerNight) || 0,
-    });
+    const payload = {
+      [sectionKey]: {
+        guest_arrival_input: form.checkIn,
+        guest_departure_input: form.checkOut,
+        rent_amt_per_night: parseFloat(form.ratePerNight) || 0,
+        mealplan_input: form.mealPlan,
+        updated_arrival_input_time: form.checkInTime || "00:00",
+        updated_departure_input_time: form.checkOutTime || "00:00",
+      },
+    };
+    console.log("API Payload -->", payload);
+    
   };
 
   const displayCheckIn = `${toDDMMYYYY(form.checkIn)}${form.checkInTime ? " " + form.checkInTime : ""}`;
@@ -165,15 +156,15 @@ const StayAndPricing = ({
           )}
           {isEditing ? (
             <div className="flex gap-1.5">
-              <button onClick={handleCancel} className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-200 transition-colors">
+              <button onClick={handleCancel} className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-200 transition-colors cursor-pointer">
                 <X className="w-3 h-3" />Cancel
               </button>
-              <button onClick={handleSave} className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-white bg-rose-500 hover:bg-rose-600 rounded-lg transition-colors">
+              <button onClick={handleSave} className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-white bg-rose-500 hover:bg-rose-600 rounded-lg transition-colors cursor-pointer">
                 <Check className="w-3 h-3" />Save
               </button>
             </div>
           ) : (
-            <button onClick={handleEdit} className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-rose-500 bg-rose-50 hover:bg-rose-100 rounded-lg border border-rose-100 transition-colors">
+            <button onClick={handleEdit} className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-rose-500 bg-rose-50 hover:bg-rose-100 rounded-lg border border-rose-100 transition-colors cursor-pointer">
               <Pencil className="w-3 h-3" />Edit
             </button>
           )}
@@ -221,21 +212,39 @@ const StayAndPricing = ({
         )}
       </div>
 
-      {/* Row 2: Adults / Children / Meal Plan / Force Overbook */}
+      {/* Row 2: Adults / Children / Meal Plan */}
       <div className="grid grid-cols-4 gap-x-6 gap-y-5 mb-5">
         {isEditing ? (
           <>
-            <EditableField label="Adults" value={String(adults ?? "")} onChange={() => { }} type="number" />
-            <EditableField label="Children" value={String(children ?? "")} onChange={() => { }} type="number" />
-            <EditableField label="Meal Plan" value={mealPlan} onChange={() => { }} />
-            {/* <EditableField label="Force Overbook" value={forceOverbook} onChange={() => { }} /> */}
+            <div>
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Adults</p>
+              <input type="number" value={form.adults} onChange={(e) => set("adults")(e.target.value)} min="0" className="w-full text-sm font-semibold rounded-lg px-2.5 py-1.5 border border-slate-200 outline-none focus:border-rose-400 focus:ring-1 focus:ring-rose-50 bg-white text-slate-800 transition-all" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Children</p>
+              <input type="number" value={form.children} onChange={(e) => set("children")(e.target.value)} min="0" className="w-full text-sm font-semibold rounded-lg px-2.5 py-1.5 border border-slate-200 outline-none focus:border-rose-400 focus:ring-1 focus:ring-rose-50 bg-white text-slate-800 transition-all" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Meal Plan</p>
+              <select
+                value={form.mealPlan}
+                onChange={(e) => set("mealPlan")(e.target.value)}
+                className="w-full text-sm font-semibold rounded-lg px-2.5 py-1.5 border border-slate-200 outline-none focus:border-rose-400 focus:ring-1 focus:ring-rose-50 bg-white text-slate-800 transition-all"
+              >
+                <option value="">— Select —</option>
+                <option value="RO">Room Only (RO)</option>
+                <option value="BB">Bed &amp; Breakfast (BB)</option>
+                <option value="HB">Half Board (HB)</option>
+                <option value="FB">Full Board (FB)</option>
+                <option value="AI">All Inclusive (AI)</option>
+              </select>
+            </div>
           </>
         ) : (
           <>
-            <Field label="Adults" value={adults ?? "—"} />
-            <Field label="Children" value={children ?? "—"} />
-            <Field label="Meal Plan" value={mealPlan || "NA"} faded={!mealPlan} />
-            {/* <Field label="Force Overbook" value={forceOverbook || "—"} faded={!forceOverbook} /> */}
+            <Field label="Adults" value={form.adults || "—"} />
+            <Field label="Children" value={form.children || "—"} />
+            <Field label="Meal Plan" value={form.mealPlan || "NA"} faded={!form.mealPlan} />
           </>
         )}
       </div>
@@ -254,7 +263,12 @@ const StayAndPricing = ({
                 <input type="time" value={form.checkOutTime} onChange={(e) => set("checkOutTime")(e.target.value)} className="w-full text-sm font-semibold rounded-lg px-2.5 py-1.5 border border-slate-200 outline-none focus:border-rose-400 bg-white text-slate-800" />
               </div>
             </>
-          ) : null}
+          ) : (
+            <>
+              {form.checkInTime && <Field label="Check-In Time" value={form.checkInTime} />}
+              {form.checkOutTime && <Field label="Check-Out Time" value={form.checkOutTime} />}
+            </>
+          )}
         </div>
       )}
 
