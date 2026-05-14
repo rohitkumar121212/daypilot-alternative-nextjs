@@ -7,6 +7,7 @@ import FloatingInput from '@/components/common/FloatingInput'
 import FloatingDropdown from '@/components/common/FloatingDropdown'
 import FloatingLabelTextarea from '@/components/common/FloatingLabelTextarea'
 import LoadingOverlay from '@/components/ReservationChart/Modals/CreateBookingModal/components/LoadingOverlay'
+import ImageUploadField from '@/components/common/ImageUploadField'
 
 interface CreateTaskTabProps {
   bookingDetails?: any,
@@ -25,7 +26,7 @@ const CreateTaskTab = ({ bookingDetails, reservationConstants, onClose }: Create
     sourceName: '',
     sourceEmail: '',
     sourcePhone: '',
-    image: null as File | null,
+    images: [] as File[],
     description: ''
   })
 
@@ -64,7 +65,7 @@ const CreateTaskTab = ({ bookingDetails, reservationConstants, onClose }: Create
     formPayload.append('guest', bookingDetails?.guest_key || '')
     formPayload.append('save', 'Create Task')
     formPayload.append('response_version', 'v1')
-    if (formData.image) formPayload.append('images', formData.image)
+    formData.images.forEach(img => formPayload.append('images', img))
     
     try {
       const url = process.env.NODE_ENV === 'development'
@@ -104,12 +105,6 @@ const CreateTaskTab = ({ bookingDetails, reservationConstants, onClose }: Create
       alert('Failed to create task')
     } finally {
       setIsLoading(false)
-    }
-  }
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFormData({ ...formData, image: e.target.files[0] })
     }
   }
 
@@ -188,10 +183,9 @@ const CreateTaskTab = ({ bookingDetails, reservationConstants, onClose }: Create
           value={formData.sourcePhone}
           onChange={(e) => setFormData({ ...formData, sourcePhone: e.target.value })}
         />
-        <FloatingInput 
-          label="Add Image" 
-          type="file" 
-          onChange={handleImageChange}
+        <ImageUploadField
+          label="Attach Images"
+          onChange={(files) => setFormData({ ...formData, images: files })}
         />
       </div>
       <FloatingLabelTextarea 
